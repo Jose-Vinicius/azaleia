@@ -1,17 +1,18 @@
 <div id="<%= dom_id task %>">
-  <div>
-    <strong>Title:</strong>
-    <%= task.title %>
-  </div>
-
-  <div>
-    <strong>Description:</strong>
-    <%= task.description %>
-  </div>
-
-  <div>
-    <strong>Schedule at:</strong>
-    <%= task.schedule_at %>
-  </div>
-
+  <%= link_to task, class: "group flex items-start gap-4 p-4 rounded-xl bg-surface-container hover:bg-surface-bright border border-outline-variant transition-all duration-200 cursor-pointer relative overflow-hidden block" do %>
+    <div class="absolute inset-y-0 left-0 w-1 bg-primary opacity-0 group-hover:opacity-100 transition-opacity"></div>
+    <div class="flex-shrink-0 pt-0.5 pointer-events-none">
+      <div class="w-5 h-5 rounded-full border border-outline-variant bg-surface-container-lowest text-primary transition-colors cursor-pointer mt-[2px]"></div>
+    </div>
+    <div class="flex-1 flex flex-col sm:flex-row sm:items-center sm:justify-between">
+      <div class="text-base font-medium text-on-background select-none group-hover:text-primary transition-colors">
+        <%= task.title %>
+      </div>
+      <div class="text-sm text-on-surface-variant font-medium mt-1 sm:mt-0">
+        <% if task.respond_to?(:schedule_at) && task.schedule_at.present? %>
+          <%= task.schedule_at.to_date.strftime("%d/%m/%Y") %>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
 </div>

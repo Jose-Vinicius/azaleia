@@ -1,0 +1,25 @@
+<% parsed_date = date.to_date %>
+<% is_today = parsed_date == Date.today %>
+<div class="w-full h-[400px] bg-surface-container border border-outline-variant rounded-lg flex flex-col shadow-sm <%= is_today ? '' : 'opacity-80 hover:opacity-100 transition-opacity' %>">
+  <div class="p-5 border-b border-outline-variant flex justify-between items-center <%= is_today ? 'bg-surface-container-highest/50' : '' %> rounded-t-lg shrink-0">
+    <h3 class="font-bold tracking-tight text-lg text-on-surface"><%= parsed_date.strftime("%d/%m/%Y") %></h3>
+    <% if is_today %>
+      <span class="text-xs font-medium text-primary bg-primary/10 px-2 py-1 rounded">Today</span>
+    <% end %>
+  </div>
+  <div class="p-3 flex-1 flex flex-col gap-2 overflow-hidden overflow-y-auto hide-scrollbar">
+    <% tasks.each do |task| %>
+      <%= link_to task, class: "group flex items-start gap-3 p-3 rounded hover:bg-surface-variant transition-colors cursor-pointer border border-transparent hover:border-outline-variant/50 shrink-0 block" do %>
+        <span class="material-symbols-outlined text-outline group-hover:text-primary mt-0.5 text-[20px]" style="font-variation-settings: 'FILL' 0;">radio_button_unchecked</span>
+        <div class="flex-1">
+          <p class="text-sm font-medium text-on-surface leading-tight"><%= task.title %></p>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+  <div class="p-3 border-t border-outline-variant shrink-0 mt-auto">
+    <%= link_to new_task_path, class: "w-full text-xs font-medium text-on-surface-variant hover:text-on-surface flex items-center justify-center gap-1 py-2 transition-colors block text-center" do %>
+      <span class="material-symbols-outlined text-[16px]">add</span> Add Task
+    <% end %>
+  </div>
+</div>
