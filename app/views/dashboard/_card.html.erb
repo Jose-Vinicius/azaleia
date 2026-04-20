@@ -18,7 +18,7 @@
     <% end %>
   </div>
   <div class="p-3 border-t border-outline-variant shrink-0 mt-auto">
-    <%= link_to new_task_path, class: "w-full text-xs font-medium text-on-surface-variant hover:text-on-surface flex items-center justify-center gap-1 py-2 transition-colors block text-center" do %>
+    <%= link_to new_task_path, data: { turbo_frame: "modal" }, class: "w-full text-xs font-medium text-on-surface-variant hover:text-on-surface flex items-center justify-center gap-1 py-2 transition-colors block text-center" do %>
       <span class="material-symbols-outlined text-[16px]">add</span> Add Task
     <% end %>
   </div>

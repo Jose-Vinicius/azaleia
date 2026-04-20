@@ -94,7 +94,7 @@
     <p class="font-sans text-sm font-medium text-zinc-500 mt-1"><br></p>
   </div>
   <div class="px-4 mb-6">
-    <%= link_to new_task_path, class: "w-full bg-primary hover:bg-primary-container text-on-primary font-medium py-2 px-4 rounded-lg flex items-center justify-center gap-2 transition-colors" do %>
+    <%= link_to new_task_path, data: { turbo_frame: "modal" }, class: "w-full bg-primary hover:bg-primary-container text-on-primary font-medium py-2 px-4 rounded-lg flex items-center justify-center gap-2 transition-colors" do %>
       <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">add</span>
       Add Task
     <% end %>

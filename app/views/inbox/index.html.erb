@@ -106,7 +106,7 @@
     <p class="text-xs text-on-surface-variant font-medium tracking-wide mt-1 uppercase"></p>
   </div>
   <div class="px-4 py-2">
-    <%= link_to new_task_path, class: "w-full flex items-center justify-center gap-2 bg-primary text-on-primary font-semibold py-2.5 px-4 rounded-lg hover:bg-primary-fixed transition-colors active:scale-[0.98] shadow-[0_0_0_1px_rgba(167,139,250,0.1)]" do %>
+    <%= link_to new_task_path, data: { turbo_frame: "modal" }, class: "w-full flex items-center justify-center gap-2 bg-primary text-on-primary font-semibold py-2.5 px-4 rounded-lg hover:bg-primary-fixed transition-colors active:scale-[0.98] shadow-[0_0_0_1px_rgba(167,139,250,0.1)]" do %>
       <span class="material-symbols-outlined text-sm" data-icon="add">add</span>
       Add Task
     <% end %>
@@ -145,7 +145,7 @@
 
 <!-- Mobile FAB (Visible only on md- down) -->
 <div class="md:hidden fixed bottom-6 right-6 z-50">
-  <%= link_to new_task_path, aria: {label: "Add Task"}, class: "w-14 h-14 bg-primary text-on-primary rounded-full shadow-lg flex items-center justify-center hover:bg-primary-fixed transition-colors active:scale-95 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background" do %>
+  <%= link_to new_task_path, aria: {label: "Add Task"}, data: { turbo_frame: "modal" }, class: "w-14 h-14 bg-primary text-on-primary rounded-full shadow-lg flex items-center justify-center hover:bg-primary-fixed transition-colors active:scale-95 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background" do %>
     <span class="material-symbols-outlined text-2xl" data-icon="add">add</span>
   <% end %>
 </div>
