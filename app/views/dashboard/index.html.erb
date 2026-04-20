@@ -88,27 +88,25 @@
 <% end %>
 
 <!-- Desktop Side Navigation -->
-<nav class="hidden md:flex flex-col h-full py-6 bg-zinc-950 h-screen w-64 border-r border-zinc-800 flex-shrink-0 z-10">
-  <div class="px-6">
-    <h1 class="text-xl font-black text-zinc-50 tracking-tighter">Azaleia</h1>
-    <p class="font-sans text-sm font-medium text-zinc-500 mt-1"><br></p>
+<nav class="hidden md:flex flex-col h-screen sticky left-0 top-0 w-64 bg-[#09090b] border-r border-[#27272a] font-['Geist'] tracking-tight flex-shrink-0 z-50">
+  <div class="p-6">
+    <h2 class="text-xl font-black text-[#fafafa] tracking-tighter">Azaleia</h2>
+    <p class="text-xs text-on-surface-variant font-medium tracking-wide mt-1 uppercase"></p>
   </div>
-  <div class="px-4 mb-6">
-    <%= link_to new_task_path, data: { turbo_frame: "modal" }, class: "w-full bg-primary hover:bg-primary-container text-on-primary font-medium py-2 px-4 rounded-lg flex items-center justify-center gap-2 transition-colors" do %>
-      <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">add</span>
+  <div class="px-4 py-2">
+    <%= link_to new_task_path, data: { turbo_frame: "modal" }, class: "w-full flex items-center justify-center gap-2 bg-primary text-on-primary font-semibold py-2.5 px-4 rounded-lg hover:bg-primary-fixed transition-colors active:scale-[0.98] shadow-[0_0_0_1px_rgba(167,139,250,0.1)]" do %>
+      <span class="material-symbols-outlined text-sm" data-icon="add">add</span>
       Add Task
     <% end %>
   </div>
-  <div class="flex-1 flex flex-col gap-1 px-2">
-    <!-- Inbox (Inactive) -->
-    <a class="text-zinc-400 hover:bg-zinc-900/50 hover:text-zinc-200 flex items-center gap-3 px-4 py-3 transition-all rounded-md font-sans text-sm font-medium cursor-pointer duration-200 hover:bg-zinc-800/50" href="<%= inbox_index_path %>">
-      <span class="material-symbols-outlined" data-icon="inbox" style="font-variation-settings: 'FILL' 0;">inbox</span>
-      Inbox
+  <div class="flex-1 px-3 py-2 space-y-1">
+    <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#a1a1aa] hover:text-[#fafafa] hover:bg-[#18181b] transition-all duration-150 active:scale-[0.98]" href="<%= inbox_index_path %>">
+      <span class="material-symbols-outlined" data-icon="inbox">inbox</span>
+      <span>Inbox</span>
     </a>
-    <!-- Dashboard (Active) -->
-    <a class="bg-zinc-900 text-violet-400 border-l-2 border-violet-400 flex items-center gap-3 px-4 py-3 rounded-r-md font-sans text-sm font-medium cursor-pointer transition-colors duration-200" href="#">
-      <span class="material-symbols-outlined" data-icon="dashboard" style="font-variation-settings: 'FILL' 1;">dashboard</span>
-      Dashboard
+    <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#a78bfa] bg-[#18181b] border-r-2 border-[#a78bfa] font-semibold transition-all duration-150 active:scale-[0.98]" href="<%= dashboard_index_path %>">
+      <span class="material-symbols-outlined" data-icon="dashboard" data-weight="fill" style='font-variation-settings: "FILL" 1;'>dashboard</span>
+      <span>Dashboard</span>
     </a>
   </div>
 </nav>
