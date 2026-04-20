@@ -1,10 +1,61 @@
-<p style="color: green"><%= notice %></p>
+<%= turbo_frame_tag "modal" do %>
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+    <div class="relative w-full max-w-2xl bg-background border border-outline-variant rounded-xl shadow-2xl overflow-hidden flex flex-col">
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between px-6 py-4 border-b border-outline-variant">
+        <div class="flex items-center gap-3">
+          <span class="material-symbols-outlined text-primary" data-icon="task">task</span>
+          <span class="text-xs font-bold uppercase tracking-widest text-on-surface-variant">Task Details</span>
+        </div>
+        <button onclick="document.getElementById('modal').innerHTML=''" class="p-1 hover:bg-surface-container-high rounded transition-colors text-on-surface-variant">
+          <span class="material-symbols-outlined" data-icon="close">close</span>
+        </button>
+      </div>
 
-<%= render @task %>
+      <!-- Modal Body -->
+      <div class="p-8">
+        <div class="flex gap-6 items-start">
+          <!-- Left Side Actions/Status -->
+          <div class="flex-shrink-0">
+            <button class="w-8 h-8 rounded-full border-2 border-primary flex items-center justify-center hover:bg-primary/10 transition-colors group">
+              <span class="material-symbols-outlined text-primary scale-0 group-hover:scale-100 transition-transform" data-icon="check">check</span>
+            </button>
+          </div>
+          <!-- Content Area -->
+          <div class="flex-1 space-y-6">
+            <div>
+              <h2 class="text-3xl font-extrabold tracking-tighter text-on-surface mb-2"><%= @task.title %></h2>
+            </div>
+            <% if @task.respond_to?(:description) && @task.description.present? %>
+            <div class="pt-6 border-t border-outline-variant/30">
+              <p class="text-on-surface-variant leading-relaxed text-lg">
+                <%= @task.description %>
+              </p>
+            </div>
+            <% end %>
+            <% if @task.respond_to?(:schedule_at) && @task.schedule_at.present? %>
+            <div class="pt-4 flex items-center gap-2 text-on-surface-variant">
+              <span class="material-symbols-outlined text-[18px]">calendar_today</span>
+              <span class="text-sm font-medium"><%= @task.schedule_at.to_date.strftime("%d/%m/%Y") %></span>
+            </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
 
-<div>
-  <%= link_to "Edit this task", edit_task_path(@task) %> |
-  <%= link_to "Back to tasks", tasks_path %>
-
-  <%= button_to "Destroy this task", @task, method: :delete %>
-</div>
+      <!-- Modal Footer Actions -->
+      <div class="px-6 py-6 bg-surface-container border-t border-outline-variant flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <%= button_to @task, method: :delete, form: { data: { turbo_frame: "_top" } }, class: "p-2 text-on-surface-variant hover:text-error hover:bg-error/10 rounded transition-all flex items-center justify-center" do %>
+            <span class="material-symbols-outlined" data-icon="delete">delete</span>
+          <% end %>
+        </div>
+        <div class="flex items-center gap-3">
+          <button onclick="document.getElementById('modal').innerHTML=''" class="px-5 py-2 text-sm font-bold border border-outline-variant rounded-lg text-on-surface hover:bg-surface-container-high transition-all">
+             Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>

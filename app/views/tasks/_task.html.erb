@@ -1,5 +1,5 @@
 <div id="<%= dom_id task %>">
-  <%= link_to task, class: "group flex items-start gap-4 p-4 rounded-xl bg-surface-container hover:bg-surface-bright border border-outline-variant transition-all duration-200 cursor-pointer relative overflow-hidden block" do %>
+  <%= link_to task, data: { turbo_frame: "modal" }, class: "group flex items-start gap-4 p-4 rounded-xl bg-surface-container hover:bg-surface-bright border border-outline-variant transition-all duration-200 cursor-pointer relative overflow-hidden block" do %>
     <div class="absolute inset-y-0 left-0 w-1 bg-primary opacity-0 group-hover:opacity-100 transition-opacity"></div>
     <div class="flex-shrink-0 pt-0.5 pointer-events-none">
       <div class="w-5 h-5 rounded-full border border-outline-variant bg-surface-container-lowest text-primary transition-colors cursor-pointer mt-[2px]"></div>
