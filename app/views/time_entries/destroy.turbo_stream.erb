@@ -1,0 +1,3 @@
+<%= turbo_stream.replace "task_#{@task.id}_time_tracker" do %>
+  <%= render partial: "tasks/time_tracker", locals: { task: @task } %>
+<% end %>

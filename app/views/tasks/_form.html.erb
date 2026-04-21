@@ -24,6 +24,11 @@
     <div>
       <%= form.label :schedule_at, class: "block text-sm font-medium text-on-surface-variant mb-1" %>
       <%= form.date_field :schedule_at, class: "w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-4 py-2 text-on-surface focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all focus:outline-none", onclick: "this.showPicker()", style: "color-scheme: dark;" %>    </div>
+
+    <div>
+      <%= form.label :estimated_minutes, t('activerecord.attributes.task.estimated_minutes', default: 'Tempo Estimado (em minutos)'), class: "block text-sm font-medium text-on-surface-variant mb-1" %>
+      <%= form.number_field :estimated_minutes, min: 0, step: 1, class: "w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-4 py-2 text-on-surface focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all placeholder-secondary", placeholder: "Ex: 120" %>
+    </div>
   </div>
 
   <!-- Modal Footer Actions -->

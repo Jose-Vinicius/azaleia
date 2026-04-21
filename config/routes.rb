@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
-  resources :tasks, except: [ :index ]
+  resources :tasks, except: [ :index ] do
+    resources :time_entries, only: [ :create, :destroy ]
+  end
   resources :inbox, only: [ :index ]
   resources :dashboard, only: [ :index ]
   get "settings", to: "settings#index"

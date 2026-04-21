@@ -38,6 +38,13 @@
               <input data-settings-target="dashboardCols" type="number" min="3" max="7" class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg text-sm text-on-surface px-4 py-2.5 focus:ring-2 focus:ring-primary focus:border-transparent outline-none" id="card-limit" placeholder="<%= t('settings.dashboard.grid.exemplo')%>" value="3"/>
               <p class="text-xs text-on-surface-variant"><%= t('settings.dashboard.grid.description')%></p>
             </div>
+            
+            <!-- Text Input: Pomodoro Block -->
+            <div class="space-y-2 mt-4">
+              <label class="block text-sm font-medium text-on-surface" for="block-size"><%= t('settings.dashboard.pomodoro.title', default: 'Tamanho do Bloco de Foco (Minutos)') %></label>
+              <input data-settings-target="pomodoroBlock" type="number" min="5" max="180" step="5" class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg text-sm text-on-surface px-4 py-2.5 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all" id="block-size" placeholder="Ex.: 30" value="30"/>
+              <p class="text-xs text-on-surface-variant"><%= t('settings.dashboard.pomodoro.description', default: 'Tempo base (em minutos) adicionado a cada bloco de foco registrado (Padrão: 30).') %></p>
+            </div>
           </div>
         </section>
       </div>
