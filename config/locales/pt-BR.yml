@@ -7,3 +7,13 @@ pt-BR:
         title: "Título"
         description: "Descrição"
         schedule_at: "Data da Tarefa"
+  dashboard:
+    empty_state:
+      title: "Tudo em dia!"
+      subtitle: "Não há tarefas agendadas no momento."
+      button: "Ver Inbox"
+  inbox:
+    empty_state:
+      title: "Não há nada aqui"
+      subtitle: "Não há tarefas pendentes"
+      button: "Adicionar nova tarefa"

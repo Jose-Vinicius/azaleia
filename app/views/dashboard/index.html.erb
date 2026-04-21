@@ -118,9 +118,20 @@
     <h2 class="text-3xl md:text-3xl font-black tracking-tighter text-on-surface uppercase opacity-90">Dashboard</h2>
   </header>
   <!-- Vertical Scrolling List -->
-  <div class="flex-1 overflow-y-auto px-8 pb-20 md:pb-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-    <% @cards.each do |date_card, tasks| %>
-      <%= render partial: "card", locals: { date: date_card, tasks: tasks } %>
+  <div class="flex-1 overflow-y-auto px-8 pb-20 md:pb-12 <%= @cards.empty? ? 'flex flex-col items-center justify-center' : 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6' %>">
+    <% if @cards.empty? %>
+      <div class="flex flex-col items-center justify-center text-on-surface-variant animate-pulse opacity-80">
+        <span class="material-symbols-outlined text-[72px] mb-4" style="font-variation-settings: 'FILL' 0;">done_all</span>
+        <h3 class="text-2xl font-bold text-on-surface"><%= t('dashboard.empty_state.title') %></h3>
+        <p class="text-base font-medium mt-2"><%= t('dashboard.empty_state.subtitle') %>.</p>
+        <%= link_to inbox_index_path, class: "mt-6 px-6 py-2.5 bg-surface-container hover:bg-surface-container-high border border-outline-variant rounded-lg text-sm font-bold text-on-surface transition-colors" do %>
+          <%= t('dashboard.empty_state.button')%>
+        <% end %>
+      </div>
+    <% else %>
+      <% @cards.each do |date_card, tasks| %>
+        <%= render partial: "card", locals: { date: date_card, tasks: tasks } %>
+      <% end %>
     <% end %>
   </div>
 </main>
