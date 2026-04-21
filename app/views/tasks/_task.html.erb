@@ -1,17 +1,18 @@
-<div id="<%= dom_id task %>" class="group relative flex items-start gap-4 p-4 rounded-xl bg-surface-container hover:bg-surface-bright border border-outline-variant transition-all duration-200 overflow-hidden">
-  <div class="absolute inset-y-0 left-0 w-1 bg-primary opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-0"></div>
+<% is_overdue = task.schedule_at.present? && task.schedule_at.to_date < Date.today %>
+<div id="<%= dom_id task %>" class="group relative flex items-start gap-4 p-4 rounded-xl bg-surface-container hover:bg-surface-bright border <%= is_overdue ? 'border-error/30' : 'border-outline-variant' %> transition-all duration-200 overflow-hidden">
+  <div class="absolute inset-y-0 left-0 w-1 <%= is_overdue ? 'bg-error' : 'bg-primary' %> opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-0"></div>
   
   <div class="flex-shrink-0 pt-0.5 z-10 relative">
-    <%= button_to task_path(task, task: { completed: true }), method: :patch, class: "w-5 h-5 rounded-full border border-outline-variant bg-surface-container-lowest text-primary transition-colors cursor-pointer mt-[2px] hover:bg-primary/20 flex items-center justify-center group/btn", form: { data: { turbo_frame: "_top" } } do %>
+    <%= button_to task_path(task, task: { completed: true }), method: :patch, class: "w-5 h-5 rounded-full border <%= is_overdue ? 'border-error/50 text-error hover:bg-error/20' : 'border-outline-variant text-primary hover:bg-primary/20' %> bg-surface-container-lowest transition-colors cursor-pointer mt-[2px] flex items-center justify-center group/btn", form: { data: { turbo_frame: "_top" } } do %>
       <span class="material-symbols-outlined text-[14px] opacity-0 group-hover/btn:opacity-100 transition-opacity" style="font-variation-settings: 'FILL' 1;">check</span>
     <% end %>
   </div>
 
   <%= link_to task, data: { turbo_frame: "modal" }, class: "flex-1 flex flex-col sm:flex-row sm:items-center sm:justify-between outline-none before:absolute before:inset-0 before:z-0 cursor-pointer" do %>
-    <div class="text-base font-medium text-on-background select-none group-hover:text-primary transition-colors z-10 relative">
+    <div class="text-base font-medium select-none <%= is_overdue ? 'text-error group-hover:text-error/80' : 'text-on-background group-hover:text-primary' %> transition-colors z-10 relative">
       <%= task.title %>
     </div>
-    <div class="text-sm text-on-surface-variant font-medium mt-1 sm:mt-0 z-10 relative pointer-events-none">
+    <div class="text-sm font-medium mt-1 sm:mt-0 z-10 relative pointer-events-none <%= is_overdue ? 'text-error/70' : 'text-on-surface-variant' %>">
       <% if task.respond_to?(:schedule_at) && task.schedule_at.present? %>
         <%= task.schedule_at.to_date.strftime("%d/%m/%Y") %>
       <% end %>

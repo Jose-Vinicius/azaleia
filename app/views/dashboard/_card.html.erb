@@ -9,12 +9,13 @@
   </div>
   <div class="p-3 flex-1 flex flex-col gap-2 overflow-hidden overflow-y-auto hide-scrollbar">
     <% tasks.each do |task| %>
-      <div class="group relative flex items-start gap-3 p-3 rounded hover:bg-surface-variant transition-colors border border-transparent hover:border-outline-variant/50 shrink-0">
-        <%= button_to task_path(task, task: { completed: true }), method: :patch, class: "z-10 relative mt-0.5 text-outline group-hover:text-primary hover:text-primary-container transition-colors", form: { data: { turbo_frame: "_top" } } do %>
+      <% is_overdue = task.schedule_at.present? && task.schedule_at.to_date < Date.today %>
+      <div class="group relative flex items-start gap-3 p-3 rounded hover:bg-surface-variant transition-colors border border-transparent <%= is_overdue ? 'hover:border-error/30' : 'hover:border-outline-variant/50' %> shrink-0">
+        <%= button_to task_path(task, task: { completed: true }), method: :patch, class: "z-10 relative mt-0.5 text-outline #{is_overdue ? 'group-hover:text-error hover:text-error/80' : 'group-hover:text-primary hover:text-primary-container'} transition-colors", form: { data: { turbo_frame: "_top" } } do %>
            <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 0;">radio_button_unchecked</span>
         <% end %>
         <%= link_to task, data: { turbo_frame: "modal" }, class: "flex-1 outline-none before:absolute before:inset-0 before:z-0" do %>
-          <p class="text-sm font-medium text-on-surface leading-tight relative z-10"><%= task.title %></p>
+          <p class="text-sm font-medium leading-tight relative z-10 al <%= is_overdue ? 'text-error' : 'text-on-surface' %>"><%= task.title %></p>
         <% end %>
       </div>
     <% end %>

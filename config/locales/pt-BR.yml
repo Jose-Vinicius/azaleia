@@ -17,3 +17,19 @@ pt-BR:
       title: "Não há nada aqui"
       subtitle: "Não há tarefas pendentes"
       button: "Adicionar nova tarefa"
+  settings:
+    title: "Configurações"
+    no_content: "Sem configurações disponiveis no momento."
+    save: "Salvar mudanças"
+    cancel: "Cancelar"
+    inbox:
+      title: "Inbox"
+      subtitle: "Configure sua área de recepção de tarefas"
+    dashboard:
+      title: "Dashboard"
+      subtitle: "Personalize seu espaço de trabalho."
+      grid:
+        cards_per_row: "Cards por linha (Desktop)"
+        exemplo: "Ex.: 5"
+        description: "Defina um valor entre 3 e 7 para o layout do grid"
+

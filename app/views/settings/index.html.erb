@@ -5,7 +5,7 @@
       <header class="flex justify-between items-center px-6 h-16 w-full bg-zinc-950 border-b border-zinc-800 font-headline tracking-tight shrink-0">
         <div class="flex items-center gap-3">
           <span class="text-primary material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">settings</span>
-          <h1 class="text-lg font-bold text-on-surface">Settings</h1>
+          <h1 class="text-lg font-bold text-on-surface"><%= t('settings.title')%></h1>
         </div>
         <button data-action="click->settings#close" class="text-on-surface-variant hover:text-on-surface hover:bg-zinc-900 transition-colors p-2 rounded-lg">
           <span class="material-symbols-outlined" data-icon="close">close</span>
@@ -17,26 +17,26 @@
         <!-- Inbox Settings Section -->
         <section class="space-y-6 opacity-50 pointer-events-none">
           <div class="space-y-1">
-            <h2 class="text-lg font-bold tracking-tight text-on-surface">Inbox Settings</h2>
-            <p class="text-sm text-on-surface-variant">Configure how you process incoming communications.</p>
+            <h2 class="text-lg font-bold tracking-tight text-on-surface"><%= t('settings.inbox.title')%></h2>
+            <p class="text-sm text-on-surface-variant"><%= t('settings.inbox.subtitle')%></p>
           </div>
           <div class="p-4 bg-surface-container border border-outline-variant rounded-lg text-center text-sm font-medium text-on-surface-variant">
-            No settings available at the moment.
+            <%= t('settings.no_content')%>
           </div>
         </section>
 
         <!-- Dashboard Settings Section -->
         <section class="space-y-6">
           <div class="space-y-1">
-            <h2 class="text-lg font-bold tracking-tight text-on-surface">Dashboard Settings</h2>
-            <p class="text-sm text-on-surface-variant">Personalize your workspace layout.</p>
+            <h2 class="text-lg font-bold tracking-tight text-on-surface"><%= t('settings.dashboard.title')%></h2>
+            <p class="text-sm text-on-surface-variant"><%= t('settings.dashboard.subtitle')%></p>
           </div>
           <div class="grid grid-cols-1 gap-4">
             <!-- Text Input: Card Limit -->
             <div class="space-y-2">
-              <label class="block text-sm font-medium text-on-surface" for="card-limit">Cards per row (Desktop)</label>
-              <input data-settings-target="dashboardCols" type="number" min="3" max="7" class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg text-sm text-on-surface px-4 py-2.5 focus:ring-2 focus:ring-primary focus:border-transparent outline-none" id="card-limit" placeholder="e.g. 5" value="3"/>
-              <p class="text-xs text-on-surface-variant">Set a value between 3 and 7 to adjust the grid layout density.</p>
+              <label class="block text-sm font-medium text-on-surface" for="card-limit"><%= t('settings.dashboard.grid.cards_per_row')%></label>
+              <input data-settings-target="dashboardCols" type="number" min="3" max="7" class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg text-sm text-on-surface px-4 py-2.5 focus:ring-2 focus:ring-primary focus:border-transparent outline-none" id="card-limit" placeholder="<%= t('settings.dashboard.grid.exemplo')%>" value="3"/>
+              <p class="text-xs text-on-surface-variant"><%= t('settings.dashboard.grid.description')%></p>
             </div>
           </div>
         </section>
@@ -45,10 +45,10 @@
       <!-- Action Footer -->
       <footer class="flex justify-end items-center gap-3 px-8 py-6 bg-surface-container border-t border-outline-variant shrink-0">
         <button data-action="click->settings#close" class="px-5 py-2 text-sm font-medium text-on-surface-variant hover:text-on-surface transition-colors">
-          Cancel
+          <%= t('settings.cancel')%>
         </button>
         <button data-action="click->settings#save" class="px-6 py-2 text-sm font-bold bg-primary text-on-primary rounded-lg shadow-lg shadow-primary/20 hover:opacity-90 active:scale-[0.98] transition-all">
-          Save Changes
+          <%= t('settings.save')%>
         </button>
       </footer>
     </div>
