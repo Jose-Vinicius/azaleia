@@ -25,6 +25,7 @@ class TasksController < ApplicationController
 
     respond_to do |format|
       if @task.save
+        format.turbo_stream
         format.html { redirect_back fallback_location: dashboard_index_path, notice: "Task was successfully created." }
         format.json { render :show, status: :created, location: @task }
       else
@@ -38,6 +39,7 @@ class TasksController < ApplicationController
   def update
     respond_to do |format|
       if @task.update(task_params)
+        format.turbo_stream
         format.html { redirect_back fallback_location: dashboard_index_path, notice: "Task was successfully updated.", status: :see_other }
         format.json { render :show, status: :ok, location: @task }
       else
