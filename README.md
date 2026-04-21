@@ -7,6 +7,7 @@
 *   📥 **Inbox & Dashboard:** Uma visualização clara! Use o Inbox para capturar ideias que não possuem um prazo definido e deixe o Dashboard focar nas prioridades dividas por dia.
 *   📅 **Agrupamento Automático e Layout Dinâmico:** Tarefas agrupadas por `schedule_at` na exibição em grid. A quantia de colunas do grid do painel pode ser ajustada nas configurações e fica salva sob demanda no navegador do usuário.
 *   🚨 **Destaques de Tarefas Atrasadas:** Perdeu o prazo? A tarefa acende em vermelho em toda a plataforma para chamar atenção.
+*   ⏱️ **Time Tracker Progressivo:** Registre blocos de foco (Pomodoro) em cada tarefa com feedback instantâneo de porcentagem, barra de progresso dinâmica em cores, limites ajustáveis e listagem de histórico fluída.
 
 ## 🛠️ Stack de Tecnologias
 

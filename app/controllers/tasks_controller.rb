@@ -12,7 +12,7 @@ class TasksController < ApplicationController
 
   # GET /tasks/new
   def new
-    @task = Task.new
+    @task = Task.new(schedule_at: params[:schedule_at])
   end
 
   # GET /tasks/1/edit
