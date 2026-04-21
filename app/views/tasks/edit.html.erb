@@ -1,12 +1,20 @@
-<% content_for :title, "Editing task" %>
+<%= turbo_frame_tag "modal" do %>
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+    <div class="relative w-full max-w-2xl bg-background border border-outline-variant rounded-xl shadow-2xl overflow-hidden flex flex-col">
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between px-6 py-4 border-b border-outline-variant">
+        <div class="flex items-center gap-3">
+          <span class="material-symbols-outlined text-primary" data-icon="edit_square">edit_square</span>
+          <span class="text-xs font-bold uppercase tracking-widest text-on-surface-variant">Edit Task</span>
+        </div>
+        <button onclick="document.getElementById('modal').innerHTML=''" class="p-1 hover:bg-surface-container-high rounded transition-colors text-on-surface-variant">
+          <span class="material-symbols-outlined" data-icon="close">close</span>
+        </button>
+      </div>
 
-<h1>Editing task</h1>
-
-<%= render "form", task: @task %>
-
-<br>
-
-<div>
-  <%= link_to "Show this task", @task %> |
-  <%= link_to "Back to tasks", tasks_path %>
-</div>
+      <!-- Modal Body (Form) -->
+      <%= render "form", task: @task %>
+      
+    </div>
+  </div>
+<% end %>

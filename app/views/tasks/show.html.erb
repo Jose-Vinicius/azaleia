@@ -7,9 +7,14 @@
           <span class="material-symbols-outlined text-primary" data-icon="task">task</span>
           <span class="text-xs font-bold uppercase tracking-widest text-on-surface-variant">Task Details</span>
         </div>
-        <button onclick="document.getElementById('modal').innerHTML=''" class="p-1 hover:bg-surface-container-high rounded transition-colors text-on-surface-variant">
-          <span class="material-symbols-outlined" data-icon="close">close</span>
-        </button>
+        <div class="flex items-center gap-2">
+          <%= link_to edit_task_path(@task), class: "p-1 hover:bg-surface-container-high rounded transition-colors text-on-surface-variant flex items-center justify-center" do %>
+            <span class="material-symbols-outlined text-[20px]" data-icon="edit">edit</span>
+          <% end %>
+          <button onclick="document.getElementById('modal').innerHTML=''" class="p-1 hover:bg-surface-container-high rounded transition-colors text-on-surface-variant flex items-center justify-center">
+            <span class="material-symbols-outlined" data-icon="close">close</span>
+          </button>
+        </div>
       </div>
 
       <!-- Modal Body -->

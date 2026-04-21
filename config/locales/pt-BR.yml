@@ -1,0 +1,9 @@
+pt-BR:
+  activerecord:
+    models:
+      task: "Tarefa"
+    attributes:
+      task:
+        title: "Título"
+        description: "Descrição"
+        schedule_at: "Data da Tarefa"

@@ -2,7 +2,7 @@
   <div class="p-8 space-y-6 flex-1">
     <% if task.errors.any? %>
       <div class="p-4 bg-error-container text-on-error-container rounded-lg border border-error/50">
-        <h2 class="text-sm font-bold mb-2"><%= pluralize(task.errors.count, "error") %> prohibited this task from being saved:</h2>
+        <h2 class="text-sm font-bold mb-2"><%= pluralize(task.errors.count, "erro") %> impediu está tarefa de ser salva:</h2>
         <ul class="list-disc pl-5 text-sm">
           <% task.errors.each do |error| %>
             <li><%= error.full_message %></li>
@@ -22,7 +22,7 @@
     </div>
 
     <div>
-      <%= form.label :schedule_at, "Schedule For", class: "block text-sm font-medium text-on-surface-variant mb-1" %>
+      <%= form.label :schedule_at, class: "block text-sm font-medium text-on-surface-variant mb-1" %>
       <%= form.date_field :schedule_at, class: "w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-4 py-2 text-on-surface focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all focus:outline-none", onclick: "this.showPicker()", style: "color-scheme: dark;" %>    </div>
   </div>
 
