@@ -1,18 +1,20 @@
-<div id="<%= dom_id task %>">
-  <%= link_to task, data: { turbo_frame: "modal" }, class: "group flex items-start gap-4 p-4 rounded-xl bg-surface-container hover:bg-surface-bright border border-outline-variant transition-all duration-200 cursor-pointer relative overflow-hidden block" do %>
-    <div class="absolute inset-y-0 left-0 w-1 bg-primary opacity-0 group-hover:opacity-100 transition-opacity"></div>
-    <div class="flex-shrink-0 pt-0.5 pointer-events-none">
-      <div class="w-5 h-5 rounded-full border border-outline-variant bg-surface-container-lowest text-primary transition-colors cursor-pointer mt-[2px]"></div>
+<div id="<%= dom_id task %>" class="group relative flex items-start gap-4 p-4 rounded-xl bg-surface-container hover:bg-surface-bright border border-outline-variant transition-all duration-200 overflow-hidden">
+  <div class="absolute inset-y-0 left-0 w-1 bg-primary opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-0"></div>
+  
+  <div class="flex-shrink-0 pt-0.5 z-10 relative">
+    <%= button_to task_path(task, task: { completed: true }), method: :patch, class: "w-5 h-5 rounded-full border border-outline-variant bg-surface-container-lowest text-primary transition-colors cursor-pointer mt-[2px] hover:bg-primary/20 flex items-center justify-center group/btn", form: { data: { turbo_frame: "_top" } } do %>
+      <span class="material-symbols-outlined text-[14px] opacity-0 group-hover/btn:opacity-100 transition-opacity" style="font-variation-settings: 'FILL' 1;">check</span>
+    <% end %>
+  </div>
+
+  <%= link_to task, data: { turbo_frame: "modal" }, class: "flex-1 flex flex-col sm:flex-row sm:items-center sm:justify-between outline-none before:absolute before:inset-0 before:z-0 cursor-pointer" do %>
+    <div class="text-base font-medium text-on-background select-none group-hover:text-primary transition-colors z-10 relative">
+      <%= task.title %>
     </div>
-    <div class="flex-1 flex flex-col sm:flex-row sm:items-center sm:justify-between">
-      <div class="text-base font-medium text-on-background select-none group-hover:text-primary transition-colors">
-        <%= task.title %>
-      </div>
-      <div class="text-sm text-on-surface-variant font-medium mt-1 sm:mt-0">
-        <% if task.respond_to?(:schedule_at) && task.schedule_at.present? %>
-          <%= task.schedule_at.to_date.strftime("%d/%m/%Y") %>
-        <% end %>
-      </div>
+    <div class="text-sm text-on-surface-variant font-medium mt-1 sm:mt-0 z-10 relative pointer-events-none">
+      <% if task.respond_to?(:schedule_at) && task.schedule_at.present? %>
+        <%= task.schedule_at.to_date.strftime("%d/%m/%Y") %>
+      <% end %>
     </div>
   <% end %>
 </div>

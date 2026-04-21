@@ -22,9 +22,9 @@
         <div class="flex gap-6 items-start">
           <!-- Left Side Actions/Status -->
           <div class="flex-shrink-0">
-            <button class="w-8 h-8 rounded-full border-2 border-primary flex items-center justify-center hover:bg-primary/10 transition-colors group">
+            <%= button_to task_path(@task, task: { completed: true }), method: :patch, form: { data: { turbo_frame: "_top" } }, class: "w-8 h-8 rounded-full border-2 border-primary flex items-center justify-center hover:bg-primary/10 transition-colors group cursor-pointer" do %>
               <span class="material-symbols-outlined text-primary scale-0 group-hover:scale-100 transition-transform" data-icon="check">check</span>
-            </button>
+            <% end %>
           </div>
           <!-- Content Area -->
           <div class="flex-1 space-y-6">
@@ -51,8 +51,11 @@
       <!-- Modal Footer Actions -->
       <div class="px-6 py-6 bg-surface-container border-t border-outline-variant flex items-center justify-between">
         <div class="flex items-center gap-2">
-          <%= button_to @task, method: :delete, form: { data: { turbo_frame: "_top" } }, class: "p-2 text-on-surface-variant hover:text-error hover:bg-error/10 rounded transition-all flex items-center justify-center" do %>
+          <%= button_to @task, method: :delete, form: { data: { turbo_frame: "_top" } }, class: "p-2 text-on-surface-variant hover:text-error hover:bg-error/10 rounded transition-all flex items-center justify-center", title: "Delete task" do %>
             <span class="material-symbols-outlined" data-icon="delete">delete</span>
+          <% end %>
+          <%= button_to task_path(@task, task: { completed: false }), method: :patch, form: { data: { turbo_frame: "_top" } }, class: "p-2 text-on-surface-variant hover:text-orange-400 hover:bg-white/5 rounded transition-all flex items-center justify-center", title: "Mark as uncompleted" do %>
+            <span class="material-symbols-outlined" data-icon="cancel">cancel</span>
           <% end %>
         </div>
         <div class="flex items-center gap-3">

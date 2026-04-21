@@ -93,9 +93,9 @@
     <h1 class="text-lg font-bold text-[#fafafa] tracking-tight">Inbox</h1>
   </div>
   <div class="flex items-center gap-4 text-[#a1a1aa]">
-    <button aria-label="Settings" class="hover:text-[#fafafa] transition-colors focus:ring-2 focus:ring-[#a78bfa] rounded-full p-1">
+    <%= link_to settings_path, data: { turbo_frame: "modal" }, aria: { label: "Settings" }, class: "hover:text-[#fafafa] transition-colors focus:ring-2 focus:ring-[#a78bfa] rounded-full p-1 block flex items-center justify-center" do %>
       <span class="material-symbols-outlined" data-icon="settings">settings</span>
-    </button>
+    <% end %>
   </div>
 </header>
 
@@ -111,7 +111,7 @@
       Add Task
     <% end %>
   </div>
-  <div class="flex-1 px-3 py-2 space-y-1">
+  <div class="flex-1 flex flex-col px-3 py-2 space-y-1">
     <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#a78bfa] bg-[#18181b] border-r-2 border-[#a78bfa] font-semibold transition-all duration-150 active:scale-[0.98]" href="#">
       <span class="material-symbols-outlined" data-icon="inbox" data-weight="fill" style='font-variation-settings: "FILL" 1;'>inbox</span>
       <span>Inbox</span>
@@ -120,6 +120,11 @@
       <span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
       <span>Dashboard</span>
     </a>
+    <div class="flex-1"></div>
+    <%= link_to settings_path, data: { turbo_frame: "modal" }, class: "flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#a1a1aa] hover:text-[#fafafa] hover:bg-[#18181b] transition-all duration-150 active:scale-[0.98] mt-auto" do %>
+      <span class="material-symbols-outlined">settings</span>
+      <span>Settings</span>
+    <% end %>
   </div>
 </nav>
 

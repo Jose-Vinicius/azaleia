@@ -11,6 +11,14 @@
 
     <%= yield :head %>
 
+    <script>
+      // Apply UI settings instantly to prevent flash of unstyled content
+      const savedCols = localStorage.getItem("dashboardCols");
+      if (savedCols) {
+        document.documentElement.style.setProperty('--desktop-cols', savedCols);
+      }
+    </script>
+
     <%# Turbo Morphing tags para permitir o turbo_stream.refresh funcionar de forma lisa %>
     <meta name="turbo-refresh-method" content="morph">
     <meta name="turbo-refresh-scroll" content="preserve">
