@@ -10,18 +10,27 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_21_183650) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_22_112050) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "multipliers", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "name", null: false
+    t.datetime "updated_at", null: false
+    t.float "value", default: 1.0, null: false
+  end
 
   create_table "tasks", force: :cascade do |t|
     t.boolean "completed"
     t.datetime "created_at", null: false
     t.text "description"
     t.integer "estimated_minutes", default: 0
+    t.bigint "multiplier_id", null: false
     t.datetime "schedule_at", precision: nil
     t.string "title"
     t.datetime "updated_at", null: false
+    t.index ["multiplier_id"], name: "index_tasks_on_multiplier_id"
   end
 
   create_table "time_entries", force: :cascade do |t|
@@ -32,5 +41,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_21_183650) do
     t.index ["task_id"], name: "index_time_entries_on_task_id"
   end
 
+  add_foreign_key "tasks", "multipliers"
   add_foreign_key "time_entries", "tasks"
 end
