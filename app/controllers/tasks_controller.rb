@@ -3,7 +3,7 @@ class TasksController < ApplicationController
 
   # GET /tasks or /tasks.json
   def index
-    @tasks = Task.all
+    @tasks = Current.user.tasks
   end
 
   # GET /tasks/1 or /tasks/1.json
@@ -12,7 +12,7 @@ class TasksController < ApplicationController
 
   # GET /tasks/new
   def new
-    @task = Task.new(schedule_at: params[:schedule_at])
+    @task = Current.user.tasks.new(schedule_at: params[:schedule_at])
   end
 
   # GET /tasks/1/edit
@@ -21,7 +21,7 @@ class TasksController < ApplicationController
 
   # POST /tasks or /tasks.json
   def create
-    @task = Task.new(task_params)
+    @task = Current.user.tasks.build(task_params)
 
     respond_to do |format|
       if @task.save
@@ -62,7 +62,7 @@ class TasksController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_task
-      @task = Task.find(params.expect(:id))
+      @task = Current.user.tasks.find(params.expect(:id))
     end
 
     # Only allow a list of trusted parameters through.

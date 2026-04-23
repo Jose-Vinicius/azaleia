@@ -1,6 +1,6 @@
 class TimeEntriesController < ApplicationController
   def create
-    @task = Task.find(params.expect(:task_id))
+    @task = Current.user.tasks.find(params.expect(:task_id))
     @time_entry = @task.time_entries.build(time_entry_params)
     
     respond_to do |format|
@@ -14,7 +14,7 @@ class TimeEntriesController < ApplicationController
   end
 
   def destroy
-    @task = Task.find(params.expect(:task_id))
+    @task = Current.user.tasks.find(params.expect(:task_id))
     @time_entry = @task.time_entries.find(params.expect(:id))
     @time_entry.destroy
     

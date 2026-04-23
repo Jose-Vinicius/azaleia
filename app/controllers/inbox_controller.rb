@@ -1,6 +1,6 @@
 class InboxController < ApplicationController
   def index
-    @tasks = Task.get_schedule_tasks
+    @tasks = Task.get_schedule_tasks(Current.user)
     
     respond_to do |format|
       format.html

@@ -1,6 +1,7 @@
 class Task < ApplicationRecord
   validates :title, presence: true
 
+  belongs_to :user
   has_many :time_entries, dependent: :destroy
   belongs_to :multiplier, optional: true
 
@@ -14,20 +15,20 @@ class Task < ApplicationRecord
     priority * multiplier_val
   end
 
-  def self.get_scheduled_tasks
-    tasks = Task.includes(:multiplier).where.not(schedule_at: nil).where(completed: [ nil ]).order(schedule_at: :asc)
+  def self.get_scheduled_tasks(user)
+    tasks = user.tasks.includes(:multiplier).where.not(schedule_at: nil).where(completed: [ nil ]).order(schedule_at: :asc)
     tasks.group_by { |task| task.schedule_at.to_date }.transform_values { |day_tasks| day_tasks.sort_by { |t| -t.score } }
   end
 
-  def self.get_schedule_tasks
-    Task.includes(:multiplier).where(schedule_at: nil).where(completed: [ nil ]).sort_by { |t| -t.score }
+  def self.get_schedule_tasks(user)
+    user.tasks.includes(:multiplier).where(schedule_at: nil).where(completed: [ nil ]).sort_by { |t| -t.score }
   end
 
-  def self.get_completed_tasks
-    Task.where(completed: true)
+  def self.get_completed_tasks(user)
+    user.tasks.where(completed: true)
   end
 
-  def self.get_uncompleted_tasks
-    Task.where(completed: false)
+  def self.get_uncompleted_tasks(user)
+    user.tasks.where(completed: false)
   end
 end
