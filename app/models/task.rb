@@ -5,6 +5,8 @@ class Task < ApplicationRecord
   has_many :time_entries, dependent: :destroy
   belongs_to :multiplier, optional: true
 
+  before_save :set_completed_at, if: :completed_changed?
+
   def priority
     return 1 unless estimated_minutes.present? && estimated_minutes > 0
     (estimated_minutes.to_f / 60.0).ceil
@@ -31,4 +33,19 @@ class Task < ApplicationRecord
   def self.get_uncompleted_tasks(user)
     user.tasks.where(completed: false)
   end
+
+  def self.get_history_tasks(user)
+    user.tasks.includes(:multiplier).where.not(completed: nil).order(completed_at: :desc)
+  end
+
+  private
+
+  def set_completed_at
+    if completed.nil?
+      self.completed_at = nil
+    else
+      self.completed_at = Time.current
+    end
+  end
 end
+

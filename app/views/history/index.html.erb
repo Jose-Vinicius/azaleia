@@ -75,12 +75,6 @@
       body { font-family: 'Geist', sans-serif; }
       .hide-scrollbar::-webkit-scrollbar { display: none; }
       .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-      
-      @media (min-width: 1024px) {
-        .lg\:grid-dynamic {
-          grid-template-columns: repeat(var(--final-cols, 3), minmax(0, 1fr)) !important;
-        }
-      }
   </style>
   <script>
     document.documentElement.classList.add('dark');
@@ -92,6 +86,18 @@
     });
   </script>
 <% end %>
+
+<!-- Mobile Top App Bar -->
+<header class="md:hidden flex items-center justify-between px-6 py-4 sticky top-0 z-40 w-full bg-[#09090b]/80 backdrop-blur-md border-b border-[#27272a]">
+  <div class="flex items-center gap-3">
+    <h1 class="text-lg font-bold text-[#fafafa] tracking-tight">Histórico</h1>
+  </div>
+  <div class="flex items-center gap-4 text-[#a1a1aa]">
+    <%= link_to settings_path, data: { turbo_frame: "modal" }, aria: { label: "Settings" }, class: "hover:text-[#fafafa] transition-colors focus:ring-2 focus:ring-[#a78bfa] rounded-full p-1 block flex items-center justify-center" do %>
+      <span class="material-symbols-outlined" data-icon="settings">settings</span>
+    <% end %>
+  </div>
+</header>
 
 <!-- Desktop Side Navigation -->
 <nav class="hidden md:flex flex-col h-screen sticky left-0 top-0 w-64 bg-[#09090b] border-r border-[#27272a] font-['Geist'] tracking-tight flex-shrink-0 z-50">
@@ -112,12 +118,12 @@
       <span class="material-symbols-outlined" data-icon="inbox">inbox</span>
       <span>Inbox</span>
     </a>
-    <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#a78bfa] bg-[#18181b] border-r-2 border-[#a78bfa] font-semibold transition-all duration-150 active:scale-[0.98]" href="<%= dashboard_index_path %>">
-      <span class="material-symbols-outlined" data-icon="dashboard" data-weight="fill" style='font-variation-settings: "FILL" 1;'>dashboard</span>
+    <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#a1a1aa] hover:text-[#fafafa] hover:bg-[#18181b] transition-all duration-150 active:scale-[0.98]" href="<%= dashboard_index_path %>">
+      <span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
       <span>Dashboard</span>
     </a>
-    <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#a1a1aa] hover:text-[#fafafa] hover:bg-[#18181b] transition-all duration-150 active:scale-[0.98]" href="<%= history_index_path %>">
-      <span class="material-symbols-outlined" data-icon="history">history</span>
+    <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#a78bfa] bg-[#18181b] border-r-2 border-[#a78bfa] font-semibold transition-all duration-150 active:scale-[0.98]" href="<%= history_index_path %>">
+      <span class="material-symbols-outlined" data-icon="history" data-weight="fill" style='font-variation-settings: "FILL" 1;'>history</span>
       <span>Histórico</span>
     </a>
     <div class="flex-1"></div>
@@ -144,49 +150,106 @@
 
 <!-- Main Content Area -->
 <main class="flex-1 flex flex-col h-full w-full relative">
-  <!-- Header -->
-  <header class="pt-12 px-8 pb-8 flex-shrink-0">
-    <h2 class="text-3xl md:text-3xl font-black tracking-tighter text-on-surface uppercase opacity-90">Dashboard</h2>
+  <!-- Desktop Header -->
+  <header class="hidden md:block pt-12 px-8 pb-8 flex-shrink-0">
+    <div class="flex items-center justify-between">
+      <h2 class="text-3xl md:text-3xl font-black tracking-tighter text-on-surface uppercase opacity-90">Histórico</h2>
+      <% completed_count = @tasks.count { |t| t.completed == true } %>
+      <% uncompleted_count = @tasks.count { |t| t.completed == false } %>
+      <div class="flex items-center gap-3">
+        <span class="flex items-center gap-1.5 text-xs font-bold text-tertiary bg-tertiary/10 px-3 py-1.5 rounded-full border border-tertiary/20">
+          <span class="material-symbols-outlined text-[14px]">check_circle</span>
+          <%= completed_count %> concluídas
+        </span>
+        <span class="flex items-center gap-1.5 text-xs font-bold text-error bg-error/10 px-3 py-1.5 rounded-full border border-error/20">
+          <span class="material-symbols-outlined text-[14px]">cancel</span>
+          <%= uncompleted_count %> descartadas
+        </span>
+      </div>
+    </div>
   </header>
-  <!-- Vertical Scrolling List -->
-  <div id="dashboard-grid" data-controller="grid-layout" class="flex-1 overflow-y-auto px-8 pb-20 md:pb-12 <%= @cards.empty? ? 'flex flex-col items-center justify-center' : 'grid grid-cols-1 md:grid-cols-2 lg:grid-dynamic gap-6' %>">
-    <% if @cards.empty? %>
-      <div class="flex flex-col items-center justify-center text-on-surface-variant animate-pulse opacity-80">
-        <span class="material-symbols-outlined text-[72px] mb-4" style="font-variation-settings: 'FILL' 0;">done_all</span>
-        <h3 class="text-2xl font-bold text-on-surface"><%= t('dashboard.empty_state.title') %></h3>
-        <p class="text-base font-medium mt-2"><%= t('dashboard.empty_state.subtitle') %>.</p>
-        <%= link_to inbox_index_path, class: "mt-6 px-6 py-2.5 bg-surface-container hover:bg-surface-container-high border border-outline-variant rounded-lg text-sm font-bold text-on-surface transition-colors" do %>
-          <%= t('dashboard.empty_state.button')%>
+
+  <!-- Task History List -->
+  <div class="flex-1 overflow-y-auto hide-scrollbar px-6 md:px-8 pb-24 md:pb-12 w-full <%= @tasks.empty? ? 'flex flex-col items-center justify-center' : 'space-y-1' %>" id="history-list">
+    <!-- Mobile Title -->
+    <h2 class="md:hidden text-2xl font-headline font-bold text-on-background tracking-tight py-4 mb-2">HISTÓRICO</h2>
+
+    <% if @tasks.empty? %>
+      <div class="flex flex-col items-center justify-center text-on-surface-variant animate-pulse opacity-80 h-full -mt-20 md:mt-0">
+        <span class="material-symbols-outlined text-[72px] mb-4" style="font-variation-settings: 'FILL' 0;">history</span>
+        <h3 class="text-2xl font-bold text-on-surface">Nenhum histórico</h3>
+        <p class="text-base font-medium mt-2">Tarefas concluídas ou descartadas aparecerão aqui.</p>
+        <%= link_to dashboard_index_path, class: "mt-6 px-6 py-2.5 bg-surface-container hover:bg-surface-container-high border border-outline-variant rounded-lg text-sm font-bold text-on-surface transition-colors" do %>
+          Ir para o Dashboard
         <% end %>
       </div>
     <% else %>
-      <% @cards.each do |date_card, tasks| %>
-        <%= render partial: "card", locals: { date: date_card, tasks: tasks } %>
+      <% @tasks.each do |task| %>
+        <% is_completed = task.completed == true %>
+        <div class="group relative flex items-center gap-4 p-4 rounded-lg hover:bg-surface-variant/50 transition-all duration-150 border border-transparent hover:border-outline-variant/50">
+          <% if is_completed %>
+            <%# Completed task — button to uncomplete (revert to active) %>
+            <%= button_to task_path(task, task: { completed: nil }), method: :patch, class: "z-10 relative flex-shrink-0", form: { data: { turbo_frame: "_top" } } do %>
+              <span class="w-7 h-7 rounded-full bg-tertiary/15 border border-tertiary/30 flex items-center justify-center group-hover:bg-tertiary/25 transition-colors">
+                <span class="material-symbols-outlined text-tertiary text-[16px]" style="font-variation-settings: 'FILL' 1;">check</span>
+              </span>
+            <% end %>
+          <% else %>
+            <%# Uncompleted/discarded task — no action %>
+            <div class="z-10 relative flex-shrink-0">
+              <span class="w-7 h-7 rounded-full bg-error/15 border border-error/30 flex items-center justify-center">
+                <span class="material-symbols-outlined text-error text-[16px]" style="font-variation-settings: 'FILL' 1;">close</span>
+              </span>
+            </div>
+          <% end %>
+
+          <%= link_to task, data: { turbo_frame: "modal" }, class: "flex-1 outline-none before:absolute before:inset-0 before:z-0 min-w-0" do %>
+            <div class="flex items-center gap-3">
+              <p class="text-sm font-medium leading-tight relative z-10 truncate <%= is_completed ? 'text-on-surface' : 'text-on-surface-variant line-through' %>">
+                <%= task.title %>
+              </p>
+            </div>
+            <div class="flex items-center gap-3 mt-1.5">
+              <span class="text-xs text-on-surface-variant/70 relative z-10">
+                <%= time_ago_in_words(task.completed_at || task.updated_at) %> atrás
+              </span>
+              <% if task.schedule_at.present? %>
+                <span class="text-xs text-on-surface-variant/50 relative z-10 flex items-center gap-0.5">
+                  <span class="material-symbols-outlined text-[12px]">calendar_today</span>
+                  <%= task.schedule_at.strftime("%d/%m/%Y") %>
+                </span>
+              <% end %>
+            </div>
+          <% end %>
+
+          <div class="flex items-center gap-2 z-10 relative shrink-0">
+            <span class="flex items-center gap-0.5 text-xs font-bold text-primary bg-primary/10 px-1.5 py-0.5 rounded-full border border-primary/20">
+              <span class="material-symbols-outlined text-[11px]">star</span>
+              <%= number_with_precision(task.score, precision: 1, strip_insignificant_zeros: true) %>
+            </span>
+            <span class="text-[10px] font-medium uppercase tracking-wider px-2 py-0.5 rounded-full <%= is_completed ? 'text-tertiary bg-tertiary/10 border border-tertiary/20' : 'text-error bg-error/10 border border-error/20' %>">
+              <%= is_completed ? 'Concluída' : 'Descartada' %>
+            </span>
+          </div>
+        </div>
       <% end %>
     <% end %>
   </div>
-  <script>
-    (function() {
-      const grid = document.getElementById("dashboard-grid");
-      if (grid) {
-        const savedCols = parseInt(localStorage.getItem("dashboardCols") || "3", 10);
-        grid.style.setProperty("--final-cols", Math.min(savedCols, Math.max(1, grid.children.length)));
-      }
-    })();
-  </script>
 </main>
 
 <!-- Mobile Bottom Navigation -->
 <nav class="md:hidden flex justify-around items-center h-16 px-4 pb-safe bg-zinc-950/90 backdrop-blur-lg fixed bottom-0 w-full z-50 border-t border-zinc-800 shadow-2xl">
-  <!-- Inbox (Inactive) -->
   <a class="flex flex-col items-center justify-center text-zinc-500 tap-highlight-transparent active:scale-90 transition-transform active:bg-zinc-900 w-16 h-full" href="<%= inbox_index_path %>">
     <span class="material-symbols-outlined text-2xl mb-1" data-icon="inbox" style="font-variation-settings: 'FILL' 0;">inbox</span>
     <span class="text-[10px] font-medium tracking-wide uppercase">Inbox</span>
   </a>
-  <!-- Dashboard (Active) -->
+  <a class="flex flex-col items-center justify-center text-zinc-500 tap-highlight-transparent active:scale-90 transition-transform active:bg-zinc-900 w-16 h-full" href="<%= dashboard_index_path %>">
+    <span class="material-symbols-outlined text-2xl mb-1" data-icon="dashboard" style="font-variation-settings: 'FILL' 0;">dashboard</span>
+    <span class="text-[10px] font-medium tracking-wide uppercase">Dashboard</span>
+  </a>
   <a class="flex flex-col items-center justify-center text-violet-400 scale-110 tap-highlight-transparent active:scale-90 transition-transform active:bg-zinc-900 w-16 h-full relative" href="#">
     <div class="absolute -top-1 w-8 h-1 bg-violet-400 rounded-b-full"></div>
-    <span class="material-symbols-outlined text-2xl mb-1" data-icon="dashboard" style="font-variation-settings: 'FILL' 1;">dashboard</span>
-    <span class="text-[10px] font-medium tracking-wide uppercase">Dashboard</span>
+    <span class="material-symbols-outlined text-2xl mb-1" data-icon="history" style="font-variation-settings: 'FILL' 1;">history</span>
+    <span class="text-[10px] font-medium tracking-wide uppercase">Histórico</span>
   </a>
 </nav>
