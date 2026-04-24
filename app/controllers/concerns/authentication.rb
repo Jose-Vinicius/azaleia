@@ -1,6 +1,8 @@
 module Authentication
   extend ActiveSupport::Concern
 
+  SESSION_EXPIRY = 7.days
+
   included do
     before_action :require_authentication
     helper_method :authenticated?
@@ -26,7 +28,16 @@ module Authentication
     end
 
     def find_session_by_cookie
-      Session.find_by(id: cookies.signed[:session_id]) if cookies.signed[:session_id]
+      if (session_record = Session.find_by(id: cookies.signed[:session_id]))
+        if session_record.updated_at >= SESSION_EXPIRY.ago
+          session_record.touch
+          session_record
+        else
+          session_record.destroy
+          cookies.delete(:session_id)
+          nil
+        end
+      end
     end
 
     def request_authentication
@@ -41,7 +52,7 @@ module Authentication
     def start_new_session_for(user)
       user.sessions.create!(user_agent: request.user_agent, ip_address: request.remote_ip).tap do |session|
         Current.session = session
-        cookies.signed.permanent[:session_id] = { value: session.id, httponly: true, same_site: :lax }
+        cookies.signed[:session_id] = { value: session.id, httponly: true, same_site: :lax, expires: SESSION_EXPIRY.from_now }
       end
     end
 
