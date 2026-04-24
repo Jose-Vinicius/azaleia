@@ -1,7 +1,8 @@
 <% parsed_date = date.to_date %>
 <% is_today = parsed_date == Date.today %>
-<div class="w-full h-[400px] bg-surface-container border border-outline-variant rounded-lg flex flex-col shadow-sm <%= is_today ? '' : 'opacity-80 hover:opacity-100 transition-opacity' %>">
-  <% total_score = tasks.sum(&:score) %>
+<div class="w-full h-[400px] bg-surface-container border border-outline-variant rounded-lg flex flex-col shadow-sm <%= is_today ? '' : 'opacity-80 hover:opacity-100 transition-opacity' %>" data-dashboard-card>
+  <% active_tasks = tasks.select { |t| t.completed.nil? } %>
+  <% total_score = active_tasks.sum(&:score) %>
   <div class="p-5 border-b border-outline-variant flex justify-between items-center <%= is_today ? 'bg-surface-container-highest/50' : '' %> rounded-t-lg shrink-0">
     <div class="flex items-center gap-2">
       <h3 class="font-bold tracking-tight text-lg text-on-surface"><%= parsed_date.strftime("%d/%m/%Y") %></h3>
@@ -17,14 +18,32 @@
   <div class="p-3 flex-1 flex flex-col gap-2 overflow-hidden overflow-y-auto hide-scrollbar">
     <% tasks.each do |task| %>
       <% is_overdue = task.schedule_at.present? && task.schedule_at.to_date < Date.today %>
-      <div class="group relative flex items-start gap-3 p-3 rounded hover:bg-surface-variant transition-colors border border-transparent <%= is_overdue ? 'hover:border-error/30' : 'hover:border-outline-variant/50' %> shrink-0">
-        <%= button_to task_path(task, task: { completed: true }), method: :patch, class: "z-10 relative mt-0.5 text-outline #{is_overdue ? 'group-hover:text-error hover:text-error/80' : 'group-hover:text-primary hover:text-primary-container'} transition-colors", form: { data: { turbo_frame: "_top" } } do %>
-           <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 0;">radio_button_unchecked</span>
+      <% is_completed = task.completed == true %>
+      <% is_discarded = task.completed == false %>
+      <% is_done = !task.completed.nil? %>
+
+      <div class="group relative flex items-start gap-3 p-3 rounded hover:bg-surface-variant transition-colors border border-transparent <%= is_overdue && !is_done ? 'hover:border-error/30' : 'hover:border-outline-variant/50' %> shrink-0 <%= is_done ? 'dashboard-completed-task' : '' %>" data-task-item <% if is_done %>style="display: none;"<% end %>>
+        <% if is_completed %>
+          <%# Completed — green filled check, click to revert %>
+          <%= button_to task_path(task, task: { completed: nil }), method: :patch, class: "z-10 relative mt-0.5 transition-colors", form: { data: { turbo_frame: "_top" } } do %>
+            <span class="material-symbols-outlined text-tertiary text-[20px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+          <% end %>
+        <% elsif is_discarded %>
+          <%# Discarded — red X, click to revert %>
+          <%= button_to task_path(task, task: { completed: nil }), method: :patch, class: "z-10 relative mt-0.5 transition-colors", form: { data: { turbo_frame: "_top" } } do %>
+            <span class="material-symbols-outlined text-error text-[20px]" style="font-variation-settings: 'FILL' 1;">cancel</span>
+          <% end %>
+        <% else %>
+          <%# Pending — empty circle, click to complete %>
+          <% btn_class = is_overdue ? 'group-hover:text-error hover:text-error/80' : 'group-hover:text-primary hover:text-primary-container' %>
+          <%= button_to task_path(task, task: { completed: true }), method: :patch, class: "z-10 relative mt-0.5 text-outline #{btn_class} transition-colors", form: { data: { turbo_frame: "_top" } } do %>
+             <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 0;">radio_button_unchecked</span>
+          <% end %>
         <% end %>
         <%= link_to task, data: { turbo_frame: "modal" }, class: "flex-1 outline-none before:absolute before:inset-0 before:z-0" do %>
-          <p class="text-sm font-medium leading-tight relative z-10 <%= is_overdue ? 'text-error' : 'text-on-surface' %>"><%= task.title %></p>
+          <p class="text-sm font-medium leading-tight relative z-10 <%= is_done ? 'line-through opacity-50' : '' %> <%= is_overdue && !is_done ? 'text-error' : 'text-on-surface' %>"><%= task.title %></p>
         <% end %>
-        <span class="z-10 relative flex items-center gap-0.5 text-xs font-bold text-primary bg-primary/10 px-1.5 py-0.5 rounded-full border border-primary/20 shrink-0">
+        <span class="z-10 relative flex items-center gap-0.5 text-xs font-bold text-primary bg-primary/10 px-1.5 py-0.5 rounded-full border border-primary/20 shrink-0 <%= is_done ? 'opacity-40' : '' %>">
           <span class="material-symbols-outlined text-[11px]">star</span>
           <%= number_with_precision(task.score, precision: 1, strip_insignificant_zeros: true) %>
         </span>

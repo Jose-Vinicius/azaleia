@@ -45,6 +45,24 @@
               <input data-settings-target="pomodoroBlock" type="number" min="5" max="180" step="5" class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg text-sm text-on-surface px-4 py-2.5 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all" id="block-size" placeholder="Ex.: 30" value="30"/>
               <p class="text-xs text-on-surface-variant"><%= t('settings.dashboard.pomodoro.description', default: 'Tempo base (em minutos) adicionado a cada bloco de foco registrado (Padrão: 30).') %></p>
             </div>
+
+            <!-- Toggle: Show Completed on Dashboard -->
+            <div class="flex items-center justify-between mt-6 p-4 bg-surface-container-lowest border border-outline-variant rounded-lg">
+              <div class="space-y-0.5">
+                <label class="block text-sm font-medium text-on-surface" for="show-completed">Mostrar tarefas concluídas no Dashboard</label>
+                <p class="text-xs text-on-surface-variant">Exibir tarefas concluídas e descartadas diretamente nos cards do dashboard.</p>
+              </div>
+              <button
+                type="button"
+                role="switch"
+                data-settings-target="showCompleted"
+                data-action="click->settings#toggleSwitch"
+                aria-checked="false"
+                class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent bg-outline transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background ml-4"
+              >
+                <span class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-on-surface shadow ring-0 transition duration-200 ease-in-out translate-x-0"></span>
+              </button>
+            </div>
           </div>
         </section>
       </div>
