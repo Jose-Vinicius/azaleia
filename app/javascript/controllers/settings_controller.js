@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = [ "dashboardCols", "pomodoroBlock" ]
+  static targets = [ "dashboardCols", "pomodoroBlock", "showCompleted" ]
 
   connect() {
     const savedCols = localStorage.getItem("dashboardCols") || 3;
@@ -13,6 +13,33 @@ export default class extends Controller {
     if (this.hasPomodoroBlockTarget) {
       this.pomodoroBlockTarget.value = Math.min(Math.max(savedBlock, 5), 180);
     }
+
+    if (this.hasShowCompletedTarget) {
+      const saved = localStorage.getItem("showCompletedOnDashboard") === "true";
+      this.updateSwitchVisual(this.showCompletedTarget, saved);
+    }
+  }
+
+  toggleSwitch(event) {
+    const btn = event.currentTarget;
+    const isChecked = btn.getAttribute("aria-checked") === "true";
+    this.updateSwitchVisual(btn, !isChecked);
+  }
+
+  updateSwitchVisual(btn, checked) {
+    btn.setAttribute("aria-checked", checked ? "true" : "false");
+    const dot = btn.querySelector("span");
+    if (checked) {
+      btn.classList.remove("bg-outline");
+      btn.classList.add("bg-primary");
+      dot.classList.remove("translate-x-0");
+      dot.classList.add("translate-x-5");
+    } else {
+      btn.classList.remove("bg-primary");
+      btn.classList.add("bg-outline");
+      dot.classList.remove("translate-x-5");
+      dot.classList.add("translate-x-0");
+    }
   }
 
   save() {
@@ -20,14 +47,23 @@ export default class extends Controller {
       const value = Math.min(Math.max(this.dashboardColsTarget.value, 3), 7);
       localStorage.setItem("dashboardCols", value);
       document.documentElement.style.setProperty('--desktop-cols', value);
-      window.dispatchEvent(new Event("settings:updated"));
     }
     
     if (this.hasPomodoroBlockTarget) {
       const value = Math.min(Math.max(this.pomodoroBlockTarget.value, 5), 180);
       localStorage.setItem("pomodoroBlockSize", value);
     }
-    
+
+    if (this.hasShowCompletedTarget) {
+      const isChecked = this.showCompletedTarget.getAttribute("aria-checked") === "true";
+      localStorage.setItem("showCompletedOnDashboard", isChecked ? "true" : "false");
+      // Apply immediately to visible dashboard
+      document.querySelectorAll(".dashboard-completed-task").forEach(el => {
+        el.style.display = isChecked ? "" : "none";
+      });
+    }
+
+    window.dispatchEvent(new Event("settings:updated"));
     this.close();
   }
 

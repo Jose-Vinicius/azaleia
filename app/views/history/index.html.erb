@@ -79,25 +79,14 @@
   <script>
     document.documentElement.classList.add('dark');
     document.addEventListener("turbo:load", () => {
-      document.body.className = "bg-background text-on-surface h-screen w-full overflow-hidden flex selection:bg-primary/30 selection:text-primary";
+      document.body.className = "bg-background text-on-surface h-screen w-full overflow-hidden flex flex-col md:flex-row selection:bg-primary/30 selection:text-primary";
     });
     document.addEventListener("DOMContentLoaded", () => {
-      document.body.className = "bg-background text-on-surface h-screen w-full overflow-hidden flex selection:bg-primary/30 selection:text-primary";
+      document.body.className = "bg-background text-on-surface h-screen w-full overflow-hidden flex flex-col md:flex-row selection:bg-primary/30 selection:text-primary";
     });
   </script>
 <% end %>
 
-<!-- Mobile Top App Bar -->
-<header class="md:hidden flex items-center justify-between px-6 py-4 sticky top-0 z-40 w-full bg-[#09090b]/80 backdrop-blur-md border-b border-[#27272a]">
-  <div class="flex items-center gap-3">
-    <h1 class="text-lg font-bold text-[#fafafa] tracking-tight">Histórico</h1>
-  </div>
-  <div class="flex items-center gap-4 text-[#a1a1aa]">
-    <%= link_to settings_path, data: { turbo_frame: "modal" }, aria: { label: "Settings" }, class: "hover:text-[#fafafa] transition-colors focus:ring-2 focus:ring-[#a78bfa] rounded-full p-1 block flex items-center justify-center" do %>
-      <span class="material-symbols-outlined" data-icon="settings">settings</span>
-    <% end %>
-  </div>
-</header>
 
 <!-- Desktop Side Navigation -->
 <nav class="hidden md:flex flex-col h-screen sticky left-0 top-0 w-64 bg-[#09090b] border-r border-[#27272a] font-['Geist'] tracking-tight flex-shrink-0 z-50">
@@ -186,51 +175,50 @@
     <% else %>
       <% @tasks.each do |task| %>
         <% is_completed = task.completed == true %>
-        <div class="group relative flex items-center gap-4 p-4 rounded-lg hover:bg-surface-variant/50 transition-all duration-150 border border-transparent hover:border-outline-variant/50">
+        <div class="group relative flex items-start gap-3 p-4 rounded-xl bg-surface-container hover:bg-surface-bright border border-outline-variant transition-all duration-200 overflow-hidden">
+          <%# Status icon %>
           <% if is_completed %>
-            <%# Completed task — button to uncomplete (revert to active) %>
-            <%= button_to task_path(task, task: { completed: nil }), method: :patch, class: "z-10 relative flex-shrink-0", form: { data: { turbo_frame: "_top" } } do %>
-              <span class="w-7 h-7 rounded-full bg-tertiary/15 border border-tertiary/30 flex items-center justify-center group-hover:bg-tertiary/25 transition-colors">
-                <span class="material-symbols-outlined text-tertiary text-[16px]" style="font-variation-settings: 'FILL' 1;">check</span>
+            <%= button_to task_path(task, task: { completed: nil }), method: :patch, class: "z-10 relative flex-shrink-0 mt-0.5", form: { data: { turbo_frame: "_top" } } do %>
+              <span class="w-6 h-6 rounded-full bg-tertiary/15 border border-tertiary/30 flex items-center justify-center group-hover:bg-tertiary/25 transition-colors">
+                <span class="material-symbols-outlined text-tertiary text-[14px]" style="font-variation-settings: 'FILL' 1;">check</span>
               </span>
             <% end %>
           <% else %>
-            <%# Uncompleted/discarded task — no action %>
-            <div class="z-10 relative flex-shrink-0">
-              <span class="w-7 h-7 rounded-full bg-error/15 border border-error/30 flex items-center justify-center">
-                <span class="material-symbols-outlined text-error text-[16px]" style="font-variation-settings: 'FILL' 1;">close</span>
+            <%= button_to task_path(task, task: { completed: nil }), method: :patch, class: "z-10 relative flex-shrink-0 mt-0.5", form: { data: { turbo_frame: "_top" } } do %>
+              <span class="w-6 h-6 rounded-full bg-error/15 border border-error/30 flex items-center justify-center group-hover:bg-error/25 transition-colors cursor-pointer">
+                <span class="material-symbols-outlined text-error text-[14px]" style="font-variation-settings: 'FILL' 1;">close</span>
               </span>
-            </div>
+            <% end %>
           <% end %>
 
+          <%# Content area %>
           <%= link_to task, data: { turbo_frame: "modal" }, class: "flex-1 outline-none before:absolute before:inset-0 before:z-0 min-w-0" do %>
-            <div class="flex items-center gap-3">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-3">
               <p class="text-sm font-medium leading-tight relative z-10 truncate <%= is_completed ? 'text-on-surface' : 'text-on-surface-variant line-through' %>">
                 <%= task.title %>
               </p>
+              <div class="flex items-center gap-1.5 z-10 relative shrink-0">
+                <span class="flex items-center gap-0.5 text-[10px] font-bold text-primary bg-primary/10 px-1.5 py-0.5 rounded-full border border-primary/20">
+                  <span class="material-symbols-outlined text-[10px]">star</span>
+                  <%= number_with_precision(task.score, precision: 1, strip_insignificant_zeros: true) %>
+                </span>
+                <span class="text-[10px] font-medium uppercase tracking-wider px-1.5 py-0.5 rounded-full <%= is_completed ? 'text-tertiary bg-tertiary/10 border border-tertiary/20' : 'text-error bg-error/10 border border-error/20' %>">
+                  <%= is_completed ? 'Concluída' : 'Descartada' %>
+                </span>
+              </div>
             </div>
-            <div class="flex items-center gap-3 mt-1.5">
-              <span class="text-xs text-on-surface-variant/70 relative z-10">
+            <div class="flex items-center gap-2 mt-1">
+              <span class="text-[11px] text-on-surface-variant/60 relative z-10">
                 <%= time_ago_in_words(task.completed_at || task.updated_at) %> atrás
               </span>
               <% if task.schedule_at.present? %>
-                <span class="text-xs text-on-surface-variant/50 relative z-10 flex items-center gap-0.5">
-                  <span class="material-symbols-outlined text-[12px]">calendar_today</span>
-                  <%= task.schedule_at.strftime("%d/%m/%Y") %>
+                <span class="text-[11px] text-on-surface-variant/40 relative z-10 flex items-center gap-0.5">
+                  <span class="material-symbols-outlined text-[11px]">calendar_today</span>
+                  <%= task.schedule_at.strftime("%d/%m") %>
                 </span>
               <% end %>
             </div>
           <% end %>
-
-          <div class="flex items-center gap-2 z-10 relative shrink-0">
-            <span class="flex items-center gap-0.5 text-xs font-bold text-primary bg-primary/10 px-1.5 py-0.5 rounded-full border border-primary/20">
-              <span class="material-symbols-outlined text-[11px]">star</span>
-              <%= number_with_precision(task.score, precision: 1, strip_insignificant_zeros: true) %>
-            </span>
-            <span class="text-[10px] font-medium uppercase tracking-wider px-2 py-0.5 rounded-full <%= is_completed ? 'text-tertiary bg-tertiary/10 border border-tertiary/20' : 'text-error bg-error/10 border border-error/20' %>">
-              <%= is_completed ? 'Concluída' : 'Descartada' %>
-            </span>
-          </div>
         </div>
       <% end %>
     <% end %>
@@ -238,18 +226,22 @@
 </main>
 
 <!-- Mobile Bottom Navigation -->
-<nav class="md:hidden flex justify-around items-center h-16 px-4 pb-safe bg-zinc-950/90 backdrop-blur-lg fixed bottom-0 w-full z-50 border-t border-zinc-800 shadow-2xl">
-  <a class="flex flex-col items-center justify-center text-zinc-500 tap-highlight-transparent active:scale-90 transition-transform active:bg-zinc-900 w-16 h-full" href="<%= inbox_index_path %>">
-    <span class="material-symbols-outlined text-2xl mb-1" data-icon="inbox" style="font-variation-settings: 'FILL' 0;">inbox</span>
+<nav class="md:hidden flex justify-around items-center h-16 px-2 pb-safe bg-zinc-950/90 backdrop-blur-lg fixed bottom-0 w-full z-50 border-t border-zinc-800 shadow-2xl">
+  <a class="flex flex-col items-center justify-center text-zinc-500 tap-highlight-transparent active:scale-90 transition-transform w-16 h-full" href="<%= inbox_index_path %>">
+    <span class="material-symbols-outlined text-2xl mb-0.5" style="font-variation-settings: 'FILL' 0;">inbox</span>
     <span class="text-[10px] font-medium tracking-wide uppercase">Inbox</span>
   </a>
-  <a class="flex flex-col items-center justify-center text-zinc-500 tap-highlight-transparent active:scale-90 transition-transform active:bg-zinc-900 w-16 h-full" href="<%= dashboard_index_path %>">
-    <span class="material-symbols-outlined text-2xl mb-1" data-icon="dashboard" style="font-variation-settings: 'FILL' 0;">dashboard</span>
+  <a class="flex flex-col items-center justify-center text-zinc-500 tap-highlight-transparent active:scale-90 transition-transform w-16 h-full" href="<%= dashboard_index_path %>">
+    <span class="material-symbols-outlined text-2xl mb-0.5" style="font-variation-settings: 'FILL' 0;">dashboard</span>
     <span class="text-[10px] font-medium tracking-wide uppercase">Dashboard</span>
   </a>
-  <a class="flex flex-col items-center justify-center text-violet-400 scale-110 tap-highlight-transparent active:scale-90 transition-transform active:bg-zinc-900 w-16 h-full relative" href="#">
+  <a class="flex flex-col items-center justify-center text-violet-400 scale-105 tap-highlight-transparent active:scale-90 transition-transform w-16 h-full relative" href="#">
     <div class="absolute -top-1 w-8 h-1 bg-violet-400 rounded-b-full"></div>
-    <span class="material-symbols-outlined text-2xl mb-1" data-icon="history" style="font-variation-settings: 'FILL' 1;">history</span>
+    <span class="material-symbols-outlined text-2xl mb-0.5" style="font-variation-settings: 'FILL' 1;">history</span>
     <span class="text-[10px] font-medium tracking-wide uppercase">Histórico</span>
   </a>
+  <%= link_to settings_path, data: { turbo_frame: "modal" }, class: "flex flex-col items-center justify-center text-zinc-500 tap-highlight-transparent active:scale-90 transition-transform w-16 h-full" do %>
+    <span class="material-symbols-outlined text-2xl mb-0.5" style="font-variation-settings: 'FILL' 0;">settings</span>
+    <span class="text-[10px] font-medium tracking-wide uppercase">Settings</span>
+  <% end %>
 </nav>

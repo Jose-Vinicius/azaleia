@@ -85,10 +85,10 @@
   <script>
     document.documentElement.classList.add('dark');
     document.addEventListener("turbo:load", () => {
-      document.body.className = "bg-background text-on-surface h-screen w-full overflow-hidden flex selection:bg-primary/30 selection:text-primary";
+      document.body.className = "bg-background text-on-surface h-screen w-full overflow-hidden flex flex-col md:flex-row selection:bg-primary/30 selection:text-primary";
     });
     document.addEventListener("DOMContentLoaded", () => {
-      document.body.className = "bg-background text-on-surface h-screen w-full overflow-hidden flex selection:bg-primary/30 selection:text-primary";
+      document.body.className = "bg-background text-on-surface h-screen w-full overflow-hidden flex flex-col md:flex-row selection:bg-primary/30 selection:text-primary";
     });
   </script>
 <% end %>
@@ -172,21 +172,48 @@
         const savedCols = parseInt(localStorage.getItem("dashboardCols") || "3", 10);
         grid.style.setProperty("--final-cols", Math.min(savedCols, Math.max(1, grid.children.length)));
       }
+      // Show/hide completed tasks and empty day cards
+      function applyCompletedVisibility() {
+        const show = localStorage.getItem("showCompletedOnDashboard") === "true";
+        document.querySelectorAll(".dashboard-completed-task").forEach(el => {
+          el.style.display = show ? "" : "none";
+        });
+        // Hide day cards that have no visible tasks
+        document.querySelectorAll("[data-dashboard-card]").forEach(card => {
+          const allTasks = card.querySelectorAll("[data-task-item]");
+          const visibleTasks = Array.from(allTasks).filter(t => t.style.display !== "none");
+          card.style.display = visibleTasks.length === 0 ? "none" : "";
+        });
+        // Update grid cols based on visible cards
+        if (grid) {
+          const visibleCards = grid.querySelectorAll("[data-dashboard-card]:not([style*='display: none'])");
+          const savedCols = parseInt(localStorage.getItem("dashboardCols") || "3", 10);
+          grid.style.setProperty("--final-cols", Math.min(savedCols, Math.max(1, visibleCards.length)));
+        }
+      }
+      applyCompletedVisibility();
+      window.addEventListener("settings:updated", applyCompletedVisibility);
     })();
   </script>
 </main>
 
 <!-- Mobile Bottom Navigation -->
-<nav class="md:hidden flex justify-around items-center h-16 px-4 pb-safe bg-zinc-950/90 backdrop-blur-lg fixed bottom-0 w-full z-50 border-t border-zinc-800 shadow-2xl">
-  <!-- Inbox (Inactive) -->
-  <a class="flex flex-col items-center justify-center text-zinc-500 tap-highlight-transparent active:scale-90 transition-transform active:bg-zinc-900 w-16 h-full" href="<%= inbox_index_path %>">
-    <span class="material-symbols-outlined text-2xl mb-1" data-icon="inbox" style="font-variation-settings: 'FILL' 0;">inbox</span>
+<nav class="md:hidden flex justify-around items-center h-16 px-2 pb-safe bg-zinc-950/90 backdrop-blur-lg fixed bottom-0 w-full z-50 border-t border-zinc-800 shadow-2xl">
+  <a class="flex flex-col items-center justify-center text-zinc-500 tap-highlight-transparent active:scale-90 transition-transform w-16 h-full" href="<%= inbox_index_path %>">
+    <span class="material-symbols-outlined text-2xl mb-0.5" style="font-variation-settings: 'FILL' 0;">inbox</span>
     <span class="text-[10px] font-medium tracking-wide uppercase">Inbox</span>
   </a>
-  <!-- Dashboard (Active) -->
-  <a class="flex flex-col items-center justify-center text-violet-400 scale-110 tap-highlight-transparent active:scale-90 transition-transform active:bg-zinc-900 w-16 h-full relative" href="#">
+  <a class="flex flex-col items-center justify-center text-violet-400 scale-105 tap-highlight-transparent active:scale-90 transition-transform w-16 h-full relative" href="#">
     <div class="absolute -top-1 w-8 h-1 bg-violet-400 rounded-b-full"></div>
-    <span class="material-symbols-outlined text-2xl mb-1" data-icon="dashboard" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+    <span class="material-symbols-outlined text-2xl mb-0.5" style="font-variation-settings: 'FILL' 1;">dashboard</span>
     <span class="text-[10px] font-medium tracking-wide uppercase">Dashboard</span>
   </a>
+  <a class="flex flex-col items-center justify-center text-zinc-500 tap-highlight-transparent active:scale-90 transition-transform w-16 h-full" href="<%= history_index_path %>">
+    <span class="material-symbols-outlined text-2xl mb-0.5" style="font-variation-settings: 'FILL' 0;">history</span>
+    <span class="text-[10px] font-medium tracking-wide uppercase">Histórico</span>
+  </a>
+  <%= link_to settings_path, data: { turbo_frame: "modal" }, class: "flex flex-col items-center justify-center text-zinc-500 tap-highlight-transparent active:scale-90 transition-transform w-16 h-full" do %>
+    <span class="material-symbols-outlined text-2xl mb-0.5" style="font-variation-settings: 'FILL' 0;">settings</span>
+    <span class="text-[10px] font-medium tracking-wide uppercase">Settings</span>
+  <% end %>
 </nav>
