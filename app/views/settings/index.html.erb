@@ -41,16 +41,16 @@
             
             <!-- Text Input: Pomodoro Block -->
             <div class="space-y-2 mt-4">
-              <label class="block text-sm font-medium text-on-surface" for="block-size"><%= t('settings.dashboard.pomodoro.title', default: 'Tamanho do Bloco de Foco (Minutos)') %></label>
+              <label class="block text-sm font-medium text-on-surface" for="block-size"><%= t('settings.dashboard.pomodoro.title') %></label>
               <input data-settings-target="pomodoroBlock" type="number" min="5" max="180" step="5" class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg text-sm text-on-surface px-4 py-2.5 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all" id="block-size" placeholder="Ex.: 30" value="30"/>
-              <p class="text-xs text-on-surface-variant"><%= t('settings.dashboard.pomodoro.description', default: 'Tempo base (em minutos) adicionado a cada bloco de foco registrado (Padrão: 30).') %></p>
+              <p class="text-xs text-on-surface-variant"><%= t('settings.dashboard.pomodoro.description') %></p>
             </div>
 
             <!-- Toggle: Show Completed on Dashboard -->
             <div class="flex items-center justify-between mt-6 p-4 bg-surface-container-lowest border border-outline-variant rounded-lg">
               <div class="space-y-0.5">
-                <label class="block text-sm font-medium text-on-surface" for="show-completed">Mostrar tarefas concluídas no Dashboard</label>
-                <p class="text-xs text-on-surface-variant">Exibir tarefas concluídas e descartadas diretamente nos cards do dashboard.</p>
+                <label class="block text-sm font-medium text-on-surface" for="show-completed"><%= t('settings.dashboard.show_completed.title') %></label>
+                <p class="text-xs text-on-surface-variant"><%= t('settings.dashboard.show_completed.description') %></p>
               </div>
               <button
                 type="button"
@@ -69,8 +69,8 @@
         <!-- Account Section -->
         <section class="space-y-6">
           <div class="space-y-1">
-            <h2 class="text-lg font-bold tracking-tight text-on-surface">Conta</h2>
-            <p class="text-sm text-on-surface-variant">Gerenciar sua conta e sessão.</p>
+            <h2 class="text-lg font-bold tracking-tight text-on-surface"><%= t('settings.account.title') %></h2>
+            <p class="text-sm text-on-surface-variant"><%= t('settings.account.subtitle') %></p>
           </div>
           <div class="flex items-center justify-between p-4 bg-surface-container border border-outline-variant rounded-lg">
             <div class="flex items-center gap-3 min-w-0">
@@ -79,7 +79,7 @@
             </div>
             <%= button_to session_path, method: :delete, form: { data: { turbo: false } }, class: "flex items-center gap-2 px-4 py-2 text-sm font-bold text-error bg-error/10 border border-error/20 rounded-lg hover:bg-error/20 transition-colors shrink-0 ml-3" do %>
               <span class="material-symbols-outlined text-[16px]">logout</span>
-              Sair
+              <%= t('settings.account.logout') %>
             <% end %>
           </div>
         </section>

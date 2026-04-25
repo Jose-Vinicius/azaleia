@@ -51,13 +51,13 @@
   <div class="flex flex-col items-center mb-10">
     <%= image_tag "logo-big.png", class: "w-32 h-32 object-contain" %>
     <h1 class="text-3xl font-black tracking-tighter text-on-surface">Azaleia</h1>
-    <p class="text-sm text-on-surface-variant mt-1">Crie sua conta para começar</p>
+    <p class="text-sm text-on-surface-variant mt-1"><%= t('auth.registrations.new.title') %></p>
   </div>
 
   <!-- Error Messages -->
   <% if @user.errors.any? %>
     <div class="mb-6 p-4 bg-error-container text-on-error-container rounded-lg border border-error/50">
-      <h2 class="text-sm font-bold mb-2"><%= pluralize(@user.errors.count, "erro") %> impediu a criação da conta:</h2>
+      <h2 class="text-sm font-bold mb-2"><%= t('auth.registrations.new.errors', count: @user.errors.count) %></h2>
       <ul class="list-disc pl-5 text-sm">
         <% @user.errors.each do |error| %>
           <li><%= error.full_message %></li>
@@ -70,35 +70,35 @@
   <div class="bg-surface-container border border-outline-variant rounded-xl p-8 shadow-2xl">
     <%= form_with model: @user, url: registration_path, class: "space-y-5" do |form| %>
       <div>
-        <label class="block text-sm font-medium text-on-surface-variant mb-1.5">Email</label>
+        <label class="block text-sm font-medium text-on-surface-variant mb-1.5"><%= t('auth.registrations.new.email') %></label>
         <%= form.email_field :email_address,
           required: true,
           autofocus: true,
           autocomplete: "email",
-          placeholder: "seu@email.com",
+          placeholder: t('auth.registrations.new.email_placeholder'),
           class: "w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-4 py-3 text-on-surface focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all placeholder-outline text-sm" %>
       </div>
 
       <div>
-        <label class="block text-sm font-medium text-on-surface-variant mb-1.5">Senha</label>
+        <label class="block text-sm font-medium text-on-surface-variant mb-1.5"><%= t('auth.registrations.new.password') %></label>
         <%= form.password_field :password,
           required: true,
           autocomplete: "new-password",
-          placeholder: "Mínimo 6 caracteres",
+          placeholder: t('auth.registrations.new.password_placeholder'),
           class: "w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-4 py-3 text-on-surface focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all placeholder-outline text-sm" %>
       </div>
 
       <div>
-        <label class="block text-sm font-medium text-on-surface-variant mb-1.5">Confirmar Senha</label>
+        <label class="block text-sm font-medium text-on-surface-variant mb-1.5"><%= t('auth.registrations.new.password_confirmation') %></label>
         <%= form.password_field :password_confirmation,
           required: true,
           autocomplete: "new-password",
-          placeholder: "Repita a sua senha",
+          placeholder: t('auth.registrations.new.password_confirmation_placeholder'),
           class: "w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-4 py-3 text-on-surface focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all placeholder-outline text-sm" %>
       </div>
 
       <div>
-        <%= form.submit "Criar Conta",
+        <%= form.submit t('auth.registrations.new.submit'),
           class: "w-full bg-primary text-on-primary font-bold py-3 px-4 rounded-lg hover:bg-primary/90 hover:shadow-lg transition-all cursor-pointer text-sm active:scale-[0.98]" %>
       </div>
     <% end %>
@@ -107,8 +107,8 @@
   <!-- Links -->
   <div class="mt-6 flex flex-col items-center gap-3 text-sm">
     <div class="text-on-surface-variant">
-      Já tem conta?
-      <%= link_to "Fazer login", new_session_path, class: "text-primary font-semibold hover:text-primary/80 transition-colors" %>
+      <%= t('auth.registrations.new.has_account') %>
+      <%= link_to t('auth.registrations.new.login'), new_session_path, class: "text-primary font-semibold hover:text-primary/80 transition-colors" %>
     </div>
   </div>
 </div>

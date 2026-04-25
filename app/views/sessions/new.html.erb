@@ -51,7 +51,7 @@
   <div class="flex flex-col items-center mb-10">
     <%= image_tag "logo-big.png", class: "w-32 h-32 object-contain" %>
     <h1 class="text-3xl font-black tracking-tighter text-on-surface">Azaleia</h1>
-    <p class="text-sm text-on-surface-variant mt-1">Entre na sua conta para continuar</p>
+    <p class="text-sm text-on-surface-variant mt-1"><%= t('auth.sessions.new.title') %></p>
   </div>
 
   <!-- Flash Messages -->
@@ -70,28 +70,28 @@
   <div class="bg-surface-container border border-outline-variant rounded-xl p-8 shadow-2xl">
     <%= form_with url: session_path, class: "space-y-5" do |form| %>
       <div>
-        <label class="block text-sm font-medium text-on-surface-variant mb-1.5">Email</label>
+        <label class="block text-sm font-medium text-on-surface-variant mb-1.5"><%= t('auth.sessions.new.email') %></label>
         <%= form.email_field :email_address,
           required: true,
           autofocus: true,
           autocomplete: "username",
-          placeholder: "seu@email.com",
+          placeholder: t('auth.sessions.new.email_placeholder'),
           value: params[:email_address],
           class: "w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-4 py-3 text-on-surface focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all placeholder-outline text-sm" %>
       </div>
 
       <div>
-        <label class="block text-sm font-medium text-on-surface-variant mb-1.5">Senha</label>
+        <label class="block text-sm font-medium text-on-surface-variant mb-1.5"><%= t('auth.sessions.new.password') %></label>
         <%= form.password_field :password,
           required: true,
           autocomplete: "current-password",
-          placeholder: "••••••••",
+          placeholder: t('auth.sessions.new.password_placeholder'),
           maxlength: 72,
           class: "w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-4 py-3 text-on-surface focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all placeholder-outline text-sm" %>
       </div>
 
       <div>
-        <%= form.submit "Entrar",
+        <%= form.submit t('auth.sessions.new.submit'),
           class: "w-full bg-primary text-on-primary font-bold py-3 px-4 rounded-lg hover:bg-primary/90 hover:shadow-lg transition-all cursor-pointer text-sm active:scale-[0.98]" %>
       </div>
     <% end %>
@@ -99,10 +99,10 @@
 
   <!-- Links -->
   <div class="mt-6 flex flex-col items-center gap-3 text-sm">
-    <%= link_to "Esqueceu a senha?", new_password_path, class: "text-on-surface-variant hover:text-primary transition-colors" %>
+    <%= link_to t('auth.sessions.new.forgot_password'), new_password_path, class: "text-on-surface-variant hover:text-primary transition-colors" %>
     <div class="text-on-surface-variant">
-      Não tem conta?
-      <%= link_to "Criar conta", new_registration_path, class: "text-primary font-semibold hover:text-primary/80 transition-colors" %>
+      <%= t('auth.sessions.new.no_account') %>
+      <%= link_to t('auth.sessions.new.create_account'), new_registration_path, class: "text-primary font-semibold hover:text-primary/80 transition-colors" %>
     </div>
   </div>
 </div>

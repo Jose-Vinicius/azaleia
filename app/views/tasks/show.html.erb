@@ -5,7 +5,7 @@
       <div class="flex items-center justify-between px-6 py-4 border-b border-outline-variant">
         <div class="flex items-center gap-3">
           <span class="material-symbols-outlined text-primary" data-icon="task">task</span>
-          <span class="text-xs font-bold uppercase tracking-widest text-on-surface-variant">Task Details</span>
+          <span class="text-xs font-bold uppercase tracking-widest text-on-surface-variant"><%= t('tasks.show.title') %></span>
         </div>
         <div class="flex items-center gap-2">
           <%= link_to edit_task_path(@task), class: "p-1 hover:bg-surface-container-high rounded transition-colors text-on-surface-variant flex items-center justify-center" do %>
@@ -61,7 +61,7 @@
               <% if @task.respond_to?(:estimated_minutes) && @task.estimated_minutes && @task.estimated_minutes > 0 %>
               <div class="flex items-center gap-2">
                 <span class="material-symbols-outlined text-[18px]">timer</span>
-                <span class="text-sm font-medium"><%= @task.estimated_minutes %>m estimados</span>
+                <span class="text-sm font-medium"><%= t('tasks.show.estimated_minutes', count: @task.estimated_minutes) %></span>
               </div>
               <% end %>
               <div class="flex items-center gap-2 text-primary font-bold bg-primary/10 px-3 py-1 rounded-full border border-primary/20">
@@ -78,31 +78,31 @@
       <!-- Modal Footer Actions -->
       <div class="px-6 py-6 bg-surface-container border-t border-outline-variant flex items-center justify-between">
         <div class="flex items-center gap-2">
-          <%= button_to @task, method: :delete, form: { data: { turbo_frame: "_top" } }, class: "p-2 text-on-surface-variant hover:text-error hover:bg-error/10 rounded transition-all flex items-center justify-center", title: "Delete task" do %>
+          <%= button_to @task, method: :delete, form: { data: { turbo_frame: "_top" } }, class: "p-2 text-on-surface-variant hover:text-error hover:bg-error/10 rounded transition-all flex items-center justify-center", title: t('tasks.show.delete_tooltip') do %>
             <span class="material-symbols-outlined" data-icon="delete">delete</span>
           <% end %>
           <% if @task.completed.nil? %>
             <%# Pending — show discard button %>
-            <%= button_to task_path(@task, task: { completed: false }), method: :patch, form: { data: { turbo_frame: "_top" } }, class: "p-2 text-on-surface-variant hover:text-orange-400 hover:bg-white/5 rounded transition-all flex items-center justify-center", title: "Descartar tarefa" do %>
+            <%= button_to task_path(@task, task: { completed: false }), method: :patch, form: { data: { turbo_frame: "_top" } }, class: "p-2 text-on-surface-variant hover:text-orange-400 hover:bg-white/5 rounded transition-all flex items-center justify-center", title: t('tasks.show.discard_tooltip') do %>
               <span class="material-symbols-outlined" data-icon="cancel">cancel</span>
             <% end %>
           <% elsif @task.completed == true %>
             <%# Completed — show status badge %>
             <span class="flex items-center gap-1.5 text-xs font-bold text-tertiary bg-tertiary/10 px-3 py-1.5 rounded-full border border-tertiary/20">
               <span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
-              Concluída
+              <%= t('tasks.show.complete') %>
             </span>
           <% else %>
             <%# Discarded — show revert button %>
-            <%= button_to task_path(@task, task: { completed: nil }), method: :patch, form: { data: { turbo_frame: "_top" } }, class: "flex items-center gap-1.5 text-xs font-bold text-error bg-error/10 px-3 py-1.5 rounded-full border border-error/20 hover:bg-error/20 transition-colors cursor-pointer", title: "Reverter tarefa" do %>
+            <%= button_to task_path(@task, task: { completed: nil }), method: :patch, form: { data: { turbo_frame: "_top" } }, class: "flex items-center gap-1.5 text-xs font-bold text-error bg-error/10 px-3 py-1.5 rounded-full border border-error/20 hover:bg-error/20 transition-colors cursor-pointer", title: t('tasks.show.revert_tooltip') do %>
               <span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">undo</span>
-              Reverter
+              <%= t('tasks.show.revert') %>
             <% end %>
           <% end %>
         </div>
         <div class="flex items-center gap-3">
           <button onclick="document.getElementById('modal').innerHTML=''" class="px-5 py-2 text-sm font-bold border border-outline-variant rounded-lg text-on-surface hover:bg-surface-container-high transition-all">
-             Close
+             <%= t('tasks.show.close') %>
           </button>
         </div>
       </div>
