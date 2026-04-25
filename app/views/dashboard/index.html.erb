@@ -149,7 +149,7 @@
     <h2 class="text-3xl md:text-3xl font-black tracking-tighter text-on-surface uppercase opacity-90"><%= t('dashboard.title') %></h2>
   </header>
   <!-- Vertical Scrolling List -->
-  <div id="dashboard-grid" data-controller="grid-layout" class="flex-1 overflow-y-auto px-8 pb-20 md:pb-12 <%= @cards.empty? ? 'flex flex-col items-center justify-center' : 'grid grid-cols-1 md:grid-cols-2 lg:grid-dynamic gap-6' %>">
+  <div id="dashboard-grid" data-controller="grid-layout" class="flex-1 overflow-y-auto px-6 md:px-8 pb-32 md:pb-12 <%= @cards.empty? ? 'flex flex-col items-center justify-center' : 'grid grid-cols-1 md:grid-cols-2 lg:grid-dynamic gap-6' %>">
     <% if @cards.empty? %>
       <div class="flex flex-col items-center justify-center text-on-surface-variant animate-pulse opacity-80">
         <span class="material-symbols-outlined text-[72px] mb-4" style="font-variation-settings: 'FILL' 0;">done_all</span>
