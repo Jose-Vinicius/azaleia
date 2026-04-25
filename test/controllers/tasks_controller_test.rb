@@ -3,6 +3,8 @@ require "test_helper"
 class TasksControllerTest < ActionDispatch::IntegrationTest
   setup do
     @task = tasks(:one)
+    @user = users(:one)
+    post session_url, params: { email_address: @user.email_address, password: "password" }
   end
 
   test "should get index" do
@@ -17,10 +19,10 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
 
   test "should create task" do
     assert_difference("Task.count") do
-      post tasks_url, params: { task: { description: @task.description, schedule_at: @task.schedule_at, title: @task.title } }
+      post tasks_url, params: { task: { description: @task.description, schedule_at: @task.schedule_at, title: @task.title, estimated_minutes: 0, multiplier_id: multipliers(:one).id } }
     end
 
-    assert_redirected_to task_url(Task.last)
+    assert_redirected_to dashboard_index_path
   end
 
   test "should show task" do
@@ -35,7 +37,7 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
 
   test "should update task" do
     patch task_url(@task), params: { task: { description: @task.description, schedule_at: @task.schedule_at, title: @task.title } }
-    assert_redirected_to task_url(@task)
+    assert_redirected_to dashboard_index_path
   end
 
   test "should destroy task" do
@@ -43,6 +45,6 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
       delete task_url(@task)
     end
 
-    assert_redirected_to tasks_url
+    assert_redirected_to dashboard_index_path
   end
 end
