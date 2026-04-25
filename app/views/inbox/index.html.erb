@@ -166,6 +166,13 @@
   </div>
 </main>
 
+<!-- Mobile FAB: Add Task (only on mobile) -->
+<div class="md:hidden fixed bottom-20 right-4 z-50">
+  <%= link_to new_task_path, data: { turbo_frame: "modal" }, aria: { label: "Criar tarefa" }, class: "w-14 h-14 bg-primary text-on-primary rounded-full shadow-lg shadow-primary/30 flex items-center justify-center hover:bg-primary-fixed transition-all active:scale-95" do %>
+    <span class="material-symbols-outlined text-2xl">add</span>
+  <% end %>
+</div>
+
 <!-- Mobile Bottom Navigation -->
 <nav class="md:hidden flex justify-around items-center h-16 px-2 pb-safe bg-zinc-950/90 backdrop-blur-lg fixed bottom-0 w-full z-50 border-t border-zinc-800 shadow-2xl">
   <a class="flex flex-col items-center justify-center text-violet-400 scale-105 tap-highlight-transparent active:scale-90 transition-transform w-16 h-full relative" href="#">

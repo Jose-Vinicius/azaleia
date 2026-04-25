@@ -65,6 +65,24 @@
             </div>
           </div>
         </section>
+
+        <!-- Account Section -->
+        <section class="space-y-6">
+          <div class="space-y-1">
+            <h2 class="text-lg font-bold tracking-tight text-on-surface">Conta</h2>
+            <p class="text-sm text-on-surface-variant">Gerenciar sua conta e sessão.</p>
+          </div>
+          <div class="flex items-center justify-between p-4 bg-surface-container border border-outline-variant rounded-lg">
+            <div class="flex items-center gap-3 min-w-0">
+              <span class="material-symbols-outlined text-on-surface-variant text-[20px]">account_circle</span>
+              <span class="text-sm font-medium text-on-surface truncate"><%= Current.user&.email_address %></span>
+            </div>
+            <%= button_to session_path, method: :delete, form: { data: { turbo: false } }, class: "flex items-center gap-2 px-4 py-2 text-sm font-bold text-error bg-error/10 border border-error/20 rounded-lg hover:bg-error/20 transition-colors shrink-0 ml-3" do %>
+              <span class="material-symbols-outlined text-[16px]">logout</span>
+              Sair
+            <% end %>
+          </div>
+        </section>
       </div>
 
       <!-- Action Footer -->
