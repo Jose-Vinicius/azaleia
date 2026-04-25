@@ -2,7 +2,7 @@ class TimeEntriesController < ApplicationController
   def create
     @task = Current.user.tasks.find(params.expect(:task_id))
     @time_entry = @task.time_entries.build(time_entry_params)
-    
+
     respond_to do |format|
       if @time_entry.save
         format.turbo_stream
@@ -17,7 +17,7 @@ class TimeEntriesController < ApplicationController
     @task = Current.user.tasks.find(params.expect(:task_id))
     @time_entry = @task.time_entries.find(params.expect(:id))
     @time_entry.destroy
-    
+
     respond_to do |format|
       format.turbo_stream
       format.html { redirect_to @task, notice: "Registro removido com sucesso." }

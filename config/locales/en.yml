@@ -5,15 +5,162 @@ en:
     attributes:
       task:
         title: "Title"
-        description: "description"
-        schedule_at: "Schedule at"
+        description: "Description"
+        schedule_at: "Schedule Date"
+  auth:
+    sessions:
+      new:
+        title: "Log in to your account"
+        email: "Email"
+        email_placeholder: "you@email.com"
+        password: "Password"
+        password_placeholder: "••••••••"
+        submit: "Log in"
+        forgot_password: "Forgot your password?"
+        no_account: "Don't have an account?"
+        create_account: "Create account"
+    registrations:
+      new:
+        title: "Create your account to start"
+        errors: "%{count} error(s) prevented the account creation:"
+        email: "Email"
+        email_placeholder: "you@email.com"
+        password: "Password"
+        password_placeholder: "Minimum 6 characters"
+        password_confirmation: "Confirm Password"
+        password_confirmation_placeholder: "Repeat your password"
+        submit: "Create Account"
+        has_account: "Already have an account?"
+        login: "Log in"
+    passwords:
+      new:
+        title: "Forgot your password?"
+        email_placeholder: "Enter your email"
+        submit: "Send instructions"
+      edit:
+        title: "Update password"
+        password_placeholder: "New password"
+        password_confirmation_placeholder: "Repeat new password"
+        submit: "Save"
+    flash:
+      created: "Account successfully created!"
+      rate_limit: "Please try again later."
+      invalid: "Invalid email or password."
+      reset_sent: "Instructions sent (if user exists)."
+      reset_success: "Password updated successfully."
+      reset_invalid_token: "The link has expired or is invalid."
+      passwords_mismatch: "Passwords did not match."
+    mailers:
+      passwords:
+        subject: "Reset your password"
+        body_html_html: "You can reset your password on <b>this page</b>."
+        body_text: "You can reset your password on the link below:"
+        expire: "This link will expire in %{time}."
   dashboard:
+    title: "DASHBOARD"
     empty_state:
-      title: "Tudo em dia!"
-      subtitle: "Não há tarefas agendadas no momento."
-      button: "See Inbox"
+      title: "All caught up!"
+      subtitle: "There are no tasks scheduled for now."
+      button: "Check Inbox"
+    card:
+      today: "Today"
+      total_score: "Total day score"
+      add_task: "Add Task"
   inbox:
+    title: "INBOX"
     empty_state:
-      title: "Não há nada aqui"
-      subtitle: "Não há tarefas pendentes"
-      button: "Adicionar nova tarefa"
+      title: "Nothing here yet"
+      subtitle: "There are no pending tasks"
+      button: "Add new task"
+    add_task: "Create task"
+  history:
+    title: "HISTORY"
+    header_title: "History"
+    completed: "completed"
+    discarded: "discarded"
+    status_completed: "Completed"
+    status_discarded: "Discarded"
+    go_to_dashboard: "Go to Dashboard"
+    time_ago: "ago"
+    empty_state:
+      title: "Empty history"
+      subtitle: "You haven't completed or discarded any tasks yet."
+  settings:
+    title: "Settings"
+    no_content: "No settings available at the moment."
+    save: "Save changes"
+    cancel: "Cancel"
+    account:
+      title: "Account"
+      subtitle: "Manage your account and session."
+      logout: "Log out"
+    inbox:
+      title: "INBOX"
+      subtitle: "Configure your task reception area"
+    dashboard:
+      title: "DASHBOARD"
+      subtitle: "Customize your workspace."
+      grid:
+        cards_per_row: "Cards per row (Desktop)"
+        exemplo: "Ex.: 5"
+        description: "Set a value between 3 and 7 for the grid layout"
+      pomodoro:
+        title: "Focus Block Size (Minutes)"
+        description: "Base time (in minutes) added for each focus block logged (Default: 30)."
+      show_completed:
+        title: "Show completed tasks in Dashboard"
+        description: "Display completed and discarded tasks directly on dashboard cards."
+  tasks:
+    form:
+      errors: "%{count} error(s) prevented this task from being saved:"
+      title: "Title"
+      description: "Description"
+      schedule_at: "Schedule for"
+      estimated_minutes: "Estimated Time (min)"
+      multiplier_id: "Importance"
+      title_placeholder: "Design system v2..."
+      description_placeholder: "Task details..."
+      cancel: "Cancel"
+      create: "Create Task"
+      update: "Update Task"
+    show:
+      title: "Task Details"
+      priority: "Priority"
+      multiplier: "Multiplier"
+      score: "Score"
+      not_scheduled: "Not scheduled"
+      time_tracking: "Time Tracking"
+      pomodoros: "Pomodoros"
+      pomodoros_desc: "Dedicated focus blocks"
+      estimate: "Estimate"
+      estimated_minutes: "%{count}m estimated"
+      estimate_desc: "Estimated vs real time"
+      hours: "Hours"
+      hours_desc: "Total recorded hours"
+      edit: "Edit"
+      delete: "Delete"
+      delete_tooltip: "Delete task"
+      active: "Activate"
+      complete: "Complete"
+      discard: "Discard"
+      discard_tooltip: "Discard task"
+      revert: "Revert"
+      revert_tooltip: "Revert task"
+      close: "Close"
+    time_tracker:
+      title: "Progress"
+      tooltip_gastos: "Logged: %{logged}m / Estimated: %{estimated}m"
+      no_estimate: "No estimate."
+      log_pomodoro: "Log Focus Block"
+      time_ago: "ago"
+    new:
+      title: "New Task"
+    edit:
+      title: "Edit Task"
+  layouts:
+    application:
+      description: "Manage your tasks with intelligence and priority."
+    flash:
+      created: "Task created."
+      updated: "Task updated."
+      deleted: "Task deleted."

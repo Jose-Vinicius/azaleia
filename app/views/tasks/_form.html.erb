@@ -2,7 +2,7 @@
   <div class="p-8 space-y-6 flex-1">
     <% if task.errors.any? %>
       <div class="p-4 bg-error-container text-on-error-container rounded-lg border border-error/50">
-        <h2 class="text-sm font-bold mb-2"><%= pluralize(task.errors.count, "erro") %> impediu está tarefa de ser salva:</h2>
+        <h2 class="text-sm font-bold mb-2"><%= t('tasks.form.errors', count: task.errors.count) %></h2>
         <ul class="list-disc pl-5 text-sm">
           <% task.errors.each do |error| %>
             <li><%= error.full_message %></li>
@@ -13,12 +13,12 @@
 
     <div>
       <%= form.label :title, class: "block text-sm font-medium text-on-surface-variant mb-1" %>
-      <%= form.text_field :title, class: "w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-4 py-2 text-on-surface focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all placeholder-secondary", placeholder: "Task title" %>
+      <%= form.text_field :title, class: "w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-4 py-2 text-on-surface focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all placeholder-secondary", placeholder: t('tasks.form.title_placeholder') %>
     </div>
 
     <div>
       <%= form.label :description, class: "block text-sm font-medium text-on-surface-variant mb-1" %>
-      <%= form.text_area :description, rows: 4, class: "w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-4 py-2 text-on-surface focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all placeholder-secondary resize-none", placeholder: "Add details..." %>
+      <%= form.text_area :description, rows: 4, class: "w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-4 py-2 text-on-surface focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all placeholder-secondary resize-none", placeholder: t('tasks.form.description_placeholder') %>
     </div>
 
     <div>
@@ -40,8 +40,8 @@
   <!-- Modal Footer Actions -->
   <div class="px-6 py-6 bg-surface-container border-t border-outline-variant flex items-center justify-end gap-3 mt-auto">
     <button type="button" onclick="document.getElementById('modal').innerHTML=''" class="px-5 py-2 text-sm font-bold border border-transparent rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-all">
-       Cancel
+       <%= t('tasks.form.cancel') %>
     </button>
-    <%= form.submit task.new_record? ? "Create Task" : "Update Task", class: "px-5 py-2 text-sm font-bold bg-primary text-on-primary rounded-lg hover:bg-primary/90 hover:shadow-lg transition-all cursor-pointer" %>
+    <%= form.submit task.new_record? ? t('tasks.form.create') : t('tasks.form.update'), class: "px-5 py-2 text-sm font-bold bg-primary text-on-primary rounded-lg hover:bg-primary/90 hover:shadow-lg transition-all cursor-pointer" %>
   </div>
 <% end %>

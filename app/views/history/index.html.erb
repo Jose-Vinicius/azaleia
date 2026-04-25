@@ -99,7 +99,7 @@
   <div class="px-4 py-2">
     <%= link_to new_task_path, data: { turbo_frame: "modal" }, class: "w-full flex items-center justify-center gap-2 bg-primary text-on-primary font-semibold py-2.5 px-4 rounded-lg hover:bg-primary-fixed transition-colors active:scale-[0.98] shadow-[0_0_0_1px_rgba(167,139,250,0.1)]" do %>
       <span class="material-symbols-outlined text-sm" data-icon="add">add</span>
-      Add Task
+      <%= t('layouts.side_bar.add_task')%>
     <% end %>
   </div>
   <div class="flex-1 flex flex-col px-3 py-2 space-y-1">
@@ -132,7 +132,7 @@
     </div>
     <%= link_to settings_path, data: { turbo_frame: "modal" }, class: "flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#a1a1aa] hover:text-[#fafafa] hover:bg-[#18181b] transition-all duration-150 active:scale-[0.98]" do %>
       <span class="material-symbols-outlined">settings</span>
-      <span>Settings</span>
+      <span><%= t('layouts.side_bar.settings')%></span>
     <% end %>
   </div>
 </nav>
@@ -142,34 +142,34 @@
   <!-- Desktop Header -->
   <header class="hidden md:block pt-12 px-8 pb-8 flex-shrink-0">
     <div class="flex items-center justify-between">
-      <h2 class="text-3xl md:text-3xl font-black tracking-tighter text-on-surface uppercase opacity-90">Histórico</h2>
+      <h2 class="text-3xl md:text-3xl font-black tracking-tighter text-on-surface uppercase opacity-90"><%= t('history.header_title') %></h2>
       <% completed_count = @tasks.count { |t| t.completed == true } %>
       <% uncompleted_count = @tasks.count { |t| t.completed == false } %>
       <div class="flex items-center gap-3">
         <span class="flex items-center gap-1.5 text-xs font-bold text-tertiary bg-tertiary/10 px-3 py-1.5 rounded-full border border-tertiary/20">
           <span class="material-symbols-outlined text-[14px]">check_circle</span>
-          <%= completed_count %> concluídas
+          <%= completed_count %> <%= t('history.completed') %>
         </span>
         <span class="flex items-center gap-1.5 text-xs font-bold text-error bg-error/10 px-3 py-1.5 rounded-full border border-error/20">
           <span class="material-symbols-outlined text-[14px]">cancel</span>
-          <%= uncompleted_count %> descartadas
+          <%= uncompleted_count %> <%= t('history.discarded') %>
         </span>
       </div>
     </div>
   </header>
 
   <!-- Task History List -->
-  <div class="flex-1 overflow-y-auto hide-scrollbar px-6 md:px-8 pb-24 md:pb-12 w-full <%= @tasks.empty? ? 'flex flex-col items-center justify-center' : 'space-y-1' %>" id="history-list">
+  <div class="flex-1 overflow-y-auto hide-scrollbar px-6 md:px-8 pb-32 md:pb-12 w-full <%= @tasks.empty? ? 'flex flex-col items-center justify-center' : 'space-y-1' %>" id="history-list">
     <!-- Mobile Title -->
-    <h2 class="md:hidden text-2xl font-headline font-bold text-on-background tracking-tight py-4 mb-2">HISTÓRICO</h2>
+    <h2 class="md:hidden text-2xl font-headline font-bold text-on-background tracking-tight py-4 mb-2"><%= t('history.title') %></h2>
 
     <% if @tasks.empty? %>
       <div class="flex flex-col items-center justify-center text-on-surface-variant animate-pulse opacity-80 h-full -mt-20 md:mt-0">
         <span class="material-symbols-outlined text-[72px] mb-4" style="font-variation-settings: 'FILL' 0;">history</span>
-        <h3 class="text-2xl font-bold text-on-surface">Nenhum histórico</h3>
-        <p class="text-base font-medium mt-2">Tarefas concluídas ou descartadas aparecerão aqui.</p>
+        <h3 class="text-2xl font-bold text-on-surface"><%= t('history.empty_state.title') %></h3>
+        <p class="text-base font-medium mt-2"><%= t('history.empty_state.subtitle') %></p>
         <%= link_to dashboard_index_path, class: "mt-6 px-6 py-2.5 bg-surface-container hover:bg-surface-container-high border border-outline-variant rounded-lg text-sm font-bold text-on-surface transition-colors" do %>
-          Ir para o Dashboard
+          <%= t('history.go_to_dashboard') %>
         <% end %>
       </div>
     <% else %>
@@ -203,13 +203,13 @@
                   <%= number_with_precision(task.score, precision: 1, strip_insignificant_zeros: true) %>
                 </span>
                 <span class="text-[10px] font-medium uppercase tracking-wider px-1.5 py-0.5 rounded-full <%= is_completed ? 'text-tertiary bg-tertiary/10 border border-tertiary/20' : 'text-error bg-error/10 border border-error/20' %>">
-                  <%= is_completed ? 'Concluída' : 'Descartada' %>
+                  <%= is_completed ? t('history.status_completed') : t('history.status_discarded') %>
                 </span>
               </div>
             </div>
             <div class="flex items-center gap-2 mt-1">
               <span class="text-[11px] text-on-surface-variant/60 relative z-10">
-                <%= time_ago_in_words(task.completed_at || task.updated_at) %> atrás
+                <%= time_ago_in_words(task.completed_at || task.updated_at) %> <%= t('history.time_ago') %>
               </span>
               <% if task.schedule_at.present? %>
                 <span class="text-[11px] text-on-surface-variant/40 relative z-10 flex items-center gap-0.5">

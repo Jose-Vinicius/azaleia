@@ -104,7 +104,7 @@
   <div class="px-4 py-2">
     <%= link_to new_task_path, data: { turbo_frame: "modal" }, class: "w-full flex items-center justify-center gap-2 bg-primary text-on-primary font-semibold py-2.5 px-4 rounded-lg hover:bg-primary-fixed transition-colors active:scale-[0.98] shadow-[0_0_0_1px_rgba(167,139,250,0.1)]" do %>
       <span class="material-symbols-outlined text-sm" data-icon="add">add</span>
-      Add Task
+      <%= t('layouts.side_bar.add_task')%>
     <% end %>
   </div>
   <div class="flex-1 flex flex-col px-3 py-2 space-y-1">
@@ -137,7 +137,7 @@
     </div>
     <%= link_to settings_path, data: { turbo_frame: "modal" }, class: "flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#a1a1aa] hover:text-[#fafafa] hover:bg-[#18181b] transition-all duration-150 active:scale-[0.98]" do %>
       <span class="material-symbols-outlined">settings</span>
-      <span>Settings</span>
+      <span><%= t('layouts.side_bar.settings')%></span>
     <% end %>
   </div>
 </nav>
@@ -146,10 +146,10 @@
 <main class="flex-1 flex flex-col h-full w-full relative">
   <!-- Header -->
   <header class="pt-12 px-8 pb-8 flex-shrink-0">
-    <h2 class="text-3xl md:text-3xl font-black tracking-tighter text-on-surface uppercase opacity-90">Dashboard</h2>
+    <h2 class="text-3xl md:text-3xl font-black tracking-tighter text-on-surface uppercase opacity-90"><%= t('dashboard.title') %></h2>
   </header>
   <!-- Vertical Scrolling List -->
-  <div id="dashboard-grid" data-controller="grid-layout" class="flex-1 overflow-y-auto px-8 pb-20 md:pb-12 <%= @cards.empty? ? 'flex flex-col items-center justify-center' : 'grid grid-cols-1 md:grid-cols-2 lg:grid-dynamic gap-6' %>">
+  <div id="dashboard-grid" data-controller="grid-layout" class="flex-1 overflow-y-auto px-6 md:px-8 pb-32 md:pb-12 <%= @cards.empty? ? 'flex flex-col items-center justify-center' : 'grid grid-cols-1 md:grid-cols-2 lg:grid-dynamic gap-6' %>">
     <% if @cards.empty? %>
       <div class="flex flex-col items-center justify-center text-on-surface-variant animate-pulse opacity-80">
         <span class="material-symbols-outlined text-[72px] mb-4" style="font-variation-settings: 'FILL' 0;">done_all</span>

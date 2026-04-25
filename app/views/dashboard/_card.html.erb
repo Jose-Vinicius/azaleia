@@ -7,10 +7,10 @@
     <div class="flex items-center gap-2">
       <h3 class="font-bold tracking-tight text-lg text-on-surface"><%= parsed_date.strftime("%d/%m/%Y") %></h3>
       <% if is_today %>
-        <span class="text-xs font-medium text-primary bg-primary/10 px-2 py-1 rounded">Today</span>
+        <span class="text-xs font-medium text-primary bg-primary/10 px-2 py-1 rounded"><%= t('dashboard.card.today') %></span>
       <% end %>
     </div>
-    <div class="flex items-center gap-1 text-sm font-bold text-primary" title="Score total do dia">
+    <div class="flex items-center gap-1 text-sm font-bold text-primary" title="<%= t('dashboard.card.total_score') %>">
       <span class="material-symbols-outlined text-[16px]">star</span>
       <span><%= number_with_precision(total_score, precision: 1, strip_insignificant_zeros: true) %></span>
     </div>
@@ -52,7 +52,7 @@
   </div>
   <div class="p-3 border-t border-outline-variant shrink-0 mt-auto">
     <%= link_to new_task_path(schedule_at: parsed_date), data: { turbo_frame: "modal" }, class: "w-full text-xs font-medium text-on-surface-variant hover:text-on-surface flex items-center justify-center gap-1 py-2 transition-colors block text-center" do %>
-      <span class="material-symbols-outlined text-[16px]">add</span> Add Task
+      <span class="material-symbols-outlined text-[16px]">add</span> <%= t('dashboard.card.add_task') %>
     <% end %>
   </div>
 </div>

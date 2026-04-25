@@ -10,7 +10,7 @@ class RegistrationsController < ApplicationController
 
     if @user.save
       start_new_session_for @user
-      redirect_to root_path, notice: "Conta criada com sucesso!"
+      redirect_to root_path, notice: t("auth.flash.created")
     else
       render :new, status: :unprocessable_entity
     end

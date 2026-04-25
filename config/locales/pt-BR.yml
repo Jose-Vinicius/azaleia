@@ -7,29 +7,163 @@ pt-BR:
         title: "Título"
         description: "Descrição"
         schedule_at: "Data da Tarefa"
+  auth:
+    sessions:
+      new:
+        title: "Entre na sua conta para continuar"
+        email: "Email"
+        email_placeholder: "seu@email.com"
+        password: "Senha"
+        password_placeholder: "••••••••"
+        submit: "Entrar"
+        forgot_password: "Esqueceu a senha?"
+        no_account: "Não tem conta?"
+        create_account: "Criar conta"
+    registrations:
+      new:
+        title: "Crie sua conta para começar"
+        errors: "%{count} erro(s) impediram a criação da conta:"
+        email: "Email"
+        email_placeholder: "seu@email.com"
+        password: "Senha"
+        password_placeholder: "Mínimo 6 caracteres"
+        password_confirmation: "Confirmar Senha"
+        password_confirmation_placeholder: "Repita a sua senha"
+        submit: "Criar Conta"
+        has_account: "Já tem conta?"
+        login: "Fazer login"
+    passwords:
+      new:
+        title: "Esqueceu sua senha?"
+        email_placeholder: "Digite seu email"
+        submit: "Enviar instruções"
+      edit:
+        title: "Atualizar senha"
+        password_placeholder: "Nova senha"
+        password_confirmation_placeholder: "Repita a nova senha"
+        submit: "Salvar"
+    flash:
+      created: "Conta criada com sucesso!"
+      rate_limit: "Tente novamente mais tarde."
+      invalid: "Email ou senha incorretos."
+      reset_sent: "Instruções enviadas (se possuir conta)."
+      reset_success: "Senha atualizada com sucesso."
+      reset_invalid_token: "O link expirou ou é inválido."
+      passwords_mismatch: "As senhas não coincidem."
+    mailers:
+      passwords:
+        subject: "Recupere sua senha"
+        body_html_html: "Você pode resetar sua senha <b>nesta página</b>."
+        body_text: "Você pode resetar sua senha no link abaixo:"
+        expire: "Este link irá expirar em %{time}."
   dashboard:
+    title: "DASHBOARD"
     empty_state:
       title: "Tudo em dia!"
       subtitle: "Não há tarefas agendadas no momento."
       button: "Ver Inbox"
+    card:
+      today: "Hoje"
+      total_score: "Score total do dia"
+      add_task: "Adicionar Tarefa"
   inbox:
+    title: "INBOX"
     empty_state:
       title: "Não há nada aqui"
       subtitle: "Não há tarefas pendentes"
       button: "Adicionar nova tarefa"
+    add_task: "Criar tarefa" 
+  history:
+    title: "HISTÓRICO"
+    header_title: "Histórico"
+    completed: "concluídas"
+    discarded: "descartadas"
+    status_completed: "Concluída"
+    status_discarded: "Descartada"
+    go_to_dashboard: "Ir para o Dashboard"
+    time_ago: "atrás"
+    empty_state:
+      title: "Histórico vazio"
+      subtitle: "Você ainda não completou ou descartou tarefas."
   settings:
     title: "Configurações"
-    no_content: "Sem configurações disponiveis no momento."
+    no_content: "Sem configurações disponíveis no momento."
     save: "Salvar mudanças"
     cancel: "Cancelar"
+    account:
+      title: "Conta"
+      subtitle: "Gerenciar sua conta e sessão."
+      logout: "Sair"
     inbox:
-      title: "Inbox"
+      title: "INBOX"
       subtitle: "Configure sua área de recepção de tarefas"
     dashboard:
-      title: "Dashboard"
+      title: "DASHBOARD"
       subtitle: "Personalize seu espaço de trabalho."
       grid:
         cards_per_row: "Cards por linha (Desktop)"
         exemplo: "Ex.: 5"
         description: "Defina um valor entre 3 e 7 para o layout do grid"
-
+      pomodoro:
+        title: "Tamanho do Bloco de Foco (Minutos)"
+        description: "Tempo base (em minutos) adicionado a cada bloco de foco registrado (Padrão: 30)."
+      show_completed:
+        title: "Mostrar tarefas concluídas no Dashboard"
+        description: "Exibir tarefas concluídas e descartadas diretamente nos cards do dashboard."
+  tasks:
+    form:
+      errors: "%{count} erro(s) impediram esta tarefa de ser salva:"
+      title: "Título"
+      description: "Descrição"
+      schedule_at: "Agendar para"
+      estimated_minutes: "Tempo Estimado (min)"
+      multiplier_id: "Importância"
+      title_placeholder: "Design system v2..."
+      description_placeholder: "Detalhes da tarefa..."
+      cancel: "Cancelar"
+      create: "Criar Tarefa"
+      update: "Salvar Tarefa"
+    show:
+      title: "Detalhes da Tarefa"
+      priority: "Prioridade"
+      multiplier: "Multiplicador"
+      score: "Score"
+      not_scheduled: "Não agendado"
+      time_tracking: "Track de Tempo"
+      pomodoros: "Pomodoros"
+      pomodoros_desc: "Blocos de foco dedicados"
+      estimate: "Estimativa"
+      estimated_minutes: "%{count}m estimados"
+      estimate_desc: "Tempo estimado vs real"
+      hours: "Horas"
+      hours_desc: "Total de horas registradas"
+      edit: "Editar"
+      delete: "Excluir"
+      delete_tooltip: "Excluir tarefa"
+      active: "Ativar"
+      complete: "Completar"
+      discard: "Descartar"
+      discard_tooltip: "Descartar tarefa"
+      revert: "Reverter"
+      revert_tooltip: "Reverter tarefa"
+      close: "Fechar"
+    time_tracker:
+      title: "Progresso"
+      tooltip_gastos: "Gasto: %{logged}m / Estimado: %{estimated}m"
+      no_estimate: "Sem estimativa."
+      log_pomodoro: "Adicionar Bloco de Sessão"
+      time_ago: "atrás"
+    new:
+      title: "Nova Tarefa"
+    edit:
+      title: "Editar Tarefa"
+  layouts:
+    application:
+      description: "Gerencie suas tarefas com inteligência e prioridade."
+    flash:
+      created: "Tarefa criada."
+      updated: "Tarefa atualizada."
+      deleted: "Tarefa excluída."
+    side_bar:
+      add_task: "Adicionar Tarefa"
+      settings: "Configurações"

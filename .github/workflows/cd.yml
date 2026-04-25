@@ -60,3 +60,29 @@ jobs:
             docker compose pull web
             docker compose up -d --no-deps web
             docker image prune -f
+
+      - name: Notificar no Discord
+        if: always()
+        run: |
+          EMOJI="✅"
+          STATUS="Sucesso"
+          if [ "${{ job.status }}" != "success" ]; then
+            EMOJI="🚨"
+            STATUS="Falha"
+          fi
+          
+          PAYLOAD=$(cat <<EOF
+          {
+            "content": null,
+            "embeds": [
+              {
+                "title": "$EMOJI Deploy na VPS: $STATUS",
+                "description": "**Repositório:** ${{ github.repository }}\\\\n**Branch:** main\\\\n**Commit:** [${{ github.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }})",
+                "color": $(if [ "${{ job.status }}" == "success" ]; then echo "3066993"; else echo "15158332"; fi)
+              }
+            ]
+          }
+          EOF
+          )
+          
+          curl -H "Content-Type: application/json" -d "$PAYLOAD" ${{ secrets.DISCORD_WEBHOOK_URL }}
