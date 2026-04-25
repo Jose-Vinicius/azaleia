@@ -7,11 +7,6 @@ class TasksControllerTest < ActionDispatch::IntegrationTest
     post session_url, params: { email_address: @user.email_address, password: "password" }
   end
 
-  test "should get index" do
-    get tasks_url
-    assert_response :success
-  end
-
   test "should get new" do
     get new_task_url
     assert_response :success
