@@ -17,9 +17,21 @@ class Task < ApplicationRecord
     priority * multiplier_val
   end
 
-  def self.get_scheduled_tasks(user, include_completed: false)
+  def self.get_scheduled_tasks(user, include_completed: false, filter_period: nil)
     tasks = user.tasks.includes(:multiplier).where.not(schedule_at: nil)
     tasks = tasks.where(completed: [ nil ]) unless include_completed
+
+    if filter_period.present?
+      case filter_period.to_s.downcase
+      when "week"
+        tasks = tasks.where(schedule_at: Time.current.beginning_of_week..Time.current.end_of_week)
+      when "month"
+        tasks = tasks.where(schedule_at: Time.current.beginning_of_month..Time.current.end_of_month)
+      when "year"
+        tasks = tasks.where(schedule_at: Time.current.beginning_of_year..Time.current.end_of_year)
+      end
+    end
+
     tasks = tasks.order(schedule_at: :asc)
     tasks.group_by { |task| task.schedule_at.to_date }.transform_values { |day_tasks| day_tasks.sort_by { |t| t.completed.nil? ? 0 : 1 }.then { |sorted| sorted.sort_by { |t| t.completed.nil? ? -t.score : 0 } } }
   end
