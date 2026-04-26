@@ -1,22 +1,17 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = [ "dashboardCols", "pomodoroBlock", "showCompleted" ]
+  static targets = ["dashboardCols", "pomodoroBlock"]
 
   connect() {
     const savedCols = localStorage.getItem("dashboardCols") || 3;
     if (this.hasDashboardColsTarget) {
       this.dashboardColsTarget.value = Math.min(Math.max(savedCols, 3), 7);
     }
-    
+
     const savedBlock = localStorage.getItem("pomodoroBlockSize") || 30;
     if (this.hasPomodoroBlockTarget) {
       this.pomodoroBlockTarget.value = Math.min(Math.max(savedBlock, 5), 180);
-    }
-
-    if (this.hasShowCompletedTarget) {
-      const saved = localStorage.getItem("showCompletedOnDashboard") === "true";
-      this.updateSwitchVisual(this.showCompletedTarget, saved);
     }
   }
 
@@ -48,19 +43,10 @@ export default class extends Controller {
       localStorage.setItem("dashboardCols", value);
       document.documentElement.style.setProperty('--desktop-cols', value);
     }
-    
+
     if (this.hasPomodoroBlockTarget) {
       const value = Math.min(Math.max(this.pomodoroBlockTarget.value, 5), 180);
       localStorage.setItem("pomodoroBlockSize", value);
-    }
-
-    if (this.hasShowCompletedTarget) {
-      const isChecked = this.showCompletedTarget.getAttribute("aria-checked") === "true";
-      localStorage.setItem("showCompletedOnDashboard", isChecked ? "true" : "false");
-      // Apply immediately to visible dashboard
-      document.querySelectorAll(".dashboard-completed-task").forEach(el => {
-        el.style.display = isChecked ? "" : "none";
-      });
     }
 
     window.dispatchEvent(new Event("settings:updated"));

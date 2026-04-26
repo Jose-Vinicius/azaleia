@@ -46,23 +46,6 @@
               <p class="text-xs text-on-surface-variant"><%= t('settings.dashboard.pomodoro.description') %></p>
             </div>
 
-            <!-- Toggle: Show Completed on Dashboard -->
-            <div class="flex items-center justify-between mt-6 p-4 bg-surface-container-lowest border border-outline-variant rounded-lg">
-              <div class="space-y-0.5">
-                <label class="block text-sm font-medium text-on-surface" for="show-completed"><%= t('settings.dashboard.show_completed.title') %></label>
-                <p class="text-xs text-on-surface-variant"><%= t('settings.dashboard.show_completed.description') %></p>
-              </div>
-              <button
-                type="button"
-                role="switch"
-                data-settings-target="showCompleted"
-                data-action="click->settings#toggleSwitch"
-                aria-checked="false"
-                class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent bg-outline transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background ml-4"
-              >
-                <span class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-on-surface shadow ring-0 transition duration-200 ease-in-out translate-x-0"></span>
-              </button>
-            </div>
           </div>
         </section>
 

@@ -22,7 +22,7 @@
       <% is_discarded = task.completed == false %>
       <% is_done = !task.completed.nil? %>
 
-      <div class="group relative flex items-start gap-3 p-3 rounded hover:bg-surface-variant transition-colors border border-transparent <%= is_overdue && !is_done ? 'hover:border-error/30' : 'hover:border-outline-variant/50' %> shrink-0 <%= is_done ? 'dashboard-completed-task' : '' %>" data-task-item <% if is_done %>style="display: none;"<% end %>>
+      <div class="group relative flex items-start gap-3 p-3 rounded hover:bg-surface-variant transition-colors border border-transparent <%= is_overdue && !is_done ? 'hover:border-error/30' : 'hover:border-outline-variant/50' %> shrink-0 <%= is_done ? 'dashboard-completed-task' : '' %>" data-task-item>
         <% if is_completed %>
           <%# Completed — green filled check, click to revert %>
           <%= button_to task_path(task, task: { completed: nil }), method: :patch, class: "z-10 relative mt-0.5 transition-colors", form: { data: { turbo_frame: "_top" } } do %>
