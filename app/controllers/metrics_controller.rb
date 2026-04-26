@@ -33,11 +33,11 @@ class MetricsController < ApplicationController
     @top_tasks = Task.joins(:time_entries)
                      .where(user_id: Current.user.id)
                      .where(time_entries: { created_at: @start_date.beginning_of_day..@end_date.end_of_day })
-                     .group('tasks.id')
-                     .select('tasks.*, SUM(time_entries.duration_minutes) as period_duration')
-                     .order('period_duration DESC')
+                     .group("tasks.id")
+                     .select("tasks.*, SUM(time_entries.duration_minutes) as period_duration")
+                     .order("period_duration DESC")
                      .limit(5)
-                     
+
     # Load multipliers to avoid N+1 if we iterate top_tasks
     ActiveRecord::Associations::Preloader.new(records: @top_tasks, associations: :multiplier).call
   end
