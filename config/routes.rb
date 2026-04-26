@@ -12,6 +12,7 @@ Rails.application.routes.draw do
   resources :inbox, only: [ :index ]
   resources :dashboard, only: [ :index ]
   resources :history, only: [ :index ]
+  resources :metrics, only: [ :index ]
   get "settings", to: "settings#index"
   get "up" => "rails/health#show", as: :rails_health_check
   root "dashboard#index"

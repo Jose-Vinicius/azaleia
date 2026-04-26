@@ -32,7 +32,7 @@
       </div>
       <div class="flex-1">
         <%= form.label :multiplier_id, t('activerecord.attributes.task.multiplier_id', default: 'Importância'), class: "block text-sm font-medium text-on-surface-variant mb-1" %>
-        <%= form.collection_select :multiplier_id, Multiplier.all, :id, :name, { prompt: "Selecione..." }, class: "w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-4 py-2 text-on-surface focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all" %>
+        <%= form.collection_select :multiplier_id, Multiplier.all, :id, :name, { include_blank: "----" }, class: "w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-4 py-2 text-on-surface focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all" %>
       </div>
     </div>
   </div>
