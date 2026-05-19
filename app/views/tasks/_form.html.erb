@@ -1,5 +1,5 @@
-<%= form_with(model: task, class: "flex flex-col") do |form| %>
-  <div class="p-8 space-y-6 flex-1">
+<%= form_with(model: task, class: "flex flex-col flex-1 overflow-hidden") do |form| %>
+  <div class="p-8 space-y-6 flex-1 overflow-y-auto">
     <% if task.errors.any? %>
       <div class="p-4 bg-error-container text-on-error-container rounded-lg border border-error/50">
         <h2 class="text-sm font-bold mb-2"><%= t('tasks.form.errors', count: task.errors.count) %></h2>
@@ -23,7 +23,7 @@
 
     <div>
       <%= form.label :schedule_at, class: "block text-sm font-medium text-on-surface-variant mb-1" %>
-      <%= form.date_field :schedule_at, class: "w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-4 py-2 text-on-surface focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all focus:outline-none", onclick: "this.showPicker()", style: "color-scheme: dark;" %>    </div>
+      <%= form.datetime_local_field :schedule_at, class: "w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-4 py-2 text-on-surface focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all focus:outline-none", onclick: "this.showPicker()", style: "color-scheme: dark;" %>    </div>
 
     <div class="flex gap-4">
       <div class="flex-1">
@@ -38,7 +38,7 @@
   </div>
 
   <!-- Modal Footer Actions -->
-  <div class="px-6 py-6 bg-surface-container border-t border-outline-variant flex items-center justify-end gap-3 mt-auto">
+  <div class="px-6 py-6 bg-surface-container border-t border-outline-variant flex items-center justify-end gap-3 mt-auto shrink-0">
     <button type="button" onclick="document.getElementById('modal').innerHTML=''" class="px-5 py-2 text-sm font-bold border border-transparent rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-all">
        <%= t('tasks.form.cancel') %>
     </button>

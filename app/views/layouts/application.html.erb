@@ -38,9 +38,12 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body>
+  <body data-controller="task-notifier">
     <%= yield %>
     <%= turbo_frame_tag "modal" %>
+    
+    <!-- Toasts Container -->
+    <div id="toasts-container" class="fixed top-4 right-4 z-[100] flex flex-col gap-3 pointer-events-none"></div>
 
     <script>
       if ("serviceWorker" in navigator) {

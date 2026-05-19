@@ -6,6 +6,17 @@ class TasksController < ApplicationController
     @tasks = Current.user.tasks
   end
 
+  # GET /tasks/upcoming.json
+  def upcoming
+    @tasks = Current.user.tasks
+                   .where(completed: nil)
+                   .where("schedule_at >= ?", Time.zone.now)
+                   .where("schedule_at <= ?", Time.zone.now.end_of_day)
+                   .order(:schedule_at)
+    
+    render json: @tasks.as_json(only: [:id, :title, :schedule_at, :description])
+  end
+
   # GET /tasks/1 or /tasks/1.json
   def show
   end
@@ -54,6 +65,7 @@ class TasksController < ApplicationController
     @task.destroy!
 
     respond_to do |format|
+      format.turbo_stream
       format.html { redirect_back fallback_location: dashboard_index_path, notice: "Task was successfully destroyed.", status: :see_other }
       format.json { head :no_content }
     end
