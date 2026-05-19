@@ -97,30 +97,42 @@
 <%= render 'shared/sidebar' %>
 
 <!-- Main Content Area -->
-<main class="flex-1 flex flex-col h-full w-full relative">
+<main class="flex-1 flex flex-col h-full w-full relative" data-controller="dashboard-preferences">
   <!-- Header -->
   <header class="pt-12 px-8 pb-8 flex-shrink-0 flex flex-col md:flex-row md:items-end justify-between gap-4">
     <h2 class="text-3xl md:text-3xl font-black tracking-tighter text-on-surface uppercase opacity-90"><%= t('dashboard.title') %></h2>
     
-    <form action="<%= dashboard_index_path %>" method="get" data-turbo-frame="_top" class="flex items-center gap-3 bg-[#18181b] border border-[#27272a] pl-3 pr-1 py-1 rounded-xl shadow-sm">
-      <span class="text-xs font-semibold uppercase tracking-wider text-on-surface-variant flex items-center gap-1.5 opacity-80">
-        <span class="material-symbols-outlined text-[16px]">calendar_month</span>
-        Período:
-      </span>
-      <div class="relative">
-        <select name="filter_period" onchange="this.form.submit()" class="bg-[#09090b] border border-[#27272a] text-[#fafafa] text-sm font-medium rounded-lg focus:ring-primary focus:border-primary block py-2 pl-3 pr-10 cursor-pointer hover:border-primary/50 transition-colors outline-none appearance-none">
-          <option value="week" <%= 'selected' if @filter_period == 'week' %>>Semana atual</option>
-          <option value="month" <%= 'selected' if @filter_period == 'month' %>>Mês atual</option>
-          <option value="year" <%= 'selected' if @filter_period == 'year' %>>Ano atual</option>
-        </select>
-        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-[#a1a1aa]">
-          <span class="material-symbols-outlined text-[18px]">unfold_more</span>
+    <div class="flex items-center gap-4">
+      <div class="flex items-center bg-[#18181b] border border-[#27272a] rounded-xl p-1">
+        <button data-action="click->dashboard-preferences#setViewCards" data-dashboard-preferences-target="cardsBtn" class="p-1.5 rounded-lg transition-colors flex items-center justify-center <%= @view_mode == 'cards' ? 'bg-primary/20 text-primary' : 'text-on-surface-variant hover:text-on-surface' %>" title="Modo Cards">
+          <span class="material-symbols-outlined text-[20px]">grid_view</span>
+        </button>
+        <button data-action="click->dashboard-preferences#setViewList" data-dashboard-preferences-target="listBtn" class="p-1.5 rounded-lg transition-colors flex items-center justify-center <%= @view_mode == 'list' ? 'bg-primary/20 text-primary' : 'text-on-surface-variant hover:text-on-surface' %>" title="Modo Lista">
+          <span class="material-symbols-outlined text-[20px]">view_list</span>
+        </button>
+      </div>
+
+      <div class="flex items-center gap-3 bg-[#18181b] border border-[#27272a] pl-3 pr-1 py-1 rounded-xl shadow-sm">
+        <span class="text-xs font-semibold uppercase tracking-wider text-on-surface-variant flex items-center gap-1.5 opacity-80">
+          <span class="material-symbols-outlined text-[16px]">calendar_month</span>
+          Período:
+        </span>
+        <div class="relative">
+          <select data-action="change->dashboard-preferences#updatePeriod" data-dashboard-preferences-target="periodSelect" class="bg-[#09090b] border border-[#27272a] text-[#fafafa] text-sm font-medium rounded-lg focus:ring-primary focus:border-primary block py-2 pl-3 pr-10 cursor-pointer hover:border-primary/50 transition-colors outline-none appearance-none">
+            <option value="week" <%= 'selected' if @filter_period == 'week' %>>Semana atual</option>
+            <option value="month" <%= 'selected' if @filter_period == 'month' %>>Mês atual</option>
+            <option value="year" <%= 'selected' if @filter_period == 'year' %>>Ano atual</option>
+          </select>
+          <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-[#a1a1aa]">
+            <span class="material-symbols-outlined text-[18px]">unfold_more</span>
+          </div>
         </div>
       </div>
-    </form>
+    </div>
   </header>
   <!-- Vertical Scrolling List -->
-  <div id="dashboard-grid" data-controller="grid-layout" class="flex-1 overflow-y-auto px-6 md:px-8 pb-32 md:pb-12 <%= @cards.empty? ? 'flex flex-col items-center justify-center' : 'grid grid-cols-1 md:grid-cols-2 lg:grid-dynamic gap-6' %>">
+  <turbo-frame id="dashboard_content" class="flex-1 flex flex-col h-full w-full overflow-hidden" data-dashboard-preferences-target="frame">
+    <div id="dashboard-grid" data-controller="grid-layout" class="flex-1 overflow-y-auto px-6 md:px-8 pb-32 md:pb-12 <%= @cards.empty? ? 'flex flex-col items-center justify-center' : (@view_mode == 'list' ? 'flex flex-col gap-8 max-w-4xl mx-auto w-full' : 'grid grid-cols-1 md:grid-cols-2 lg:grid-dynamic gap-6') %>">
     <% if @cards.empty? %>
       <div class="flex flex-col items-center justify-center text-on-surface-variant animate-pulse opacity-80">
         <span class="material-symbols-outlined text-[72px] mb-4" style="font-variation-settings: 'FILL' 0;">done_all</span>
@@ -131,11 +143,42 @@
         <% end %>
       </div>
     <% else %>
-      <% @cards.each do |date_card, tasks| %>
-        <%= render partial: "card", locals: { date: date_card, tasks: tasks } %>
+      <% if @view_mode == 'list' %>
+        <% @cards.each do |date_card, tasks| %>
+          <div class="flex flex-col gap-4">
+            <% parsed_date = date_card.to_date %>
+            <% is_today = parsed_date == Date.today %>
+            <div class="flex items-center gap-3 border-b border-outline-variant pb-2">
+              <h3 class="font-bold tracking-tight text-xl text-on-surface">
+                <%= parsed_date.strftime("%d/%m/%Y") %>
+              </h3>
+              <% if is_today %>
+                <span class="text-xs font-medium text-primary bg-primary/10 px-2 py-1 rounded"><%= t('dashboard.card.today') %></span>
+              <% end %>
+              <span class="text-sm font-medium text-on-surface-variant ml-auto">
+                <%= tasks.size %> <%= tasks.size == 1 ? 'tarefa' : 'tarefas' %>
+              </span>
+            </div>
+            
+            <div class="flex flex-col gap-2">
+              <% tasks.each do |task| %>
+                <%= render partial: "task_item", locals: { task: task } %>
+              <% end %>
+              
+              <%= link_to new_task_path(schedule_at: parsed_date), data: { turbo_frame: "modal" }, class: "mt-2 w-full text-sm font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-variant rounded-lg flex items-center justify-center gap-2 py-3 transition-colors border border-dashed border-outline-variant hover:border-outline" do %>
+                <span class="material-symbols-outlined text-[18px]">add</span> <%= t('dashboard.card.add_task') %>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      <% else %>
+        <% @cards.each do |date_card, tasks| %>
+          <%= render partial: "card", locals: { date: date_card, tasks: tasks } %>
+        <% end %>
       <% end %>
     <% end %>
   </div>
+  </turbo-frame>
   <script>
 
   </script>

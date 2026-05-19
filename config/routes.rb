@@ -7,6 +7,9 @@ Rails.application.routes.draw do
   resource :registration, only: [ :new, :create ]
   resources :passwords, param: :token
   resources :tasks, except: [ :index ] do
+    collection do
+      get :upcoming
+    end
     resources :time_entries, only: [ :create, :destroy ]
   end
   resources :inbox, only: [ :index ]

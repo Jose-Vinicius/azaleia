@@ -25,6 +25,27 @@
           </div>
         </section>
 
+        <!-- Notifications Settings Section -->
+        <section class="space-y-6">
+          <div class="space-y-1">
+            <h2 class="text-lg font-bold tracking-tight text-on-surface">Notificações</h2>
+            <p class="text-sm text-on-surface-variant">Configure os alertas para suas tarefas agendadas.</p>
+          </div>
+          <div class="grid grid-cols-1 gap-4">
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-on-surface" for="notification-lead">Aviso Antecipado (minutos)</label>
+              <input data-settings-target="notificationLead" type="number" min="0" max="120" step="5" class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg text-sm text-on-surface px-4 py-2.5 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all" id="notification-lead" placeholder="Ex.: 10" value="10"/>
+              <p class="text-xs text-on-surface-variant">Quantos minutos antes do horário da tarefa você deseja ser avisado. (Use 0 para ser avisado na hora exata).</p>
+            </div>
+            <div class="flex items-center gap-3 mt-2">
+               <button type="button" data-settings-target="notificationBtn" data-action="click->settings#toggleNotificationPermission" class="px-4 py-2 bg-surface-container border border-outline-variant rounded-lg text-sm font-medium text-on-surface hover:bg-surface-container-high transition-colors flex items-center gap-2">
+                 <span class="material-symbols-outlined text-[18px]">notifications_active</span> 
+                 <span data-settings-target="notificationBtnText">Ativar Notificações no Sistema</span>
+               </button>
+            </div>
+          </div>
+        </section>
+
         <!-- Dashboard Settings Section -->
         <section class="space-y-6">
           <div class="space-y-1">
