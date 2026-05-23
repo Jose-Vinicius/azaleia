@@ -1,0 +1,7 @@
+<%= turbo_stream.replace "notifications_badge" do %>
+  <%= render partial: "notifications/badge" %>
+<% end %>
+
+<%= turbo_stream.replace "notifications_list" do %>
+  <%= render template: "notifications/index", layout: false %>
+<% end %>

@@ -94,10 +94,25 @@
 <!-- Main Content Area -->
 <main class="flex-1 flex flex-col h-full w-full relative">
   <!-- Desktop Header -->
-  <header class="hidden md:flex flex-col gap-2 pt-10 pb-6 px-10 border-b border-[#27272a]/50 bg-[#09090b]/80 backdrop-blur-xl z-20 sticky top-0">
+  <header class="hidden md:flex pt-10 pb-6 px-10 border-b border-[#27272a]/50 bg-[#09090b]/80 backdrop-blur-xl z-20 sticky top-0 justify-between items-center">
     <div class="flex items-center gap-3 text-on-surface-variant group">
       <span class="material-symbols-outlined text-2xl group-hover:text-primary transition-colors duration-300" data-icon="bar_chart" data-weight="fill" style="font-variation-settings: 'FILL' 1;">bar_chart</span>
       <h1 class="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-on-surface to-on-surface/70 tracking-tighter">Painel de Métricas</h1>
+    </div>
+    <div class="flex items-center gap-4">
+      <div class="relative" data-controller="dropdown">
+        <button data-action="click->dropdown#toggle" class="relative p-2 rounded-xl bg-[#18181b] border border-[#27272a] text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors flex items-center justify-center">
+          <span class="material-symbols-outlined text-[20px]">notifications</span>
+          <%= render "notifications/badge" %>
+        </button>
+        <div data-dropdown-target="menu" class="hidden absolute right-0 mt-2 w-[350px] bg-surface-container-high border border-outline-variant rounded-xl shadow-2xl z-[100] overflow-hidden origin-top-right">
+          <turbo-frame id="notifications_list" src="<%= notifications_path %>">
+            <div class="p-6 flex items-center justify-center text-on-surface-variant gap-2 text-sm">
+              <span class="material-symbols-outlined animate-spin text-[18px]">sync</span> Carregando...
+            </div>
+          </turbo-frame>
+        </div>
+      </div>
     </div>
   </header>
 

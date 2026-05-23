@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_26_113754) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_23_114338) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -19,6 +19,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_26_113754) do
     t.string "name", null: false
     t.datetime "updated_at", null: false
     t.float "value", default: 1.0, null: false
+  end
+
+  create_table "notifications", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "message"
+    t.datetime "read_at"
+    t.bigint "task_id", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["task_id"], name: "index_notifications_on_task_id"
+    t.index ["user_id"], name: "index_notifications_on_user_id"
   end
 
   create_table "sessions", force: :cascade do |t|
@@ -37,6 +48,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_26_113754) do
     t.text "description"
     t.integer "estimated_minutes", default: 0
     t.bigint "multiplier_id"
+    t.string "recurrence", default: "none", null: false
     t.datetime "schedule_at", precision: nil
     t.string "title"
     t.datetime "updated_at", null: false
@@ -61,6 +73,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_26_113754) do
     t.index ["email_address"], name: "index_users_on_email_address", unique: true
   end
 
+  add_foreign_key "notifications", "tasks"
+  add_foreign_key "notifications", "users"
   add_foreign_key "sessions", "users"
   add_foreign_key "tasks", "multipliers"
   add_foreign_key "tasks", "users"

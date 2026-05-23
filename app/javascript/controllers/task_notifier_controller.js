@@ -26,7 +26,7 @@ export default class extends Controller {
       const now = new Date().getTime()
       
       tasks.forEach(task => {
-        if (!task.schedule_at || this.notifiedTaskIds.has(task.id)) return
+        if (!task.schedule_at || this.notifiedTaskIds.has(task.id + task.schedule_at)) return
         
         const taskTime = new Date(task.schedule_at).getTime()
         const targetNotifyTime = taskTime - leadTimeMs
@@ -37,7 +37,7 @@ export default class extends Controller {
         
         if (timeDiff >= 0 && timeDiff <= 2 * 60 * 1000) {
           this.notifyTask(task, leadTimeMinutes)
-          this.notifiedTaskIds.add(task.id)
+          this.notifiedTaskIds.add(task.id + task.schedule_at)
         }
       })
     } catch (e) {
@@ -58,6 +58,29 @@ export default class extends Controller {
       if (Notification.permission === "granted") {
         new Notification("Azaleia", { body: message })
       }
+    }
+
+    // 3. Persist in Database (Notification Center)
+    this.persistNotification(task.id, message)
+  }
+
+  async persistNotification(taskId, message) {
+    try {
+      const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+      
+      // Request Turbo Stream response so it can update the badge automatically if we want
+      await fetch('/notifications', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'text/vnd.turbo-stream.html, text/html, application/xhtml+xml',
+          'X-CSRF-Token': csrfToken
+        },
+        body: JSON.stringify({ task_id: taskId, message: message })
+      }).then(response => response.text())
+        .then(html => Turbo.renderStreamMessage(html));
+    } catch (e) {
+      console.error("Failed to persist notification:", e);
     }
   }
 

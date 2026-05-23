@@ -3,9 +3,11 @@ class Task < ApplicationRecord
 
   belongs_to :user
   has_many :time_entries, dependent: :destroy
+  has_many :notifications, dependent: :destroy
   belongs_to :multiplier, optional: true
 
   before_save :set_completed_at, if: :completed_changed?
+  before_save :clear_notifications, if: :schedule_at_changed?
 
   def priority
     return 1 unless estimated_minutes.present? && estimated_minutes > 0
@@ -53,6 +55,10 @@ class Task < ApplicationRecord
   end
 
   private
+  
+  def clear_notifications
+    notifications.destroy_all
+  end
 
   def set_completed_at
     if completed.nil?

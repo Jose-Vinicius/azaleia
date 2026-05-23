@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user: one
+  task: one
+  message: MyString
+  read_at: 2026-05-23 08:43:38
+
+two:
+  user: two
+  task: two
+  message: MyString
+  read_at: 2026-05-23 08:43:38

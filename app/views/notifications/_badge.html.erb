@@ -1,0 +1,10 @@
+<span id="notifications_badge">
+  <% if Current.user %>
+    <% unread_count = Current.user.notifications.unread.count %>
+    <% if unread_count > 0 %>
+      <span class="absolute -top-1 -right-1 w-4 h-4 bg-error text-on-error text-[10px] font-bold flex items-center justify-center rounded-full pointer-events-none">
+        <%= unread_count > 9 ? '9+' : unread_count %>
+      </span>
+    <% end %>
+  <% end %>
+</span>
