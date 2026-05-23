@@ -12,6 +12,11 @@ Rails.application.routes.draw do
     end
     resources :time_entries, only: [ :create, :destroy ]
   end
+  resources :notifications, only: [ :index, :create, :update ] do
+    collection do
+      patch :mark_all_as_read
+    end
+  end
   resources :inbox, only: [ :index ]
   resources :dashboard, only: [ :index ]
   resources :history, only: [ :index ]

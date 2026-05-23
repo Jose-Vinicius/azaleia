@@ -1,0 +1,6 @@
+<%= turbo_stream.replace "notifications_list" do %>
+  <%= turbo_frame_tag "notifications_list", src: notifications_path %>
+<% end %>
+<%= turbo_stream.replace "notifications_badge" do %>
+  <%= render partial: "notifications/badge" %>
+<% end %>
