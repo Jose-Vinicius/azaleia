@@ -7,11 +7,37 @@ default: &default
   host: localhost
   port: <%= ENV["POSTGRES_PORT"] %>
 development:
-  <<: *default
-  database: <%= ENV["POSTGRES_DB"] %>
+  primary:
+    <<: *default
+    database: <%= ENV["POSTGRES_DB"] %>
+  cache:
+    <<: *default
+    database: <%= ENV["POSTGRES_DB"] %>_cache
+    migrations_paths: db/cache_migrate
+  queue:
+    <<: *default
+    database: <%= ENV["POSTGRES_DB"] %>_queue
+    migrations_paths: db/queue_migrate
+  cable:
+    <<: *default
+    database: <%= ENV["POSTGRES_DB"] %>_cable
+    migrations_paths: db/cable_migrate
 test:
-  <<: *default
-  database: <%= ENV["POSTGRES_DB"] %>
+  primary:
+    <<: *default
+    database: <%= ENV["POSTGRES_DB"] %>_test
+  cache:
+    <<: *default
+    database: <%= ENV["POSTGRES_DB"] %>_cache_test
+    migrations_paths: db/cache_migrate
+  queue:
+    <<: *default
+    database: <%= ENV["POSTGRES_DB"] %>_queue_test
+    migrations_paths: db/queue_migrate
+  cable:
+    <<: *default
+    database: <%= ENV["POSTGRES_DB"] %>_cable_test
+    migrations_paths: db/cable_migrate
 production:
   primary: &primary_production
     <<: *default

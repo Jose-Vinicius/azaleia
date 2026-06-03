@@ -4,6 +4,11 @@ Rails.application.routes.draw do
   get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 
   resource :session
+  
+  # Integrations (OAuth)
+  get "/auth/:provider/callback", to: "omniauth_callbacks#create"
+  get "/auth/failure", to: "omniauth_callbacks#failure"
+  delete "/integrations/:provider", to: "integrations#destroy", as: :integration
   resource :registration, only: [ :new, :create ]
   resources :passwords, param: :token
   resources :tasks, except: [ :index ] do

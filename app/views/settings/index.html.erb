@@ -70,6 +70,38 @@
           </div>
         </section>
 
+        <!-- Integrations Section -->
+        <section class="space-y-6">
+          <div class="space-y-1">
+            <h2 class="text-lg font-bold tracking-tight text-on-surface">Integrações</h2>
+            <p class="text-sm text-on-surface-variant">Conecte serviços externos ao Azaleia.</p>
+          </div>
+          
+          <div class="flex items-center justify-between p-4 bg-surface-container border border-outline-variant rounded-lg">
+            <div class="flex items-center gap-3">
+              <span class="material-symbols-outlined text-[24px] text-[#4285F4]">calendar_month</span>
+              <div>
+                <h3 class="text-sm font-bold text-on-surface">Google Calendar</h3>
+                <% if Current.user.user_integrations.exists?(provider: 'google_oauth2') %>
+                  <p class="text-xs text-primary font-medium flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">check_circle</span> Conectado</p>
+                <% else %>
+                  <p class="text-xs text-on-surface-variant">Sincronize suas tarefas agendadas.</p>
+                <% end %>
+              </div>
+            </div>
+            
+            <% if Current.user.user_integrations.exists?(provider: 'google_oauth2') %>
+              <%= button_to integration_path('google_oauth2'), method: :delete, class: "px-4 py-2 text-sm font-medium text-error border border-error/20 rounded-lg hover:bg-error/10 transition-colors cursor-pointer" do %>
+                Desconectar
+              <% end %>
+            <% else %>
+              <%= button_to "/auth/google_oauth2", method: :post, form: { data: { turbo: false } }, class: "px-4 py-2 text-sm font-medium text-on-primary bg-primary rounded-lg hover:opacity-90 transition-opacity cursor-pointer" do %>
+                Conectar
+              <% end %>
+            <% end %>
+          </div>
+        </section>
+
         <!-- Account Section -->
         <section class="space-y-6">
           <div class="space-y-1">
