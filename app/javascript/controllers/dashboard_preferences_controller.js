@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["periodSelect", "cardsBtn", "listBtn", "frame"]
+  static targets = ["periodSelect", "cardsBtn", "listBtn", "calendarBtn", "frame"]
 
   connect() {
     this.period = localStorage.getItem("dashboard_filter_period") || "week"
@@ -13,7 +13,12 @@ export default class extends Controller {
     // Read the current server state from the select if possible
     const currentServerPeriod = this.periodSelectTarget.value
     // Read current view_mode from UI classes
-    const currentServerViewMode = this.cardsBtnTarget.classList.contains("text-primary") ? "cards" : "list"
+    let currentServerViewMode = "list"
+    if (this.cardsBtnTarget.classList.contains("text-primary")) {
+      currentServerViewMode = "cards"
+    } else if (this.calendarBtnTarget && this.calendarBtnTarget.classList.contains("text-primary")) {
+      currentServerViewMode = "calendar"
+    }
     
     // If local storage differs from server state, update UI and fetch
     if (this.period !== currentServerPeriod || this.viewMode !== currentServerViewMode) {
@@ -47,18 +52,35 @@ export default class extends Controller {
     this.loadContent()
   }
 
+  setViewCalendar(event) {
+    event.preventDefault()
+    if (this.viewMode === "calendar") return;
+    this.viewMode = "calendar"
+    localStorage.setItem("dashboard_view_mode", this.viewMode)
+    this.updateButtons()
+    this.loadContent()
+  }
+
   updateButtons() {
-    if (this.viewMode === "cards") {
-      this.cardsBtnTarget.classList.add("bg-primary/20", "text-primary")
-      this.cardsBtnTarget.classList.remove("text-on-surface-variant")
-      this.listBtnTarget.classList.add("text-on-surface-variant")
-      this.listBtnTarget.classList.remove("bg-primary/20", "text-primary")
-    } else {
-      this.listBtnTarget.classList.add("bg-primary/20", "text-primary")
-      this.listBtnTarget.classList.remove("text-on-surface-variant")
-      this.cardsBtnTarget.classList.add("text-on-surface-variant")
-      this.cardsBtnTarget.classList.remove("bg-primary/20", "text-primary")
+    const activeClasses = ["bg-primary/20", "text-primary"]
+    const inactiveClasses = ["text-on-surface-variant"]
+
+    const buttons = {
+      "cards": this.cardsBtnTarget,
+      "list": this.listBtnTarget,
+      "calendar": this.hasCalendarBtnTarget ? this.calendarBtnTarget : null
     }
+
+    Object.entries(buttons).forEach(([mode, btn]) => {
+      if (!btn) return;
+      if (this.viewMode === mode) {
+        btn.classList.add(...activeClasses)
+        btn.classList.remove(...inactiveClasses)
+      } else {
+        btn.classList.add(...inactiveClasses)
+        btn.classList.remove(...activeClasses)
+      }
+    })
   }
 
   loadContent() {

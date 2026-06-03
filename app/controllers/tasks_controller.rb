@@ -13,8 +13,8 @@ class TasksController < ApplicationController
                    .where("schedule_at >= ?", Time.zone.now)
                    .where("schedule_at <= ?", Time.zone.now.end_of_day)
                    .order(:schedule_at)
-    
-    render json: @tasks.as_json(only: [:id, :title, :schedule_at, :description])
+
+    render json: @tasks.as_json(only: [ :id, :title, :schedule_at, :description ])
   end
 
   # GET /tasks/1 or /tasks/1.json
@@ -79,6 +79,6 @@ class TasksController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def task_params
-      params.expect(task: [ :title, :description, :schedule_at, :completed, :estimated_minutes, :multiplier_id ])
+      params.expect(task: [ :title, :description, :schedule_at, :completed, :estimated_minutes, :multiplier_id, :sync_to_google ])
     end
 end

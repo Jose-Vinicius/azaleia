@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_23_114338) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_23_214501) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -41,6 +41,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_23_114338) do
     t.index ["user_id"], name: "index_sessions_on_user_id"
   end
 
+  create_table "task_integrations", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "external_id", null: false
+    t.bigint "task_id", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_integration_id", null: false
+    t.index ["external_id"], name: "index_task_integrations_on_external_id", unique: true
+    t.index ["task_id"], name: "index_task_integrations_on_task_id"
+    t.index ["user_integration_id"], name: "index_task_integrations_on_user_integration_id"
+  end
+
   create_table "tasks", force: :cascade do |t|
     t.boolean "completed"
     t.datetime "completed_at"
@@ -65,6 +76,20 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_23_114338) do
     t.index ["task_id"], name: "index_time_entries_on_task_id"
   end
 
+  create_table "user_integrations", force: :cascade do |t|
+    t.string "access_token"
+    t.datetime "created_at", null: false
+    t.datetime "expires_at"
+    t.string "provider", null: false
+    t.string "refresh_token"
+    t.string "uid", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["provider", "uid"], name: "index_user_integrations_on_provider_and_uid", unique: true
+    t.index ["user_id", "provider"], name: "index_user_integrations_on_user_id_and_provider", unique: true
+    t.index ["user_id"], name: "index_user_integrations_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "email_address", null: false
@@ -76,7 +101,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_23_114338) do
   add_foreign_key "notifications", "tasks"
   add_foreign_key "notifications", "users"
   add_foreign_key "sessions", "users"
+  add_foreign_key "task_integrations", "tasks"
+  add_foreign_key "task_integrations", "user_integrations"
   add_foreign_key "tasks", "multipliers"
   add_foreign_key "tasks", "users"
   add_foreign_key "time_entries", "tasks"
+  add_foreign_key "user_integrations", "users"
 end

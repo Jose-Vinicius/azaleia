@@ -110,6 +110,9 @@
         <button data-action="click->dashboard-preferences#setViewList" data-dashboard-preferences-target="listBtn" class="p-1.5 rounded-lg transition-colors flex items-center justify-center <%= @view_mode == 'list' ? 'bg-primary/20 text-primary' : 'text-on-surface-variant hover:text-on-surface' %>" title="Modo Lista">
           <span class="material-symbols-outlined text-[20px]">view_list</span>
         </button>
+        <button data-action="click->dashboard-preferences#setViewCalendar" data-dashboard-preferences-target="calendarBtn" class="p-1.5 rounded-lg transition-colors flex items-center justify-center <%= @view_mode == 'calendar' ? 'bg-primary/20 text-primary' : 'text-on-surface-variant hover:text-on-surface' %>" title="Modo Calendário">
+          <span class="material-symbols-outlined text-[20px]">calendar_month</span>
+        </button>
       </div>
 
       <div class="flex items-center gap-3 bg-[#18181b] border border-[#27272a] pl-3 pr-1 py-1 rounded-xl shadow-sm">
@@ -146,52 +149,58 @@
   </header>
   <!-- Vertical Scrolling List -->
   <turbo-frame id="dashboard_content" class="flex-1 flex flex-col h-full w-full overflow-hidden" data-dashboard-preferences-target="frame">
-    <div id="dashboard-grid" data-controller="grid-layout" class="flex-1 overflow-y-auto px-6 md:px-8 pb-32 md:pb-12 <%= @cards.empty? ? 'flex flex-col items-center justify-center' : (@view_mode == 'list' ? 'flex flex-col gap-8 max-w-4xl mx-auto w-full' : 'grid grid-cols-1 md:grid-cols-2 lg:grid-dynamic gap-6') %>">
-    <% if @cards.empty? %>
-      <div class="flex flex-col items-center justify-center text-on-surface-variant animate-pulse opacity-80">
-        <span class="material-symbols-outlined text-[72px] mb-4" style="font-variation-settings: 'FILL' 0;">done_all</span>
-        <h3 class="text-2xl font-bold text-on-surface"><%= t('dashboard.empty_state.title') %></h3>
-        <p class="text-base font-medium mt-2"><%= t('dashboard.empty_state.subtitle') %>.</p>
-        <%= link_to inbox_index_path, class: "mt-6 px-6 py-2.5 bg-surface-container hover:bg-surface-container-high border border-outline-variant rounded-lg text-sm font-bold text-on-surface transition-colors" do %>
-          <%= t('dashboard.empty_state.button')%>
-        <% end %>
+    <% if @view_mode == 'calendar' %>
+      <div id="dashboard-grid" class="flex-1 overflow-y-auto px-2 md:px-8 pb-32 md:pb-12 flex flex-col h-full">
+        <%= render partial: "calendar", locals: { tasks_by_date: @cards } %>
       </div>
     <% else %>
-      <% if @view_mode == 'list' %>
-        <% @cards.each do |date_card, tasks| %>
-          <div class="flex flex-col gap-4">
-            <% parsed_date = date_card.to_date %>
-            <% is_today = parsed_date == Date.today %>
-            <div class="flex items-center gap-3 border-b border-outline-variant pb-2">
-              <h3 class="font-bold tracking-tight text-xl text-on-surface">
-                <%= parsed_date.strftime("%d/%m/%Y") %>
-              </h3>
-              <% if is_today %>
-                <span class="text-xs font-medium text-primary bg-primary/10 px-2 py-1 rounded"><%= t('dashboard.card.today') %></span>
-              <% end %>
-              <span class="text-sm font-medium text-on-surface-variant ml-auto">
-                <%= tasks.size %> <%= tasks.size == 1 ? 'tarefa' : 'tarefas' %>
-              </span>
-            </div>
-            
-            <div class="flex flex-col gap-2">
-              <% tasks.each do |task| %>
-                <%= render partial: "task_item", locals: { task: task } %>
-              <% end %>
-              
-              <%= link_to new_task_path(schedule_at: parsed_date), data: { turbo_frame: "modal" }, class: "mt-2 w-full text-sm font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-variant rounded-lg flex items-center justify-center gap-2 py-3 transition-colors border border-dashed border-outline-variant hover:border-outline" do %>
-                <span class="material-symbols-outlined text-[18px]">add</span> <%= t('dashboard.card.add_task') %>
-              <% end %>
-            </div>
-          </div>
-        <% end %>
+      <div id="dashboard-grid" data-controller="grid-layout" class="flex-1 overflow-y-auto px-6 md:px-8 pb-32 md:pb-12 <%= @cards.empty? ? 'flex flex-col items-center justify-center' : (@view_mode == 'list' ? 'flex flex-col gap-8 max-w-4xl mx-auto w-full' : 'grid grid-cols-1 md:grid-cols-2 lg:grid-dynamic gap-6') %>">
+      <% if @cards.empty? %>
+        <div class="flex flex-col items-center justify-center text-on-surface-variant animate-pulse opacity-80">
+          <span class="material-symbols-outlined text-[72px] mb-4" style="font-variation-settings: 'FILL' 0;">done_all</span>
+          <h3 class="text-2xl font-bold text-on-surface"><%= t('dashboard.empty_state.title') %></h3>
+          <p class="text-base font-medium mt-2"><%= t('dashboard.empty_state.subtitle') %>.</p>
+          <%= link_to inbox_index_path, class: "mt-6 px-6 py-2.5 bg-surface-container hover:bg-surface-container-high border border-outline-variant rounded-lg text-sm font-bold text-on-surface transition-colors" do %>
+            <%= t('dashboard.empty_state.button')%>
+          <% end %>
+        </div>
       <% else %>
-        <% @cards.each do |date_card, tasks| %>
-          <%= render partial: "card", locals: { date: date_card, tasks: tasks } %>
+        <% if @view_mode == 'list' %>
+          <% @cards.each do |date_card, tasks| %>
+            <div class="flex flex-col gap-4">
+              <% parsed_date = date_card.to_date %>
+              <% is_today = parsed_date == Date.today %>
+              <div class="flex items-center gap-3 border-b border-outline-variant pb-2">
+                <h3 class="font-bold tracking-tight text-xl text-on-surface">
+                  <%= parsed_date.strftime("%d/%m/%Y") %>
+                </h3>
+                <% if is_today %>
+                  <span class="text-xs font-medium text-primary bg-primary/10 px-2 py-1 rounded"><%= t('dashboard.card.today') %></span>
+                <% end %>
+                <span class="text-sm font-medium text-on-surface-variant ml-auto">
+                  <%= tasks.size %> <%= tasks.size == 1 ? 'tarefa' : 'tarefas' %>
+                </span>
+              </div>
+              
+              <div class="flex flex-col gap-2">
+                <% tasks.each do |task| %>
+                  <%= render partial: "task_item", locals: { task: task } %>
+                <% end %>
+                
+                <%= link_to new_task_path(schedule_at: parsed_date), data: { turbo_frame: "modal" }, class: "mt-2 w-full text-sm font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-variant rounded-lg flex items-center justify-center gap-2 py-3 transition-colors border border-dashed border-outline-variant hover:border-outline" do %>
+                  <span class="material-symbols-outlined text-[18px]">add</span> <%= t('dashboard.card.add_task') %>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        <% else %>
+          <% @cards.each do |date_card, tasks| %>
+            <%= render partial: "card", locals: { date: date_card, tasks: tasks } %>
+          <% end %>
         <% end %>
       <% end %>
+      </div>
     <% end %>
-  </div>
   </turbo-frame>
   <script>
 
