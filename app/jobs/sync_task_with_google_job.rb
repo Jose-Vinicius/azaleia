@@ -5,7 +5,7 @@ class SyncTaskWithGoogleJob < ApplicationJob
     task = Task.find_by(id: task_id)
     return unless task
 
-    user_integration = task.user.user_integrations.find_by(provider: 'google_oauth2')
+    user_integration = task.user.user_integrations.find_by(provider: "google_oauth2")
     return unless user_integration
 
     service = GoogleCalendarService.new(user_integration)

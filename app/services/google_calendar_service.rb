@@ -1,4 +1,4 @@
-require 'google/apis/calendar_v3'
+require "google/apis/calendar_v3"
 
 class GoogleCalendarService
   def initialize(user_integration)
@@ -16,11 +16,11 @@ class GoogleCalendarService
     if task_integration
       # Update existing event
       begin
-        @client.update_event('primary', task_integration.external_id, event)
+        @client.update_event("primary", task_integration.external_id, event)
       rescue Google::Apis::ClientError => e
         if e.status_code == 404
           # Event was deleted on Google Calendar directly, recreate it
-          result = @client.insert_event('primary', event)
+          result = @client.insert_event("primary", event)
           task_integration.update!(external_id: result.id)
         else
           raise e
@@ -28,7 +28,7 @@ class GoogleCalendarService
       end
     else
       # Create new event
-      result = @client.insert_event('primary', event)
+      result = @client.insert_event("primary", event)
       TaskIntegration.create!(
         task: task,
         user_integration: @integration,
@@ -42,7 +42,7 @@ class GoogleCalendarService
     return unless task_integration
 
     begin
-      @client.delete_event('primary', task_integration.external_id)
+      @client.delete_event("primary", task_integration.external_id)
     rescue Google::Apis::ClientError => e
       # Ignore if it's already deleted
       raise e unless e.status_code == 404
@@ -53,7 +53,7 @@ class GoogleCalendarService
 
   def delete_event(external_id)
     begin
-      @client.delete_event('primary', external_id)
+      @client.delete_event("primary", external_id)
     rescue Google::Apis::ClientError => e
       raise e unless e.status_code == 404
     end
@@ -82,9 +82,9 @@ class GoogleCalendarService
 
   def fetch_authorization
     auth = Signet::OAuth2::Client.new(
-      client_id: ENV['GOOGLE_CLIENT_ID'],
-      client_secret: ENV['GOOGLE_CLIENT_SECRET'],
-      token_credential_uri: 'https://oauth2.googleapis.com/token',
+      client_id: ENV["GOOGLE_CLIENT_ID"],
+      client_secret: ENV["GOOGLE_CLIENT_SECRET"],
+      token_credential_uri: "https://oauth2.googleapis.com/token",
       access_token: @integration.access_token,
       refresh_token: @integration.refresh_token,
       expires_at: @integration.expires_at

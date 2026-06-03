@@ -20,7 +20,7 @@ class ApplicationController < ActionController::Base
 
     missed_tasks.find_each do |task|
       existing_notifications = Current.user.notifications.where(task: task).to_a
-      
+
       if existing_notifications.empty?
         notification = Current.user.notifications.build(task: task)
       else
@@ -28,7 +28,7 @@ class ApplicationController < ActionController::Base
         # Destroy any duplicates created by previous race conditions
         existing_notifications.each(&:destroy)
       end
-      
+
       formatted_time = task.schedule_at.strftime("%d/%m/%Y às %H:%M")
       notification.update!(
         message: "Sua tarefa \"#{task.title}\" passou do horário agendado (#{formatted_time})."

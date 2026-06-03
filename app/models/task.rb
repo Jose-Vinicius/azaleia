@@ -8,10 +8,10 @@ class Task < ApplicationRecord
   belongs_to :multiplier, optional: true
 
   attr_accessor :sync_to_google
-  
+
   before_save :set_completed_at, if: :completed_changed?
   before_save :clear_notifications, if: :schedule_at_changed?
-  after_commit :enqueue_google_sync, on: [:create, :update]
+  after_commit :enqueue_google_sync, on: [ :create, :update ]
   before_destroy :enqueue_google_delete
 
   def priority
@@ -60,7 +60,7 @@ class Task < ApplicationRecord
   end
 
   private
-  
+
   def clear_notifications
     notifications.destroy_all
   end
@@ -79,7 +79,7 @@ class Task < ApplicationRecord
     return if sync_to_google.nil? && completed.nil?
 
     should_sync = ActiveRecord::Type::Boolean.new.cast(sync_to_google)
-    
+
     # If the task is completed, we want to remove it from the calendar
     should_sync = false if completed.present?
 
