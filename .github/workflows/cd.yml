@@ -74,7 +74,7 @@ jobs:
             
             echo "Verificando se a aplicação subiu corretamente..."
             for i in {1..12}; do
-              if curl -s -f http://localhost/up > /dev/null; then
+              if curl -s -f -H "Host: azaleia.siegti.com" http://localhost/up > /dev/null; then
                 echo "Deploy concluído com sucesso e aplicação saudável!"
                 docker image prune -f
                 exit 0
