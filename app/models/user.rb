@@ -4,6 +4,7 @@ class User < ApplicationRecord
   has_many :tasks, dependent: :destroy
   has_many :notifications, dependent: :destroy
   has_many :user_integrations, dependent: :destroy
+  has_many :notes, dependent: :destroy
 
   normalizes :email_address, with: ->(e) { e.strip.downcase }
   validates :email_address, presence: true, uniqueness: true
