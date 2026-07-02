@@ -42,6 +42,8 @@ jobs:
     needs: build
 
     steps:
+      - uses: actions/checkout@v4
+      
       - name: Converter repositório para minúsculas
         id: repo
         run: echo "name=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
@@ -67,8 +69,23 @@ jobs:
               -u ${{ github.actor }} --password-stdin
             export DOCKER_IMAGE=ghcr.io/${{ steps.repo.outputs.name }}:latest
             docker compose pull
+            docker compose run --rm web bin/rails db:prepare
             docker compose up -d
-            docker image prune -f
+            
+            echo "Verificando se a aplicação subiu corretamente..."
+            for i in {1..12}; do
+              if curl -s -f http://localhost/up > /dev/null; then
+                echo "Deploy concluído com sucesso e aplicação saudável!"
+                docker image prune -f
+                exit 0
+              fi
+              echo "Aguardando aplicação responder (tentativa $i/12)..."
+              sleep 10
+            done
+            
+            echo "Erro: Aplicação não ficou saudável a tempo!"
+            docker compose logs --tail=50 web
+            exit 1
 
       - name: Notificar no Discord
         if: always()
