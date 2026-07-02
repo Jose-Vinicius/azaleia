@@ -18,24 +18,34 @@ class NotesController < ApplicationController
   def create
     @note = Current.user.notes.build(note_params)
 
-    if @note.save
-      redirect_to notes_path, notice: "Anotação criada com sucesso."
-    else
-      render :new, status: :unprocessable_entity
+    respond_to do |format|
+      if @note.save
+        format.turbo_stream
+        format.html { redirect_to notes_path, notice: "Anotação criada com sucesso." }
+      else
+        format.html { render :new, status: :unprocessable_entity }
+      end
     end
   end
 
   def update
-    if @note.update(note_params)
-      redirect_to notes_path, notice: "Anotação atualizada com sucesso."
-    else
-      render :edit, status: :unprocessable_entity
+    respond_to do |format|
+      if @note.update(note_params)
+        format.turbo_stream
+        format.html { redirect_to notes_path, notice: "Anotação atualizada com sucesso." }
+      else
+        format.html { render :edit, status: :unprocessable_entity }
+      end
     end
   end
 
   def destroy
     @note.destroy
-    redirect_to notes_path, notice: "Anotação excluída com sucesso."
+    
+    respond_to do |format|
+      format.turbo_stream
+      format.html { redirect_to notes_path, notice: "Anotação excluída com sucesso." }
+    end
   end
 
   private

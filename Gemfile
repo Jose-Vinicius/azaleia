@@ -75,3 +75,4 @@ end
 
 gem "rails-i18n"
 gem "kramdown"
+gem "kramdown-parser-gfm"

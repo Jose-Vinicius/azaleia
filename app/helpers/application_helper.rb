@@ -1,4 +1,5 @@
 module ApplicationHelper
+  require 'kramdown-parser-gfm'
   def markdown(text)
     return "" if text.blank?
     Kramdown::Document.new(text, input: 'GFM', hard_wrap: true).to_html.html_safe
