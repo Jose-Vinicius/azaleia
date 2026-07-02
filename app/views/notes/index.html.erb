@@ -1,0 +1,51 @@
+<%= render 'shared/sidebar' %>
+
+<main class="flex-1 flex flex-col h-full w-full relative">
+  <header class="pt-12 px-8 pb-8 flex-shrink-0 flex flex-col md:flex-row md:items-end justify-between gap-4">
+    <h2 class="text-3xl md:text-3xl font-black tracking-tighter text-on-surface uppercase opacity-90">Anotações</h2>
+    
+    <div class="flex items-center gap-4">
+      <%= link_to new_note_path, data: { turbo_frame: "modal" }, class: "flex items-center gap-2 bg-primary text-on-primary font-semibold py-2.5 px-4 rounded-lg hover:bg-primary-fixed transition-colors active:scale-[0.98]" do %>
+        <span class="material-symbols-outlined text-sm">add</span>
+        Nova Anotação
+      <% end %>
+    </div>
+  </header>
+
+  <turbo-frame id="notes_list" class="flex-1 flex flex-col h-full w-full overflow-hidden">
+    <div class="flex-1 overflow-y-auto px-6 md:px-8 pb-32 md:pb-12">
+      <% if @notes.empty? %>
+        <div class="flex flex-col items-center justify-center text-on-surface-variant h-full opacity-80">
+          <span class="material-symbols-outlined text-[72px] mb-4" style="font-variation-settings: 'FILL' 0;">edit_document</span>
+          <h3 class="text-2xl font-bold text-on-surface">Nenhuma Anotação</h3>
+          <p class="text-base font-medium mt-2">Crie sua primeira anotação para começar.</p>
+        </div>
+      <% else %>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <% @notes.each do |note| %>
+            <div class="bg-[#18181b] border border-[#27272a] rounded-xl p-5 hover:border-primary/50 transition-colors flex flex-col h-64">
+              <div class="flex justify-between items-start mb-2">
+                <h3 class="text-lg font-bold text-[#fafafa] line-clamp-1"><%= note.title %></h3>
+                <div class="flex gap-1 ml-2 shrink-0">
+                  <%= link_to edit_note_path(note), data: { turbo_frame: "modal" }, class: "text-on-surface-variant hover:text-primary transition-colors p-1" do %>
+                    <span class="material-symbols-outlined text-[18px]">edit</span>
+                  <% end %>
+                  <%= button_to note_path(note), method: :delete, form: { data: { turbo_confirm: "Tem certeza que deseja excluir esta anotação?" } }, class: "text-on-surface-variant hover:text-error transition-colors p-1" do %>
+                    <span class="material-symbols-outlined text-[18px]">delete</span>
+                  <% end %>
+                </div>
+              </div>
+              <div class="text-sm text-on-surface-variant flex-1 overflow-hidden prose prose-invert prose-sm max-w-none">
+                <%= markdown(note.description) %>
+              </div>
+              <div class="text-xs text-[#71717a] mt-4 shrink-0 flex justify-between items-center border-t border-[#27272a] pt-3">
+                <span><%= note.created_at.strftime("%d/%m/%Y às %H:%M") %></span>
+                <%= link_to "Ler tudo", note_path(note), data: { turbo_frame: "modal" }, class: "text-primary hover:underline font-medium" %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </turbo-frame>
+</main>
