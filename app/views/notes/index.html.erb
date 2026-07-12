@@ -1,3 +1,99 @@
+<% content_for :head do %>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries,typography"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+  <script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                "on-error-container": "#fca5a5",
+                "on-tertiary-fixed": "#003318",
+                "on-secondary-container": "#a1a1aa",
+                "tertiary-fixed-dim": "#6ee7b7",
+                "surface-container-lowest": "#09090b",
+                "surface-tint": "#a78bfa",
+                "secondary-fixed-dim": "#71717a",
+                "on-secondary": "#09090b",
+                "on-surface-variant": "#a1a1aa",
+                "on-error": "#1a0000",
+                "surface-variant": "#18181b",
+                "error": "#ef4444",
+                "secondary-container": "#27272a",
+                "primary": "#a78bfa",
+                "outline": "#52525b",
+                "on-primary-fixed-variant": "#5b21b6",
+                "inverse-surface": "#fafafa",
+                "on-surface": "#fafafa",
+                "error-container": "#3b1111",
+                "on-tertiary": "#001a12",
+                "surface-dim": "#0c0c0f",
+                "secondary": "#71717a",
+                "on-tertiary-container": "#bbf7d0",
+                "tertiary-container": "#065f46",
+                "primary-fixed-dim": "#c4b5fd",
+                "secondary-fixed": "#a1a1aa",
+                "background": "#09090b",
+                "surface-container-low": "#0f0f12",
+                "surface-container-highest": "#1e1e22",
+                "surface-bright": "#18181b",
+                "on-primary": "#0a0012",
+                "on-primary-container": "#ede9fe",
+                "tertiary-fixed": "#bbf7d0",
+                "on-tertiary-fixed-variant": "#047857",
+                "primary-container": "#7c3aed",
+                "on-secondary-fixed": "#18181b",
+                "on-background": "#fafafa",
+                "inverse-primary": "#5b21b6",
+                "surface": "#0c0c0f",
+                "surface-container-high": "#18181b",
+                "primary-fixed": "#ede9fe",
+                "on-secondary-fixed-variant": "#3f3f46",
+                "on-primary-fixed": "#2e1065",
+                "tertiary": "#34d399",
+                "surface-container": "#121215",
+                "outline-variant": "#27272a",
+                "inverse-on-surface": "#09090b"
+              },
+              "borderRadius": {
+                "DEFAULT": "0.25rem",
+                "lg": "0.5rem",
+                "xl": "0.75rem",
+                "full": "9999px"
+              },
+              "fontFamily": {
+                "headline": ["Geist", "sans-serif"],
+                "body": ["Geist", "sans-serif"],
+                "label": ["Geist", "sans-serif"]
+              }
+            }
+          }
+        }
+  </script>
+  <style>
+      body { font-family: 'Geist', sans-serif; }
+      .hide-scrollbar::-webkit-scrollbar { display: none; }
+      .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); }
+      
+      @media (min-width: 1024px) {
+        .lg\:grid-dynamic {
+          grid-template-columns: repeat(var(--final-cols, 3), minmax(0, 1fr)) !important;
+        }
+      }
+  </style>
+  <script>
+    document.documentElement.classList.add('dark');
+    document.addEventListener("turbo:load", () => {
+      document.body.className = "bg-background text-on-surface h-screen w-full overflow-hidden flex flex-col md:flex-row selection:bg-primary/30 selection:text-primary";
+    });
+    document.addEventListener("DOMContentLoaded", () => {
+      document.body.className = "bg-background text-on-surface h-screen w-full overflow-hidden flex flex-col md:flex-row selection:bg-primary/30 selection:text-primary";
+    });
+  </script>
+<% end %>
+
 <%= render 'shared/sidebar' %>
 
 <main class="flex-1 flex flex-col h-full w-full relative">

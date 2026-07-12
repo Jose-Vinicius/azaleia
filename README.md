@@ -4,10 +4,13 @@
 
 ## ✨ Principais Funcionalidades
 
-*   📥 **Inbox & Dashboard:** Uma visualização clara! Use o Inbox para capturar ideias que não possuem um prazo definido e deixe o Dashboard focar nas prioridades dividas por dia.
-*   📅 **Agrupamento Automático e Layout Dinâmico:** Tarefas agrupadas por `schedule_at` na exibição em grid. A quantia de colunas do grid do painel pode ser ajustada nas configurações e fica salva sob demanda no navegador do usuário.
+*   📥 **Inbox & Dashboard:** Uma visualização clara! Use o Inbox para capturar ideias que não possuem um prazo definido e deixe o Dashboard focar nas prioridades divididas por dia.
+*   📅 **Agrupamento Automático e Integração com Google:** Tarefas agrupadas por data na exibição em grid. As tarefas podem ser sincronizadas com o seu Google Calendar automaticamente.
 *   🚨 **Destaques de Tarefas Atrasadas:** Perdeu o prazo? A tarefa acende em vermelho em toda a plataforma para chamar atenção.
 *   ⏱️ **Time Tracker Progressivo:** Registre blocos de foco (Pomodoro) em cada tarefa com feedback instantâneo de porcentagem, barra de progresso dinâmica em cores, limites ajustáveis e listagem de histórico fluída.
+*   📝 **Bloco de Anotações:** Guarde informações rápidas, listas e resumos em um espaço dedicado e com suporte completo a edição em Markdown (GFM).
+
+> 📚 **Documentação Completa:** Para detalhes técnicos, arquitetura e regras de negócio, consulte o diretório [`/docs`](./docs/).
 
 ## 🛠️ Stack de Tecnologias
 
