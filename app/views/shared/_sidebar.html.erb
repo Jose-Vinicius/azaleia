@@ -1,56 +1,94 @@
-<!-- Desktop Side Navigation -->
-<nav class="hidden md:flex flex-col h-screen sticky left-0 top-0 w-64 bg-[#09090b] border-r border-[#27272a] font-['Geist'] tracking-tight flex-shrink-0 z-50">
-  <div class="flex items-center">
-    <%= image_tag "logo.png", class: "w-24 h-24 object-contain" %>
-    <h2 class="text-xl font-black text-[#fafafa] tracking-tighter">Azaleia</h2>
-  </div>
-  
-  <div class="px-4 py-2 mt-1">
-    <%= link_to new_task_path, data: { turbo_frame: "modal" }, class: "w-full flex items-center justify-center gap-2 bg-primary text-on-primary font-semibold py-2.5 px-4 rounded-lg hover:bg-primary-fixed transition-colors active:scale-[0.98] shadow-[0_0_0_1px_rgba(167,139,250,0.1)]" do %>
-      <span class="material-symbols-outlined text-sm" data-icon="add">add</span>
-      <%= t('layouts.side_bar.add_task')%>
-    <% end %>
-  </div>
-  
-  <div class="flex-1 flex flex-col px-3 py-2 space-y-1">
-    <% 
-      nav_links = [
-        { path: inbox_index_path, icon: 'inbox', text: 'Inbox' },
-        { path: dashboard_index_path, icon: 'dashboard', text: 'Dashboard' },
-        { path: metrics_path, icon: 'bar_chart', text: 'Métricas' },
-        { path: history_index_path, icon: 'history', text: 'Histórico' },
-        { path: notes_path, icon: 'edit_document', text: 'Anotações' }
-      ]
-    %>
-    
-    <% nav_links.each do |link| %>
-      <% is_active = current_page?(link[:path]) %>
-      <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-150 active:scale-[0.98] <%= is_active ? 'text-[#a78bfa] bg-[#18181b] border-r-2 border-[#a78bfa] font-semibold' : 'text-[#a1a1aa] hover:text-[#fafafa] hover:bg-[#18181b]' %>" href="<%= link[:path] %>">
-        <span class="material-symbols-outlined" data-icon="<%= link[:icon] %>" <%= is_active ? "data-weight='fill' style='font-variation-settings: \"FILL\" 1;'".html_safe : "" %>><%= link[:icon] %></span>
-        <span><%= link[:text] %></span>
-      </a>
-    <% end %>
-
-    <div class="flex-1"></div>
-    
-    <!-- User Account Dropdown -->
-    <div class="relative" data-controller="dropdown">
-      <button data-action="click->dropdown#toggle" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#a1a1aa] hover:text-[#fafafa] hover:bg-[#18181b] transition-all duration-150 active:scale-[0.98] text-left">
-        <span class="material-symbols-outlined text-[20px]">account_circle</span>
-        <span class="text-sm truncate flex-1"><%= Current.user&.email_address %></span>
-        <span class="material-symbols-outlined text-[16px]">expand_more</span>
+<div data-controller="mobile-menu" class="shrink-0 flex flex-col md:block">
+  <!-- Mobile Header (Visible only on md:hidden) -->
+  <div class="md:hidden flex items-center justify-between px-6 py-4 bg-[#09090b] border-b border-[#27272a] z-40 w-full shrink-0">
+    <div class="flex items-center gap-2">
+      <%= image_tag "logo.png", class: "w-8 h-8 object-contain" %>
+      <h1 class="text-xl font-black text-[#fafafa] tracking-tighter">Azaleia</h1>
+    </div>
+    <div class="flex items-center gap-3">
+      <div class="relative" data-controller="dropdown">
+        <button data-action="click->dropdown#toggle" class="relative p-1.5 rounded-lg bg-[#18181b] border border-[#27272a] text-on-surface-variant hover:text-on-surface transition-colors flex items-center justify-center">
+          <span class="material-symbols-outlined text-[22px]">notifications</span>
+          <%= render "notifications/badge" %>
+        </button>
+        <div data-dropdown-target="menu" class="hidden absolute right-0 mt-2 w-[320px] bg-surface-container-high border border-outline-variant rounded-xl shadow-2xl z-[100] overflow-hidden origin-top-right">
+          <turbo-frame id="notifications_list" src="<%= notifications_path %>">
+            <div class="p-6 flex items-center justify-center text-on-surface-variant gap-2 text-sm">
+              <span class="material-symbols-outlined animate-spin text-[18px]">sync</span> Carregando...
+            </div>
+          </turbo-frame>
+        </div>
+      </div>
+      <button data-action="click->mobile-menu#toggle" class="p-1 -mr-2 text-on-surface-variant hover:text-on-surface rounded-lg">
+        <span class="material-symbols-outlined text-[32px]">menu</span>
       </button>
-      <div data-dropdown-target="menu" class="hidden absolute bottom-full left-3 right-3 mb-1 bg-[#18181b] border border-[#27272a] rounded-lg shadow-xl overflow-hidden z-50">
-        <%= button_to session_path, method: :delete, form: { data: { turbo: false } }, class: "w-full flex items-center gap-3 px-4 py-3 text-sm text-[#fca5a5] hover:bg-[#27272a] transition-colors text-left" do %>
-          <span class="material-symbols-outlined text-[18px]">logout</span>
-          <span>Sair da Conta</span>
-        <% end %>
+    </div>
+  </div>
+
+  <!-- Mobile Overlay -->
+  <div data-mobile-menu-target="overlay" class="hidden md:hidden fixed inset-0 bg-black/80 z-40 backdrop-blur-sm" data-action="click->mobile-menu#close"></div>
+
+  <!-- Desktop & Mobile Side Navigation -->
+  <nav data-mobile-menu-target="menu" class="fixed md:sticky left-0 top-0 h-screen w-64 bg-[#09090b] border-r border-[#27272a] font-['Geist'] tracking-tight flex-shrink-0 z-50 flex flex-col -translate-x-full md:translate-x-0 transition-transform duration-300">
+    <div class="flex items-center pt-2 md:pt-0">
+      <div class="md:hidden p-4 ml-auto">
+        <button data-action="click->mobile-menu#close" class="text-on-surface-variant p-2">
+          <span class="material-symbols-outlined text-[24px]">close</span>
+        </button>
+      </div>
+      <div class="hidden md:flex items-center">
+        <%= image_tag "logo.png", class: "w-24 h-24 object-contain" %>
+        <h2 class="text-xl font-black text-[#fafafa] tracking-tighter">Azaleia</h2>
       </div>
     </div>
     
-    <%= link_to settings_path, data: { turbo_frame: "modal" }, class: "flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#a1a1aa] hover:text-[#fafafa] hover:bg-[#18181b] transition-all duration-150 active:scale-[0.98]" do %>
-      <span class="material-symbols-outlined">settings</span>
-      <span><%= t('layouts.side_bar.settings')%></span>
-    <% end %>
-  </div>
-</nav>
+    <div class="px-4 py-2 md:mt-1">
+      <%= link_to new_task_path, data: { turbo_frame: "modal" }, class: "w-full flex items-center justify-center gap-2 bg-primary text-on-primary font-semibold py-2.5 px-4 rounded-lg hover:bg-primary-fixed transition-colors active:scale-[0.98] shadow-[0_0_0_1px_rgba(167,139,250,0.1)]" do %>
+        <span class="material-symbols-outlined text-sm" data-icon="add">add</span>
+        <%= t('layouts.side_bar.add_task')%>
+      <% end %>
+    </div>
+    
+    <div class="flex-1 flex flex-col px-3 py-2 space-y-1 overflow-y-auto hide-scrollbar">
+      <% 
+        nav_links = [
+          { path: inbox_index_path, icon: 'inbox', text: 'Inbox' },
+          { path: dashboard_index_path, icon: 'dashboard', text: 'Dashboard' },
+          { path: metrics_path, icon: 'bar_chart', text: 'Métricas' },
+          { path: history_index_path, icon: 'history', text: 'Histórico' },
+          { path: notes_path, icon: 'edit_document', text: 'Anotações' }
+        ]
+      %>
+      
+      <% nav_links.each do |link| %>
+        <% is_active = current_page?(link[:path]) %>
+        <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-150 active:scale-[0.98] <%= is_active ? 'text-[#a78bfa] bg-[#18181b] border-r-2 border-[#a78bfa] font-semibold' : 'text-[#a1a1aa] hover:text-[#fafafa] hover:bg-[#18181b]' %>" href="<%= link[:path] %>">
+          <span class="material-symbols-outlined" data-icon="<%= link[:icon] %>" <%= is_active ? "data-weight='fill' style='font-variation-settings: \"FILL\" 1;'".html_safe : "" %>><%= link[:icon] %></span>
+          <span><%= link[:text] %></span>
+        </a>
+      <% end %>
+
+      <div class="flex-1"></div>
+      
+      <!-- User Account Dropdown -->
+      <div class="relative" data-controller="dropdown">
+        <button data-action="click->dropdown#toggle" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#a1a1aa] hover:text-[#fafafa] hover:bg-[#18181b] transition-all duration-150 active:scale-[0.98] text-left">
+          <span class="material-symbols-outlined text-[20px]">account_circle</span>
+          <span class="text-sm truncate flex-1"><%= Current.user&.email_address %></span>
+          <span class="material-symbols-outlined text-[16px]">expand_more</span>
+        </button>
+        <div data-dropdown-target="menu" class="hidden absolute bottom-full left-3 right-3 mb-1 bg-[#18181b] border border-[#27272a] rounded-lg shadow-xl overflow-hidden z-50">
+          <%= button_to session_path, method: :delete, form: { data: { turbo: false } }, class: "w-full flex items-center gap-3 px-4 py-3 text-sm text-[#fca5a5] hover:bg-[#27272a] transition-colors text-left" do %>
+            <span class="material-symbols-outlined text-[18px]">logout</span>
+            <span>Sair da Conta</span>
+          <% end %>
+        </div>
+      </div>
+      
+      <%= link_to settings_path, data: { turbo_frame: "modal" }, class: "flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#a1a1aa] hover:text-[#fafafa] hover:bg-[#18181b] transition-all duration-150 active:scale-[0.98]" do %>
+        <span class="material-symbols-outlined">settings</span>
+        <span><%= t('layouts.side_bar.settings')%></span>
+      <% end %>
+    </div>
+  </nav>
+</div>
