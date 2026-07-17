@@ -1,7 +1,11 @@
 class Task < ApplicationRecord
+  STATUSES = %w[pending doing done].freeze
+
   validates :title, presence: true
+  validates :status, inclusion: { in: STATUSES }
 
   belongs_to :user
+  belongs_to :project, optional: true
   has_many :time_entries, dependent: :destroy
   has_many :notifications, dependent: :destroy
   has_one :task_integration, dependent: :destroy
@@ -10,6 +14,7 @@ class Task < ApplicationRecord
   attr_accessor :sync_to_google
 
   before_save :set_completed_at, if: :completed_changed?
+  before_save :sync_status_with_completed, if: :status_changed?
   before_save :clear_notifications, if: :schedule_at_changed?
   after_commit :enqueue_google_sync, on: [ :create, :update ]
   before_destroy :enqueue_google_delete
@@ -25,7 +30,7 @@ class Task < ApplicationRecord
   end
 
   def self.get_scheduled_tasks(user, include_completed: false, filter_period: nil)
-    tasks = user.tasks.includes(:multiplier).where.not(schedule_at: nil)
+    tasks = user.tasks.includes(:multiplier, :project).where.not(schedule_at: nil)
     tasks = tasks.where(completed: [ nil ]) unless include_completed
 
     if filter_period.present?
@@ -44,7 +49,7 @@ class Task < ApplicationRecord
   end
 
   def self.get_schedule_tasks(user)
-    user.tasks.includes(:multiplier).where(schedule_at: nil).where(completed: [ nil ]).sort_by { |t| -t.score }
+    user.tasks.includes(:multiplier, :project).where(schedule_at: nil).where(completed: [ nil ]).sort_by { |t| -t.score }
   end
 
   def self.get_completed_tasks(user)
@@ -56,13 +61,21 @@ class Task < ApplicationRecord
   end
 
   def self.get_history_tasks(user)
-    user.tasks.includes(:multiplier).where.not(completed: nil).order(completed_at: :desc)
+    user.tasks.includes(:multiplier, :project).where.not(completed: nil).order(completed_at: :desc)
   end
 
   private
 
   def clear_notifications
     notifications.destroy_all
+  end
+
+  def sync_status_with_completed
+    if status == "done"
+      self.completed = true
+    elsif status_was == "done"
+      self.completed = nil
+    end
   end
 
   def set_completed_at

@@ -1,0 +1,44 @@
+<%= form_with(model: project, class: "flex flex-col flex-1 overflow-hidden") do |form| %>
+  <div class="p-8 space-y-6 flex-1 overflow-y-auto">
+    <% if project.errors.any? %>
+      <div class="p-4 bg-error-container text-on-error-container rounded-lg border border-error/50">
+        <h2 class="text-sm font-bold mb-2"><%= pluralize(project.errors.count, "erro") %> encontrado(s):</h2>
+        <ul class="list-disc pl-5 text-sm">
+          <% project.errors.each do |error| %>
+            <li><%= error.full_message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div>
+      <%= form.label :name, "Nome do Projeto", class: "block text-sm font-medium text-on-surface-variant mb-1" %>
+      <%= form.text_field :name, class: "w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-4 py-2 text-on-surface focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all placeholder-secondary", placeholder: "Ex: Redesign do site" %>
+    </div>
+
+    <div>
+      <%= form.label :description, "Descrição", class: "block text-sm font-medium text-on-surface-variant mb-1" %>
+      <%= form.text_area :description, rows: 3, class: "w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-4 py-2 text-on-surface focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all placeholder-secondary resize-none", placeholder: "Descreva o objetivo do projeto..." %>
+    </div>
+
+    <div>
+      <%= form.label :color, "Cor", class: "block text-sm font-medium text-on-surface-variant mb-2" %>
+      <div class="flex flex-wrap gap-3">
+        <% Project::COLORS.each do |color| %>
+          <label class="relative cursor-pointer">
+            <%= form.radio_button :color, color, class: "sr-only peer" %>
+            <span class="block w-8 h-8 rounded-full border-2 border-transparent peer-checked:border-white peer-checked:ring-2 peer-checked:ring-offset-2 peer-checked:ring-offset-background transition-all hover:scale-110" style="background-color: <%= color %>"></span>
+          </label>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Footer Actions -->
+  <div class="px-6 py-6 bg-surface-container border-t border-outline-variant flex items-center justify-end gap-3 mt-auto shrink-0">
+    <button type="button" onclick="document.getElementById('modal').innerHTML=''" class="px-5 py-2 text-sm font-bold border border-transparent rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-all">
+      Cancelar
+    </button>
+    <%= form.submit project.new_record? ? "Criar Projeto" : "Salvar", class: "px-5 py-2 text-sm font-bold bg-primary text-on-primary rounded-lg hover:bg-primary/90 hover:shadow-lg transition-all cursor-pointer" %>
+  </div>
+<% end %>

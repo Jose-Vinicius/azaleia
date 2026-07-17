@@ -23,7 +23,11 @@ class TasksController < ApplicationController
 
   # GET /tasks/new
   def new
-    @task = Current.user.tasks.new(schedule_at: params[:schedule_at])
+    @task = Current.user.tasks.new(
+      schedule_at: params[:schedule_at],
+      project_id: params[:project_id],
+      status: params[:status] || "pending"
+    )
   end
 
   # GET /tasks/1/edit
@@ -79,6 +83,6 @@ class TasksController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def task_params
-      params.expect(task: [ :title, :description, :schedule_at, :completed, :estimated_minutes, :multiplier_id, :sync_to_google ])
+      params.expect(task: [ :title, :description, :schedule_at, :completed, :estimated_minutes, :multiplier_id, :sync_to_google, :project_id, :status ])
     end
 end

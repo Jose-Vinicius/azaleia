@@ -20,6 +20,11 @@
       if (savedCols) {
         document.documentElement.style.setProperty('--desktop-cols', savedCols);
       }
+      
+      // Apply sidebar state
+      if (localStorage.getItem("sidebarState") === "collapsed") {
+        document.documentElement.classList.add("sidebar-collapsed");
+      }
     </script>
 
     <%# Turbo Morphing tags para permitir o turbo_stream.refresh funcionar de forma lisa %>

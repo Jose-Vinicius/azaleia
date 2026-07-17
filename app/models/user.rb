@@ -2,6 +2,7 @@ class User < ApplicationRecord
   has_secure_password
   has_many :sessions, dependent: :destroy
   has_many :tasks, dependent: :destroy
+  has_many :projects, dependent: :destroy
   has_many :notifications, dependent: :destroy
   has_many :user_integrations, dependent: :destroy
   has_many :notes, dependent: :destroy
