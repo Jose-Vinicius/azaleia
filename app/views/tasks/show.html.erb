@@ -68,6 +68,12 @@
                 <span class="material-symbols-outlined text-[18px]">star</span>
                 <span class="text-sm">Score: <%= number_with_precision(@task.score, precision: 1, strip_insignificant_zeros: true) %></span>
               </div>
+              <% if @task.project.present? %>
+              <div class="flex items-center gap-2 text-sm font-medium bg-surface-container px-3 py-1 rounded-full border border-outline-variant">
+                <span class="w-2.5 h-2.5 rounded-full flex-shrink-0" style="background-color: <%= @task.project.color || '#a78bfa' %>"></span>
+                <span class="text-on-surface-variant"><%= @task.project.name %></span>
+              </div>
+              <% end %>
             </div>
             
             <%= render partial: "tasks/time_tracker", locals: { task: @task } %>

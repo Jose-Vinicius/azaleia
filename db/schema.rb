@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_02_210346) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_17_155645) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -41,6 +41,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_02_210346) do
     t.index ["user_id"], name: "index_notifications_on_user_id"
   end
 
+  create_table "projects", force: :cascade do |t|
+    t.string "color"
+    t.datetime "created_at", null: false
+    t.text "description"
+    t.string "name", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["user_id"], name: "index_projects_on_user_id"
+  end
+
   create_table "sessions", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "ip_address"
@@ -68,12 +78,15 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_02_210346) do
     t.text "description"
     t.integer "estimated_minutes", default: 0
     t.bigint "multiplier_id"
+    t.bigint "project_id"
     t.string "recurrence", default: "none", null: false
     t.datetime "schedule_at", precision: nil
+    t.string "status", default: "pending", null: false
     t.string "title"
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.index ["multiplier_id"], name: "index_tasks_on_multiplier_id"
+    t.index ["project_id"], name: "index_tasks_on_project_id"
     t.index ["user_id"], name: "index_tasks_on_user_id"
   end
 
@@ -110,10 +123,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_02_210346) do
   add_foreign_key "notes", "users"
   add_foreign_key "notifications", "tasks"
   add_foreign_key "notifications", "users"
+  add_foreign_key "projects", "users"
   add_foreign_key "sessions", "users"
   add_foreign_key "task_integrations", "tasks"
   add_foreign_key "task_integrations", "user_integrations"
   add_foreign_key "tasks", "multipliers"
+  add_foreign_key "tasks", "projects"
   add_foreign_key "tasks", "users"
   add_foreign_key "time_entries", "tasks"
   add_foreign_key "user_integrations", "users"

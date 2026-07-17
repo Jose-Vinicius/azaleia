@@ -1,0 +1,45 @@
+<% is_overdue = task.schedule_at.present? && task.schedule_at.to_date < Date.today %>
+<% border_class = is_overdue ? 'border-error/30' : 'border-outline-variant/50' %>
+<% title_class = is_overdue ? 'text-error' : 'text-on-surface' %>
+<% date_class = is_overdue ? 'text-error/70' : 'text-on-surface-variant' %>
+
+<div class="kanban-card group relative p-3.5 rounded-xl bg-surface-container-lowest border <%= border_class %> cursor-grab active:cursor-grabbing"
+     draggable="true"
+     data-kanban-target="card"
+     data-task-id="<%= task.id %>"
+     id="kanban_card_<%= task.id %>">
+  <!-- Drag indicator -->
+  <div class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+    <span class="material-symbols-outlined text-[14px] text-on-surface-variant/50">drag_indicator</span>
+  </div>
+
+  <!-- Task Title -->
+  <%= link_to task, data: { turbo_frame: "modal" }, class: "block" do %>
+    <h4 class="text-sm font-semibold <%= title_class %> pr-6 leading-snug group-hover:text-primary transition-colors"><%= task.title %></h4>
+  <% end %>
+
+  <!-- Task Description (truncated) -->
+  <% if task.description.present? %>
+    <p class="text-xs text-on-surface-variant mt-1.5 line-clamp-2 leading-relaxed"><%= truncate(task.description, length: 80) %></p>
+  <% end %>
+
+  <!-- Task Meta -->
+  <div class="flex items-center gap-2 mt-3 flex-wrap">
+    <% if task.schedule_at.present? %>
+      <span class="flex items-center gap-1 text-[11px] font-medium <%= date_class %> bg-surface-container px-2 py-0.5 rounded-full">
+        <span class="material-symbols-outlined text-[12px]">calendar_today</span>
+        <%= task.schedule_at.to_date.strftime("%d/%m") %>
+      </span>
+    <% end %>
+    <% if task.estimated_minutes.present? && task.estimated_minutes > 0 %>
+      <span class="flex items-center gap-1 text-[11px] font-medium text-on-surface-variant bg-surface-container px-2 py-0.5 rounded-full">
+        <span class="material-symbols-outlined text-[12px]">timer</span>
+        <%= task.estimated_minutes %>min
+      </span>
+    <% end %>
+    <span class="flex items-center gap-1 text-[11px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full border border-primary/20 ml-auto">
+      <span class="material-symbols-outlined text-[11px]">star</span>
+      <%= number_with_precision(task.score, precision: 1, strip_insignificant_zeros: true) %>
+    </span>
+  </div>
+</div>

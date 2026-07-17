@@ -36,6 +36,15 @@
       </div>
     </div>
 
+    <% if Current.user.projects.any? %>
+      <div>
+        <%= form.label :project_id, "Projeto", class: "block text-sm font-medium text-on-surface-variant mb-1" %>
+        <%= form.collection_select :project_id, Current.user.projects.order(:name), :id, :name, { include_blank: "Sem projeto" }, class: "w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-4 py-2 text-on-surface focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all" %>
+      </div>
+    <% end %>
+
+    <%= form.hidden_field :status %>
+
     <% if Current.user.user_integrations.exists?(provider: 'google_oauth2') %>
       <div class="mt-4 flex items-center gap-3 bg-surface-container-lowest p-4 rounded-lg border border-outline-variant">
         <%= form.check_box :sync_to_google, checked: task.task_integration.present?, class: "w-5 h-5 text-primary rounded border-outline focus:ring-primary focus:ring-2 bg-surface cursor-pointer" %>
