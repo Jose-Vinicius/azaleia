@@ -1,0 +1,135 @@
+<% content_for :head do %>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  <style>
+      body { font-family: 'Geist', sans-serif; }
+      .hide-scrollbar::-webkit-scrollbar { display: none; }
+      .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+<% end %>
+
+<%= render 'shared/sidebar' %>
+
+<main class="flex-1 flex flex-col h-full w-full overflow-hidden bg-background relative">
+  <!-- Header -->
+  <header class="pt-8 md:pt-12 px-6 md:px-8 pb-6 flex-shrink-0 w-full flex justify-between items-start border-b border-outline-variant/30">
+    <div class="space-y-2">
+      <div class="flex items-center gap-3">
+        <%= link_to goals_path, class: "text-on-surface-variant hover:text-on-surface p-1 rounded-lg transition-colors" do %>
+          <span class="material-symbols-outlined text-[20px]">arrow_back</span>
+        <% end %>
+        <span class="text-xs font-bold px-3 py-1 rounded-full border bg-primary/10 text-primary border-primary/20">
+          Meta SMART
+        </span>
+        <% if @goal.psychometric_focus.present? %>
+          <span class="text-xs font-bold px-3 py-1 rounded-full border bg-surface-container-high text-on-surface-variant border-outline-variant">
+            Foco: <%= @goal.psychometric_focus %>
+          </span>
+        <% end %>
+      </div>
+      <h2 class="text-2xl md:text-3xl font-black text-on-surface tracking-tight"><%= @goal.title %></h2>
+      <% if @goal.description.present? %>
+        <p class="text-sm text-on-surface-variant max-w-3xl"><%= @goal.description %></p>
+      <% end %>
+    </div>
+
+    <div class="flex items-center gap-3">
+      <%= link_to edit_goal_path(@goal), class: "px-4 py-2 bg-surface-container border border-outline-variant text-on-surface rounded-xl hover:bg-surface-container-high transition-colors text-sm font-semibold flex items-center gap-2" do %>
+        <span class="material-symbols-outlined text-[18px]">edit</span>
+        <span>Editar</span>
+      <% end %>
+      <%= button_to goal_path(@goal), method: :delete, data: { turbo_confirm: "Tem certeza que deseja remover esta meta?" }, class: "px-4 py-2 bg-error/10 border border-error/20 text-error rounded-xl hover:bg-error/20 transition-colors text-sm font-semibold flex items-center gap-2 cursor-pointer" do %>
+        <span class="material-symbols-outlined text-[18px]">delete</span>
+        <span>Excluir</span>
+      <% end %>
+    </div>
+  </header>
+
+  <!-- Content -->
+  <div class="flex-1 overflow-y-auto p-6 md:p-8 space-y-8 hide-scrollbar">
+    <!-- SMART Breakdown Grid -->
+    <div class="bg-surface-container/60 border border-outline-variant/60 rounded-2xl p-6 space-y-6">
+      <h3 class="text-lg font-bold text-on-surface flex items-center gap-2">
+        <span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">psychology</span>
+        Detalhamento SMART
+      </h3>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="p-4 bg-surface-container-lowest border border-outline-variant/40 rounded-xl space-y-1">
+          <span class="text-xs font-bold text-primary uppercase tracking-wider">Especificidade (Specific)</span>
+          <p class="text-sm text-on-surface"><%= @goal.smart_specific.presence || "Não especificado" %></p>
+        </div>
+
+        <div class="p-4 bg-surface-container-lowest border border-outline-variant/40 rounded-xl space-y-1">
+          <span class="text-xs font-bold text-primary uppercase tracking-wider">Métrica (Measurable)</span>
+          <p class="text-sm text-on-surface"><%= @goal.smart_measurable.presence || "Não especificado" %></p>
+        </div>
+
+        <div class="p-4 bg-surface-container-lowest border border-outline-variant/40 rounded-xl space-y-1">
+          <span class="text-xs font-bold text-primary uppercase tracking-wider">Alcançável (Achievable)</span>
+          <p class="text-sm text-on-surface"><%= @goal.smart_achievable.presence || "Não especificado" %></p>
+        </div>
+
+        <div class="p-4 bg-surface-container-lowest border border-outline-variant/40 rounded-xl space-y-1">
+          <span class="text-xs font-bold text-primary uppercase tracking-wider">Relevância (Relevant)</span>
+          <p class="text-sm text-on-surface"><%= @goal.smart_relevant.presence || "Não especificado" %></p>
+        </div>
+      </div>
+
+      <div class="p-4 bg-surface-container-lowest border border-outline-variant/40 rounded-xl space-y-1">
+        <span class="text-xs font-bold text-primary uppercase tracking-wider">Prazo (Timebound)</span>
+        <p class="text-sm text-on-surface"><%= @goal.smart_timebound.presence || "Não especificado" %></p>
+      </div>
+    </div>
+
+    <!-- Associated Tasks -->
+    <div class="space-y-4">
+      <div class="flex items-center justify-between">
+        <h3 class="text-lg font-bold text-on-surface flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary">task_alt</span>
+          Tarefas Vinculadas (<%= @tasks.count %>)
+        </h3>
+        <div class="flex items-center gap-2">
+          <%= button_to decompose_goal_ai_path(goal_id: @goal.id), method: :post, class: "px-3.5 py-2 bg-primary/10 border border-primary/30 text-primary hover:bg-primary/20 font-bold text-xs rounded-xl transition-all flex items-center gap-1.5 cursor-pointer" do %>
+            <span class="material-symbols-outlined text-[16px]">auto_awesome</span>
+            <span>Decompor com IA</span>
+          <% end %>
+          <%= link_to new_task_path(goal_id: @goal.id), data: { turbo_frame: "modal" }, class: "px-4 py-2 bg-primary text-on-primary font-bold text-xs rounded-xl hover:bg-primary/90 transition-all flex items-center gap-1.5" do %>
+            <span class="material-symbols-outlined text-[16px]">add</span>
+            <span>Nova Tarefa</span>
+          <% end %>
+        </div>
+      </div>
+
+      <% if @tasks.empty? %>
+        <div class="p-8 bg-surface-container/40 border border-outline-variant/40 rounded-2xl text-center text-on-surface-variant text-sm">
+          Nenhuma tarefa vinculada a esta meta ainda.
+        </div>
+      <% else %>
+        <div class="space-y-3">
+          <% @tasks.each do |task| %>
+            <div class="p-4 bg-surface-container/60 border border-outline-variant/60 rounded-xl flex items-center justify-between hover:border-primary/40 transition-colors">
+              <div class="flex items-center gap-3">
+                <span class="material-symbols-outlined text-[20px] <%= task.completed ? 'text-emerald-400' : 'text-on-surface-variant' %>">
+                  <%= task.completed ? 'check_circle' : 'radio_button_unchecked' %>
+                </span>
+                <div>
+                  <h4 class="text-sm font-bold text-on-surface <%= 'line-through opacity-60' if task.completed %>"><%= task.title %></h4>
+                  <% if task.description.present? %>
+                    <p class="text-xs text-on-surface-variant line-clamp-1"><%= task.description %></p>
+                  <% end %>
+                </div>
+              </div>
+              <div class="flex items-center gap-3">
+                <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-surface-container-high text-on-surface-variant border border-outline-variant">
+                  <%= task.status.humanize %>
+                </span>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</main>

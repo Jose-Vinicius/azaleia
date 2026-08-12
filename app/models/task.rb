@@ -6,6 +6,7 @@ class Task < ApplicationRecord
 
   belongs_to :user
   belongs_to :project, optional: true
+  belongs_to :goal, optional: true
   has_many :time_entries, dependent: :destroy
   has_many :notifications, dependent: :destroy
   has_one :task_integration, dependent: :destroy

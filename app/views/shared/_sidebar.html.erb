@@ -62,7 +62,10 @@
           { path: metrics_path, icon: 'bar_chart', text: 'Métricas' },
           { path: history_index_path, icon: 'history', text: 'Histórico' },
           { path: notes_path, icon: 'edit_document', text: 'Anotações' },
-          { path: projects_path, icon: 'view_kanban', text: 'Projetos' }
+          { path: projects_path, icon: 'view_kanban', text: 'Projetos' },
+          { path: goals_path, icon: 'target', text: 'Metas SMART' },
+          { path: psychometrics_path, icon: 'psychology', text: 'Psicometria' },
+          { path: ai_dashboard_path, icon: 'auto_awesome', text: 'Assistente IA' }
         ]
       %>
       
@@ -79,7 +82,7 @@
       <!-- Collapse Toggle Button -->
       <button data-action="click->sidebar#toggle" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#a1a1aa] hover:text-[#fafafa] hover:bg-[#18181b] transition-all duration-150 active:scale-[0.98] overflow-hidden" title="Recolher / Expandir">
         <span class="material-symbols-outlined flex-shrink-0">sync_alt</span>
-        <span data-sidebar-target="text" class="whitespace-nowrap">Recolher Sidebar</span>
+        <span data-sidebar-target="text" class="whitespace-nowrap">Esconder</span>
       </button>
 
       <!-- User Account Dropdown -->

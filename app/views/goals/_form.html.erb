@@ -1,0 +1,137 @@
+<%= form_with(model: goal, class: "space-y-6") do |form| %>
+  <% if goal.errors.any? %>
+    <div class="p-4 bg-error-container text-on-error-container rounded-xl border border-error/50">
+      <h2 class="text-sm font-bold mb-2"><%= pluralize(goal.errors.count, "erro") %> impediram a economia desta meta:</h2>
+      <ul class="list-disc pl-5 text-sm space-y-1">
+        <% goal.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :title, "Título da Meta", class: "block text-sm font-semibold text-on-surface mb-2" %>
+    <%= form.text_field :title, class: "w-full bg-surface-container-lowest border border-outline-variant rounded-xl px-4 py-3 text-on-surface focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all placeholder-secondary", placeholder: "Ex: Aumentar resiliência sob pressão no trabalho" %>
+  </div>
+
+  <div>
+    <%= form.label :description, "Descrição Geral", class: "block text-sm font-semibold text-on-surface mb-2" %>
+    <%= form.text_area :description, rows: 3, class: "w-full bg-surface-container-lowest border border-outline-variant rounded-xl px-4 py-3 text-on-surface focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all placeholder-secondary resize-none", placeholder: "Contexto ou objetivo final da meta..." %>
+  </div>
+
+  <!-- Framework SMART -->
+  <div class="p-6 bg-surface-container border border-outline-variant/60 rounded-2xl space-y-5">
+    <div class="flex items-center justify-between border-b border-outline-variant/40 pb-3">
+      <div class="flex items-center gap-2">
+        <span class="material-symbols-outlined text-primary text-[20px]" style="font-variation-settings: 'FILL' 1;">psychology</span>
+        <h3 class="text-base font-bold text-on-surface tracking-tight">Atributos SMART</h3>
+      </div>
+      <button type="button" onclick="autoFillSmartFields(this)" class="px-3.5 py-1.5 bg-primary/10 border border-primary/30 text-primary hover:bg-primary/20 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer">
+        <span class="material-symbols-outlined text-[16px]">auto_awesome</span>
+        <span>Auto-preencher com IA</span>
+      </button>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div>
+        <%= form.label :smart_specific, "Específico (Specific)", class: "block text-xs font-bold text-on-surface-variant mb-1 uppercase tracking-wider" %>
+        <%= form.text_area :smart_specific, rows: 2, class: "w-full bg-surface-container-lowest border border-outline-variant rounded-xl p-3 text-sm text-on-surface focus:ring-2 focus:ring-primary outline-none resize-none", placeholder: "O que exatamente você quer alcançar?" %>
+      </div>
+
+      <div>
+        <%= form.label :smart_measurable, "Mensurável (Measurable)", class: "block text-xs font-bold text-on-surface-variant mb-1 uppercase tracking-wider" %>
+        <%= form.text_area :smart_measurable, rows: 2, class: "w-full bg-surface-container-lowest border border-outline-variant rounded-xl p-3 text-sm text-on-surface focus:ring-2 focus:ring-primary outline-none resize-none", placeholder: "Como vai medir o progresso/sucesso?" %>
+      </div>
+
+      <div>
+        <%= form.label :smart_achievable, "Atingível (Achievable)", class: "block text-xs font-bold text-on-surface-variant mb-1 uppercase tracking-wider" %>
+        <%= form.text_area :smart_achievable, rows: 2, class: "w-full bg-surface-container-lowest border border-outline-variant rounded-xl p-3 text-sm text-on-surface focus:ring-2 focus:ring-primary outline-none resize-none", placeholder: "Por que esta meta é realista?" %>
+      </div>
+
+      <div>
+        <%= form.label :smart_relevant, "Relevante (Relevant)", class: "block text-xs font-bold text-on-surface-variant mb-1 uppercase tracking-wider" %>
+        <%= form.text_area :smart_relevant, rows: 2, class: "w-full bg-surface-container-lowest border border-outline-variant rounded-xl p-3 text-sm text-on-surface focus:ring-2 focus:ring-primary outline-none resize-none", placeholder: "Por que isso é importante para o seu perfil?" %>
+      </div>
+    </div>
+
+    <div>
+      <%= form.label :smart_timebound, "Temporal (Timebound)", class: "block text-xs font-bold text-on-surface-variant mb-1 uppercase tracking-wider" %>
+      <%= form.text_area :smart_timebound, rows: 2, class: "w-full bg-surface-container-lowest border border-outline-variant rounded-xl p-3 text-sm text-on-surface focus:ring-2 focus:ring-primary outline-none resize-none", placeholder: "Qual é o cronograma e prazo final?" %>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div>
+      <%= form.label :status, "Status", class: "block text-sm font-semibold text-on-surface mb-2" %>
+      <%= form.select :status, Goal.statuses.keys.map { |s| [s.humanize, s] }, {}, class: "w-full bg-surface-container-lowest border border-outline-variant rounded-xl px-4 py-3 text-on-surface focus:ring-2 focus:ring-primary outline-none" %>
+    </div>
+
+    <div>
+      <%= form.label :target_date, "Data Alvo", class: "block text-sm font-semibold text-on-surface mb-2" %>
+      <%= form.date_field :target_date, class: "w-full bg-surface-container-lowest border border-outline-variant rounded-xl px-4 py-3 text-on-surface focus:ring-2 focus:ring-primary outline-none", style: "color-scheme: dark;" %>
+    </div>
+
+    <div>
+      <%= form.label :psychometric_focus, "Foco Psicométrico", class: "block text-sm font-semibold text-on-surface mb-2" %>
+      <%= form.text_field :psychometric_focus, class: "w-full bg-surface-container-lowest border border-outline-variant rounded-xl px-4 py-3 text-on-surface focus:ring-2 focus:ring-primary outline-none", placeholder: "ex: reality_testing, assertiveness" %>
+    </div>
+  </div>
+
+  <div class="flex items-center justify-end gap-3 pt-4 border-t border-outline-variant/50">
+    <%= link_to "Cancelar", goals_path, class: "px-5 py-2.5 rounded-xl border border-outline-variant text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all text-sm font-medium" %>
+    <%= form.submit goal.new_record? ? "Criar Meta SMART" : "Salvar Alterações", class: "px-6 py-2.5 bg-primary text-on-primary rounded-xl text-sm font-bold shadow-lg shadow-primary/20 hover:opacity-90 active:scale-95 transition-all cursor-pointer" %>
+  </div>
+<% end %>
+
+<script>
+  async function autoFillSmartFields(btn) {
+    const titleInput = document.querySelector('input[name="goal[title]"]');
+    const descInput = document.querySelector('textarea[name="goal[description]"]');
+    
+    if (!titleInput || !titleInput.value.trim()) {
+      alert("Por favor, digite pelo menos o Título da Meta antes de solicitar o preenchimento por IA.");
+      titleInput?.focus();
+      return;
+    }
+
+    const originalText = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<span class="material-symbols-outlined animate-spin text-[16px]">sync</span> Gerando...';
+
+    try {
+      const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
+      const res = await fetch('<%= generate_smart_fields_ai_path %>', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-Token': csrfToken
+        },
+        body: JSON.stringify({
+          title: titleInput.value.trim(),
+          description: descInput ? descInput.value.trim() : ''
+        })
+      });
+
+      const data = await res.json();
+      if (!res.ok || data.error) {
+        alert(data.error || "Ocorreu um erro ao gerar os campos com IA.");
+        return;
+      }
+
+      if (data.smart_specific) document.querySelector('textarea[name="goal[smart_specific]"]').value = data.smart_specific;
+      if (data.smart_measurable) document.querySelector('textarea[name="goal[smart_measurable]"]').value = data.smart_measurable;
+      if (data.smart_achievable) document.querySelector('textarea[name="goal[smart_achievable]"]').value = data.smart_achievable;
+      if (data.smart_relevant) document.querySelector('textarea[name="goal[smart_relevant]"]').value = data.smart_relevant;
+      if (data.smart_timebound) document.querySelector('textarea[name="goal[smart_timebound]"]').value = data.smart_timebound;
+      if (data.psychometric_focus) document.querySelector('input[name="goal[psychometric_focus]"]').value = data.psychometric_focus;
+      if (data.target_date) document.querySelector('input[name="goal[target_date]"]').value = data.target_date;
+
+    } catch (err) {
+      alert("Falha de conexão com a API de IA: " + err.message);
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = originalText;
+    }
+  }
+</script>

@@ -1,0 +1,248 @@
+<% content_for :head do %>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  <style>
+      body { font-family: 'Geist', sans-serif; }
+      .hide-scrollbar::-webkit-scrollbar { display: none; }
+      .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+<% end %>
+
+<%= render 'shared/sidebar' %>
+
+<main class="flex-1 flex flex-col h-full w-full overflow-hidden bg-background relative">
+  <!-- Header -->
+  <header class="pt-8 md:pt-12 px-6 md:px-8 pb-6 flex-shrink-0 w-full border-b border-outline-variant/30">
+    <h2 class="text-2xl md:text-3xl font-black text-on-surface tracking-tight uppercase">Perfis Psicométricos</h2>
+    <p class="text-sm text-on-surface-variant mt-1">Dados integrados dos testes EQ-i 2.0® (Ametista) e MBTI (Bismuto)</p>
+  </header>
+
+  <!-- Flash Messages -->
+  <% if notice.present? %>
+    <div class="mx-6 md:mx-8 mt-4 p-4 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-emerald-400 text-sm font-semibold flex items-center gap-2">
+      <span class="material-symbols-outlined text-[18px]">check_circle</span>
+      <span><%= notice %></span>
+    </div>
+  <% end %>
+
+  <% if alert.present? %>
+    <div class="mx-6 md:mx-8 mt-4 p-4 bg-error/10 border border-error/30 rounded-xl text-error text-sm font-semibold flex items-center gap-2">
+      <span class="material-symbols-outlined text-[18px]">error</span>
+      <span><%= alert %></span>
+    </div>
+  <% end %>
+
+  <!-- Main Content Grid -->
+  <div class="flex-1 overflow-y-auto p-6 md:p-8 space-y-8 hide-scrollbar">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      
+      <!-- EQ-i 2.0 (Ametista) Section -->
+      <div class="bg-surface-container/60 border border-outline-variant/60 rounded-2xl p-6 space-y-6 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between border-b border-outline-variant/40 pb-4">
+            <div class="flex items-center gap-3">
+              <div class="p-2.5 rounded-xl bg-primary/10 border border-primary/20 text-primary">
+                <span class="material-symbols-outlined text-[24px]" style="font-variation-settings: 'FILL' 1;">psychology</span>
+              </div>
+              <div>
+                <h3 class="text-lg font-bold text-on-surface">Inteligência Emocional (EQ-i 2.0)</h3>
+                <span class="text-xs text-on-surface-variant">Motor Ametista</span>
+              </div>
+            </div>
+            <% if @eqi_profile %>
+              <span class="text-xs font-bold px-3 py-1 rounded-full bg-emerald-400/10 text-emerald-400 border border-emerald-400/20">
+                Importado em <%= l(@eqi_profile.imported_at, format: :short) rescue "" %>
+              </span>
+            <% else %>
+              <span class="text-xs font-bold px-3 py-1 rounded-full bg-amber-400/10 text-amber-400 border border-amber-400/20">
+                Pendente
+              </span>
+            <% end %>
+          </div>
+
+          <% if @eqi_profile %>
+            <!-- Summary Stats -->
+            <div class="grid grid-cols-3 gap-4 my-6">
+              <div class="p-4 bg-surface-container-lowest border border-outline-variant/40 rounded-xl text-center">
+                <span class="text-xs text-on-surface-variant font-medium block mb-1">Total EQ</span>
+                <span class="text-2xl font-black text-primary"><%= @eqi_profile.total_eq %></span>
+              </div>
+              <div class="p-4 bg-surface-container-lowest border border-outline-variant/40 rounded-xl text-center">
+                <span class="text-xs text-on-surface-variant font-medium block mb-1">Validade</span>
+                <span class="text-sm font-bold <%= @eqi_profile.is_valid ? 'text-emerald-400' : 'text-error' %>">
+                  <%= @eqi_profile.is_valid ? "Válido" : "Inconsistente" %>
+                </span>
+              </div>
+              <div class="p-4 bg-surface-container-lowest border border-outline-variant/40 rounded-xl text-center">
+                <span class="text-xs text-on-surface-variant font-medium block mb-1">Bem-Estar</span>
+                <span class="text-2xl font-black text-emerald-400"><%= @eqi_profile.happiness_score %></span>
+              </div>
+            </div>
+
+            <!-- Low Subscales Alerts -->
+            <% low_subscales = Current.user.low_eqi_subscales %>
+            <% if low_subscales.any? %>
+              <div class="p-4 bg-amber-400/10 border border-amber-400/30 rounded-xl space-y-2">
+                <div class="flex items-center gap-2 text-amber-400 font-bold text-sm">
+                  <span class="material-symbols-outlined text-[18px]">warning</span>
+                  <span>Alertas de Subescalas Baixas (< 85)</span>
+                </div>
+                <div class="flex flex-wrap gap-2 pt-1">
+                  <% low_subscales.each do |subscale| %>
+                    <span class="text-xs font-semibold px-2.5 py-1 bg-amber-400/20 text-amber-300 rounded-lg border border-amber-400/40">
+                      <%= subscale.sub("_score", "").humanize %> (<%= @eqi_profile.send(subscale) %>)
+                    </span>
+                  <% end %>
+                </div>
+              </div>
+            <% end %>
+
+            <!-- All Subscales Grid -->
+            <div class="space-y-3 mt-6">
+              <h4 class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Subescalas Mapeadas</h4>
+              <div class="grid grid-cols-2 gap-3 text-xs">
+                <% [
+                  ["Autorrespeito", @eqi_profile.self_regard_score],
+                  ["Autorrealização", @eqi_profile.self_actualization_score],
+                  ["Autoconsciência Emocional", @eqi_profile.emotional_self_awareness_score],
+                  ["Expressão Emocional", @eqi_profile.emotional_expression_score],
+                  ["Assertividade", @eqi_profile.assertiveness_score],
+                  ["Independência", @eqi_profile.independence_score],
+                  ["Relações Interpessoais", @eqi_profile.interpersonal_relationships_score],
+                  ["Empatia", @eqi_profile.empathy_score],
+                  ["Responsabilidade Social", @eqi_profile.social_responsibility_score],
+                  ["Resolução de Problemas", @eqi_profile.problem_solving_score],
+                  ["Teste de Realidade", @eqi_profile.reality_testing_score],
+                  ["Controle de Impulsos", @eqi_profile.impulse_control_score],
+                  ["Flexibilidade", @eqi_profile.flexibility_score],
+                  ["Tolerância ao Estresse", @eqi_profile.stress_tolerance_score],
+                  ["Otimismo", @eqi_profile.optimism_score]
+                ].each do |label, score| %>
+                  <% next unless score.present? %>
+                  <div class="flex justify-between items-center p-2.5 bg-surface-container-lowest border border-outline-variant/30 rounded-lg">
+                    <span class="text-on-surface font-medium truncate"><%= label %></span>
+                    <span class="font-bold <%= score < 85 ? 'text-amber-400' : 'text-on-surface-variant' %>"><%= score %></span>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+          <% else %>
+            <div class="py-12 text-center text-on-surface-variant text-sm">
+              Nenhum perfil de inteligência emocional importado ainda.
+            </div>
+          <% end %>
+        </div>
+
+        <!-- Import Form for EQ-i -->
+        <div class="pt-6 border-t border-outline-variant/40">
+          <h4 class="text-xs font-bold text-on-surface mb-3 uppercase tracking-wider">Importar JSON do Ametista (`ametista_export.json`)</h4>
+          <%= form_with url: import_eqi_psychometrics_path, multipart: true, class: "flex items-center gap-3" do |f| %>
+            <%= f.file_field :file, accept: ".json", class: "block w-full text-xs text-on-surface-variant file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-surface-container-high file:text-on-surface hover:file:bg-primary/20 cursor-pointer" %>
+            <%= f.submit "Importar", class: "px-4 py-2 bg-primary text-on-primary font-bold text-xs rounded-xl shadow-md hover:opacity-90 transition-all cursor-pointer shrink-0" %>
+          <% end %>
+        </div>
+      </div>
+
+      <!-- MBTI (Bismuto) Section -->
+      <div class="bg-surface-container/60 border border-outline-variant/60 rounded-2xl p-6 space-y-6 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between border-b border-outline-variant/40 pb-4">
+            <div class="flex items-center gap-3">
+              <div class="p-2.5 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400">
+                <span class="material-symbols-outlined text-[24px]">extension</span>
+              </div>
+              <div>
+                <h3 class="text-lg font-bold text-on-surface">Perfil MBTI (Tipologia)</h3>
+                <span class="text-xs text-on-surface-variant">Motor Bismuto</span>
+              </div>
+            </div>
+            <% if @mbti_profile %>
+              <span class="text-xs font-bold px-3 py-1 rounded-full bg-emerald-400/10 text-emerald-400 border border-emerald-400/20">
+                Importado em <%= l(@mbti_profile.imported_at, format: :short) rescue "" %>
+              </span>
+            <% else %>
+              <span class="text-xs font-bold px-3 py-1 rounded-full bg-amber-400/10 text-amber-400 border border-amber-400/20">
+                Pendente
+              </span>
+            <% end %>
+          </div>
+
+          <% if @mbti_profile %>
+            <!-- MBTI Main Type Badge -->
+            <div class="my-6 p-6 bg-gradient-to-r from-purple-900/20 to-primary/10 border border-purple-500/30 rounded-2xl flex items-center justify-between">
+              <div>
+                <span class="text-xs text-on-surface-variant font-medium block">Tipo Psicológico Final</span>
+                <span class="text-3xl font-black text-purple-300 tracking-wider"><%= @mbti_profile.final_type %></span>
+              </div>
+              <div class="text-right">
+                <span class="text-xs text-on-surface-variant font-medium block">Grupo Temperamento</span>
+                <span class="text-sm font-bold text-on-surface"><%= @mbti_profile.temperament_group %> (<%= @mbti_profile.temperament_code %>)</span>
+              </div>
+            </div>
+
+            <!-- Cognitive Functions Hierarchy -->
+            <div class="space-y-3">
+              <h4 class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Hierarquia de Funções Cognitivas</h4>
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-center">
+                <div class="p-3 bg-surface-container-lowest border border-outline-variant/40 rounded-xl">
+                  <span class="text-[10px] text-on-surface-variant uppercase font-bold block mb-1">Dominante</span>
+                  <span class="text-lg font-black text-primary"><%= @mbti_profile.dominant_function %></span>
+                </div>
+                <div class="p-3 bg-surface-container-lowest border border-outline-variant/40 rounded-xl">
+                  <span class="text-[10px] text-on-surface-variant uppercase font-bold block mb-1">Auxiliar</span>
+                  <span class="text-lg font-black text-purple-300"><%= @mbti_profile.auxiliary_function %></span>
+                </div>
+                <div class="p-3 bg-surface-container-lowest border border-outline-variant/40 rounded-xl">
+                  <span class="text-[10px] text-on-surface-variant uppercase font-bold block mb-1">Terciária</span>
+                  <span class="text-lg font-black text-on-surface-variant"><%= @mbti_profile.tertiary_function %></span>
+                </div>
+                <div class="p-3 bg-surface-container-lowest border border-outline-variant/40 rounded-xl">
+                  <span class="text-[10px] text-on-surface-variant uppercase font-bold block mb-1">Inferior</span>
+                  <span class="text-lg font-black text-secondary"><%= @mbti_profile.inferior_function %></span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Dichotomies Breakdown -->
+            <div class="space-y-3 mt-6">
+              <h4 class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Dicotomias & Clareza (PCI)</h4>
+              <div class="grid grid-cols-2 gap-3 text-xs">
+                <div class="p-3 bg-surface-container-lowest border border-outline-variant/30 rounded-lg flex justify-between items-center">
+                  <span>E / I: <strong><%= @mbti_profile.ei_winner %></strong></span>
+                  <span class="text-on-surface-variant font-bold"><%= @mbti_profile.ei_pci %>%</span>
+                </div>
+                <div class="p-3 bg-surface-container-lowest border border-outline-variant/30 rounded-lg flex justify-between items-center">
+                  <span>S / N: <strong><%= @mbti_profile.sn_winner %></strong></span>
+                  <span class="text-on-surface-variant font-bold"><%= @mbti_profile.sn_pci %>%</span>
+                </div>
+                <div class="p-3 bg-surface-container-lowest border border-outline-variant/30 rounded-lg flex justify-between items-center">
+                  <span>T / F: <strong><%= @mbti_profile.tf_winner %></strong></span>
+                  <span class="text-on-surface-variant font-bold"><%= @mbti_profile.tf_pci %>%</span>
+                </div>
+                <div class="p-3 bg-surface-container-lowest border border-outline-variant/30 rounded-lg flex justify-between items-center">
+                  <span>J / P: <strong><%= @mbti_profile.jp_winner %></strong></span>
+                  <span class="text-on-surface-variant font-bold"><%= @mbti_profile.jp_pci %>%</span>
+                </div>
+              </div>
+            </div>
+          <% else %>
+            <div class="py-12 text-center text-on-surface-variant text-sm">
+              Nenhum perfil MBTI importado ainda.
+            </div>
+          <% end %>
+        </div>
+
+        <!-- Import Form for MBTI -->
+        <div class="pt-6 border-t border-outline-variant/40">
+          <h4 class="text-xs font-bold text-on-surface mb-3 uppercase tracking-wider">Importar JSON do Bismuto (`bismuto_export.json`)</h4>
+          <%= form_with url: import_mbti_psychometrics_path, multipart: true, class: "flex items-center gap-3" do |f| %>
+            <%= f.file_field :file, accept: ".json", class: "block w-full text-xs text-on-surface-variant file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-surface-container-high file:text-on-surface hover:file:bg-primary/20 cursor-pointer" %>
+            <%= f.submit "Importar", class: "px-4 py-2 bg-purple-500 text-white font-bold text-xs rounded-xl shadow-md hover:opacity-90 transition-all cursor-pointer shrink-0" %>
+          <% end %>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</main>
