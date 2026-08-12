@@ -43,6 +43,13 @@
       </div>
     <% end %>
 
+    <% if Current.user.goals.active.any? %>
+      <div>
+        <%= form.label :goal_id, "Meta SMART", class: "block text-sm font-medium text-on-surface-variant mb-1" %>
+        <%= form.collection_select :goal_id, Current.user.goals.active.order(:title), :id, :title, { include_blank: "Sem meta" }, class: "w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-4 py-2 text-on-surface focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all" %>
+      </div>
+    <% end %>
+
     <%= form.hidden_field :status %>
 
     <% if Current.user.user_integrations.exists?(provider: 'google_oauth2') %>

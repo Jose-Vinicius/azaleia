@@ -1,0 +1,196 @@
+<% content_for :head do %>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  <style>
+      body { font-family: 'Geist', sans-serif; }
+      .hide-scrollbar::-webkit-scrollbar { display: none; }
+      .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+  <script>
+    document.documentElement.classList.add('dark');
+    document.addEventListener("turbo:load", () => {
+      document.body.className = "bg-background text-on-background h-screen w-full overflow-hidden flex flex-col md:flex-row antialiased font-body selection:bg-primary-container selection:text-on-primary-container";
+    });
+    document.addEventListener("DOMContentLoaded", () => {
+      document.body.className = "bg-background text-on-background h-screen w-full overflow-hidden flex flex-col md:flex-row antialiased font-body selection:bg-primary-container selection:text-on-primary-container";
+    });
+  </script>
+<% end %>
+
+<%= render 'shared/sidebar' %>
+
+<main class="flex-1 flex flex-col h-full w-full overflow-hidden bg-background relative">
+  <!-- Header -->
+  <header class="pt-8 md:pt-12 px-6 md:px-8 pb-6 flex-shrink-0 w-full border-b border-outline-variant/30 flex justify-between items-end">
+    <div>
+      <div class="flex items-center gap-2 mb-1">
+        <span class="material-symbols-outlined text-primary text-[24px]" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+        <h2 class="text-2xl md:text-3xl font-black text-on-surface tracking-tight uppercase">Assistente de IA Gemini</h2>
+      </div>
+      <p class="text-sm text-on-surface-variant">Análise de tarefas por período (até 1 ano), gerador de metas SMART e decomposição inteligente</p>
+    </div>
+  </header>
+
+  <!-- Flash Messages -->
+  <% if notice.present? %>
+    <div class="mx-6 md:mx-8 mt-4 p-4 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-emerald-400 text-sm font-semibold flex items-center gap-2">
+      <span class="material-symbols-outlined text-[18px]">check_circle</span>
+      <span><%= notice %></span>
+    </div>
+  <% end %>
+
+  <% if alert.present? %>
+    <div class="mx-6 md:mx-8 mt-4 p-4 bg-error/10 border border-error/30 rounded-xl text-error text-sm font-semibold flex items-center gap-2">
+      <span class="material-symbols-outlined text-[18px]">error</span>
+      <span><%= alert %></span>
+    </div>
+  <% end %>
+
+  <!-- Main Content Area -->
+  <div class="flex-1 overflow-y-auto p-6 md:p-8 space-y-8 hide-scrollbar">
+    
+    <!-- Action Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      
+      <!-- Card 1: Análise por Período -->
+      <div class="bg-surface-container/60 border border-outline-variant/60 rounded-2xl p-6 flex flex-col justify-between space-y-6">
+        <div>
+          <div class="flex items-center gap-3 mb-3">
+            <div class="p-2.5 rounded-xl bg-primary/10 text-primary border border-primary/20">
+              <span class="material-symbols-outlined text-[24px]">analytics</span>
+            </div>
+            <div>
+              <h3 class="text-base font-bold text-on-surface">Análise de Produtividade</h3>
+              <span class="text-xs text-on-surface-variant">Períodos de 7d até 1 ano</span>
+            </div>
+          </div>
+          <p class="text-xs text-on-surface-variant">Analisa a execução de tarefas, atrasos e cruza com seus dados de Inteligência Emocional (Ametista) e MBTI (Bismuto).</p>
+        </div>
+
+        <%= form_with url: analyze_tasks_ai_path, method: :post, class: "space-y-3" do |f| %>
+          <div class="space-y-1">
+            <label class="block text-xs font-bold text-on-surface-variant uppercase tracking-wider">Período de Análise</label>
+            <%= f.select :period_days, [
+              ["Últimos 7 dias (Semanal)", 7],
+              ["Últimos 30 dias (Mensal)", 30],
+              ["Últimos 90 dias (Trimestral)", 90],
+              ["Últimos 365 dias (Anual)", 365]
+            ], { selected: @period_days || 30 }, class: "w-full bg-surface-container-lowest border border-outline-variant rounded-xl px-3 py-2 text-sm text-on-surface outline-none focus:ring-2 focus:ring-primary" %>
+          </div>
+
+          <%= f.submit "📊 Gerar Diagnóstico com IA", class: "w-full py-2.5 bg-primary text-on-primary font-bold text-xs rounded-xl shadow-md shadow-primary/20 hover:opacity-90 transition-all cursor-pointer" %>
+        <% end %>
+      </div>
+
+      <!-- Card 2: Sugestão de Metas SMART -->
+      <div class="bg-surface-container/60 border border-outline-variant/60 rounded-2xl p-6 flex flex-col justify-between space-y-6">
+        <div>
+          <div class="flex items-center gap-3 mb-3">
+            <div class="p-2.5 rounded-xl bg-purple-500/10 text-purple-400 border border-purple-500/20">
+              <span class="material-symbols-outlined text-[24px]">target</span>
+            </div>
+            <div>
+              <h3 class="text-base font-bold text-on-surface">Sugestor de Metas SMART</h3>
+              <span class="text-xs text-on-surface-variant">Baseado em Psicometria</span>
+            </div>
+          </div>
+          <p class="text-xs text-on-surface-variant">Gera 3 sugestões de metas comportamentais alinhadas aos pontos fracos do EQ-i (<85) e perfil MBTI.</p>
+        </div>
+
+        <%= button_to suggest_goals_ai_path, method: :post, class: "w-full py-2.5 bg-purple-500 text-white font-bold text-xs rounded-xl shadow-md hover:opacity-90 transition-all cursor-pointer" do %>
+          ✨ Sugerir 3 Metas SMART
+        <% end %>
+      </div>
+
+      <!-- Card 3: Decomposição de Metas em Tarefas -->
+      <div class="bg-surface-container/60 border border-outline-variant/60 rounded-2xl p-6 flex flex-col justify-between space-y-6">
+        <div>
+          <div class="flex items-center gap-3 mb-3">
+            <div class="p-2.5 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+              <span class="material-symbols-outlined text-[24px]">account_tree</span>
+            </div>
+            <div>
+              <h3 class="text-base font-bold text-on-surface">Decompositor de Metas</h3>
+              <span class="text-xs text-on-surface-variant">Transforme metas em tarefas</span>
+            </div>
+          </div>
+          <p class="text-xs text-on-surface-variant">Seleciona uma Meta SMART ativa e gera automaticamente 3 a 6 tarefas acionáveis com estimativa de tempo e prioridade.</p>
+        </div>
+
+        <% if @active_goals.present? && @active_goals.any? %>
+          <%= form_with url: decompose_goal_ai_path, method: :post, class: "space-y-3" do |f| %>
+            <div class="space-y-1">
+              <label class="block text-xs font-bold text-on-surface-variant uppercase tracking-wider">Selecione a Meta</label>
+              <%= f.collection_select :goal_id, @active_goals, :id, :title, {}, class: "w-full bg-surface-container-lowest border border-outline-variant rounded-xl px-3 py-2 text-sm text-on-surface outline-none focus:ring-2 focus:ring-primary" %>
+            </div>
+            <%= f.submit "🧩 Decompor em Tarefas", class: "w-full py-2.5 bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-md hover:opacity-90 transition-all cursor-pointer" %>
+          <% end %>
+        <% else %>
+          <div class="p-3 bg-surface-container-lowest border border-outline-variant/40 rounded-xl text-xs text-on-surface-variant text-center">
+            Nenhuma meta ativa cadastrada para decompor.
+          </div>
+        <% end %>
+      </div>
+
+    </div>
+
+    <!-- Output Section: Task Analysis Report -->
+    <% if @analysis_markdown.present? %>
+      <div class="bg-surface-container/60 border border-outline-variant/60 rounded-2xl p-6 md:p-8 space-y-6">
+        <div class="flex items-center gap-2 border-b border-outline-variant/40 pb-4">
+          <span class="material-symbols-outlined text-primary text-[24px]">description</span>
+          <h3 class="text-lg font-bold text-on-surface">Relatório Diagnóstico de IA (Período: <%= @period_days %> dias)</h3>
+        </div>
+
+        <div class="prose prose-invert max-w-none text-sm leading-relaxed space-y-4">
+          <%= Kramdown::Document.new(@analysis_markdown).to_html.html_safe %>
+        </div>
+      </div>
+    <% end %>
+
+    <!-- Output Section: Suggested Goals Cards -->
+    <% if @suggested_goals.present? %>
+      <div class="space-y-6">
+        <div class="flex items-center gap-2 border-b border-outline-variant/40 pb-4">
+          <span class="material-symbols-outlined text-purple-400 text-[24px]">stars</span>
+          <h3 class="text-lg font-bold text-on-surface">Metas SMART Sugeridas pela IA</h3>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <% @suggested_goals.each_with_index do |goal_data, idx| %>
+            <div class="bg-surface-container/60 border border-purple-500/30 rounded-2xl p-6 flex flex-col justify-between space-y-4">
+              <div class="space-y-3">
+                <span class="text-xs font-bold px-2.5 py-1 rounded-full bg-purple-500/10 text-purple-300 border border-purple-500/30">
+                  Sugestão #<%= idx + 1 %>
+                </span>
+                <h4 class="text-base font-bold text-on-surface"><%= goal_data["title"] %></h4>
+                <p class="text-xs text-on-surface-variant"><%= goal_data["description"] %></p>
+
+                <div class="p-3 bg-surface-container-lowest border border-outline-variant/30 rounded-xl space-y-1 text-xs">
+                  <span class="font-bold text-primary block">Específico:</span>
+                  <p class="text-on-surface-variant"><%= goal_data["smart_specific"] %></p>
+                </div>
+              </div>
+
+              <%= form_with url: accept_goal_ai_path, method: :post do |f| %>
+                <%= f.hidden_field "goal[title]", value: goal_data["title"] %>
+                <%= f.hidden_field "goal[description]", value: goal_data["description"] %>
+                <%= f.hidden_field "goal[smart_specific]", value: goal_data["smart_specific"] %>
+                <%= f.hidden_field "goal[smart_measurable]", value: goal_data["smart_measurable"] %>
+                <%= f.hidden_field "goal[smart_achievable]", value: goal_data["smart_achievable"] %>
+                <%= f.hidden_field "goal[smart_relevant]", value: goal_data["smart_relevant"] %>
+                <%= f.hidden_field "goal[smart_timebound]", value: goal_data["smart_timebound"] %>
+                <%= f.hidden_field "goal[psychometric_focus]", value: goal_data["psychometric_focus"] %>
+                <%= f.hidden_field "goal[target_date]", value: goal_data["target_date"] %>
+
+                <%= f.submit "✨ Aceitar Meta", class: "w-full py-2.5 bg-primary text-on-primary font-bold text-xs rounded-xl shadow-md hover:opacity-90 transition-all cursor-pointer" %>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+
+  </div>
+</main>

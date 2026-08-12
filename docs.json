@@ -1,0 +1,29 @@
+{
+  "name": "Azaleia",
+  "badge": "Docs",
+  "version": "v1.0.0",
+  "repository": "https://github.com/Jose-Vinicius/azaleia",
+  "nav": [
+    {
+      "title": "👋 Visão Geral",
+      "path": "README.md"
+    },
+    {
+      "category": "📚 Documentação",
+      "items": [
+        {
+          "title": "🚀 Instalação & Execução",
+          "path": "docs/instalacao.md"
+        },
+        {
+          "title": "🏗️ Arquitetura & Stack",
+          "path": "docs/arquitetura.md"
+        },
+        {
+          "title": "📋 Regras de Negócio",
+          "path": "docs/regras-de-negocio.md"
+        }
+      ]
+    }
+  ]
+}

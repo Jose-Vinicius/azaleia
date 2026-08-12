@@ -2,41 +2,41 @@ default: &default
   adapter: postgresql
   encoding: unicode
   max_connections: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  username: <%= ENV["POSTGRES_USER"] %>
-  password: <%= ENV["POSTGRES_PASSWORD"] %>
-  host: localhost
-  port: <%= ENV["POSTGRES_PORT"] %>
+  username: <%= ENV.fetch("POSTGRES_USER", "admin") %>
+  password: <%= ENV.fetch("POSTGRES_PASSWORD", "1234") %>
+  host: <%= ENV.fetch("POSTGRES_HOST", "127.0.0.1") %>
+  port: <%= ENV.fetch("POSTGRES_PORT", 5432) %>
 development:
   primary:
     <<: *default
-    database: <%= ENV["POSTGRES_DB"] %>
+    database: <%= ENV.fetch("POSTGRES_DB", "azaleia") %>
   cache:
     <<: *default
-    database: <%= ENV["POSTGRES_DB"] %>_cache
+    database: <%= "#{ENV.fetch('POSTGRES_DB', 'azaleia')}_cache" %>
     migrations_paths: db/cache_migrate
   queue:
     <<: *default
-    database: <%= ENV["POSTGRES_DB"] %>_queue
+    database: <%= "#{ENV.fetch('POSTGRES_DB', 'azaleia')}_queue" %>
     migrations_paths: db/queue_migrate
   cable:
     <<: *default
-    database: <%= ENV["POSTGRES_DB"] %>_cable
+    database: <%= "#{ENV.fetch('POSTGRES_DB', 'azaleia')}_cable" %>
     migrations_paths: db/cable_migrate
 test:
   primary:
     <<: *default
-    database: <%= ENV["POSTGRES_DB"] %>_test
+    database: <%= "#{ENV.fetch('POSTGRES_DB', 'azaleia')}_test" %>
   cache:
     <<: *default
-    database: <%= ENV["POSTGRES_DB"] %>_cache_test
+    database: <%= "#{ENV.fetch('POSTGRES_DB', 'azaleia')}_cache_test" %>
     migrations_paths: db/cache_migrate
   queue:
     <<: *default
-    database: <%= ENV["POSTGRES_DB"] %>_queue_test
+    database: <%= "#{ENV.fetch('POSTGRES_DB', 'azaleia')}_queue_test" %>
     migrations_paths: db/queue_migrate
   cable:
     <<: *default
-    database: <%= ENV["POSTGRES_DB"] %>_cable_test
+    database: <%= "#{ENV.fetch('POSTGRES_DB', 'azaleia')}_cable_test" %>
     migrations_paths: db/cable_migrate
 production:
   primary: &primary_production

@@ -10,9 +10,77 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_17_155645) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_11_100004) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "eqi_profiles", force: :cascade do |t|
+    t.integer "assertiveness_score"
+    t.string "assessment_id"
+    t.datetime "created_at", null: false
+    t.integer "emotional_expression_score"
+    t.integer "emotional_self_awareness_score"
+    t.integer "empathy_score"
+    t.integer "flexibility_score"
+    t.integer "happiness_score"
+    t.datetime "imported_at"
+    t.integer "impulse_control_score"
+    t.integer "independence_score"
+    t.integer "interpersonal_relationships_score"
+    t.boolean "is_valid", default: true
+    t.integer "optimism_score"
+    t.integer "problem_solving_score"
+    t.integer "reality_testing_score"
+    t.integer "self_actualization_score"
+    t.integer "self_regard_score"
+    t.integer "social_responsibility_score"
+    t.integer "stress_tolerance_score"
+    t.integer "total_eq"
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["user_id"], name: "index_eqi_profiles_on_user_id", unique: true
+  end
+
+  create_table "goals", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.text "description"
+    t.string "psychometric_focus"
+    t.text "smart_achievable"
+    t.text "smart_measurable"
+    t.text "smart_relevant"
+    t.text "smart_specific"
+    t.text "smart_timebound"
+    t.integer "status", default: 1, null: false
+    t.date "target_date"
+    t.string "title", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["user_id"], name: "index_goals_on_user_id"
+  end
+
+  create_table "mbti_profiles", force: :cascade do |t|
+    t.string "assessment_id"
+    t.string "auxiliary_function"
+    t.datetime "created_at", null: false
+    t.string "dominant_function"
+    t.decimal "ei_pci", precision: 5, scale: 2
+    t.string "ei_winner"
+    t.string "final_type", null: false
+    t.datetime "imported_at"
+    t.string "inferior_function"
+    t.decimal "jp_pci", precision: 5, scale: 2
+    t.string "jp_winner"
+    t.decimal "sn_pci", precision: 5, scale: 2
+    t.string "sn_winner"
+    t.string "temperament_code"
+    t.string "temperament_group"
+    t.string "tertiary_function"
+    t.decimal "tf_pci", precision: 5, scale: 2
+    t.string "tf_winner"
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["user_id"], name: "index_mbti_profiles_on_user_id", unique: true
+  end
 
   create_table "multipliers", force: :cascade do |t|
     t.datetime "created_at", null: false
@@ -77,6 +145,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_17_155645) do
     t.datetime "created_at", null: false
     t.text "description"
     t.integer "estimated_minutes", default: 0
+    t.bigint "goal_id"
     t.bigint "multiplier_id"
     t.bigint "project_id"
     t.string "recurrence", default: "none", null: false
@@ -85,6 +154,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_17_155645) do
     t.string "title"
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
+    t.index ["goal_id"], name: "index_tasks_on_goal_id"
     t.index ["multiplier_id"], name: "index_tasks_on_multiplier_id"
     t.index ["project_id"], name: "index_tasks_on_project_id"
     t.index ["user_id"], name: "index_tasks_on_user_id"
@@ -120,6 +190,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_17_155645) do
     t.index ["email_address"], name: "index_users_on_email_address", unique: true
   end
 
+  add_foreign_key "eqi_profiles", "users"
+  add_foreign_key "goals", "users"
+  add_foreign_key "mbti_profiles", "users"
   add_foreign_key "notes", "users"
   add_foreign_key "notifications", "tasks"
   add_foreign_key "notifications", "users"
@@ -127,6 +200,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_17_155645) do
   add_foreign_key "sessions", "users"
   add_foreign_key "task_integrations", "tasks"
   add_foreign_key "task_integrations", "user_integrations"
+  add_foreign_key "tasks", "goals"
   add_foreign_key "tasks", "multipliers"
   add_foreign_key "tasks", "projects"
   add_foreign_key "tasks", "users"

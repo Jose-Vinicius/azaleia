@@ -27,7 +27,20 @@ Rails.application.routes.draw do
   resources :history, only: [ :index ]
   resources :notes
   resources :projects
+  resources :goals
+  get "psychometrics", to: "psychometrics#show", as: :psychometrics
+  post "psychometrics/import_eqi", to: "psychometrics#import_eqi", as: :import_eqi_psychometrics
+  post "psychometrics/import_mbti", to: "psychometrics#import_mbti", as: :import_mbti_psychometrics
   resources :metrics, only: [ :index ]
+
+  # Assistente IA (Google Gemini)
+  get "ai", to: "ai#index", as: :ai_dashboard
+  post "ai/analyze_tasks", to: "ai#analyze_tasks", as: :analyze_tasks_ai
+  post "ai/suggest_goals", to: "ai#suggest_goals", as: :suggest_goals_ai
+  post "ai/generate_smart_fields", to: "ai#generate_smart_fields", as: :generate_smart_fields_ai
+  post "ai/accept_goal", to: "ai#accept_goal", as: :accept_goal_ai
+  post "ai/decompose_goal", to: "ai#decompose_goal", as: :decompose_goal_ai
+
   get "settings", to: "settings#index"
   get "up" => "rails/health#show", as: :rails_health_check
   root "dashboard#index"

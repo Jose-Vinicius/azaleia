@@ -100,6 +100,10 @@
       <h1 class="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-on-surface to-on-surface/70 tracking-tighter">Painel de Métricas</h1>
     </div>
     <div class="flex items-center gap-4">
+      <%= link_to ai_dashboard_path, class: "px-4 py-2 bg-primary/10 border border-primary/30 text-primary hover:bg-primary/20 rounded-xl text-xs font-bold transition-all flex items-center gap-2" do %>
+        <span class="material-symbols-outlined text-[18px]">auto_awesome</span>
+        <span>Diagnóstico de IA</span>
+      <% end %>
       <div class="relative" data-controller="dropdown">
         <button data-action="click->dropdown#toggle" class="relative p-2 rounded-xl bg-[#18181b] border border-[#27272a] text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors flex items-center justify-center">
           <span class="material-symbols-outlined text-[20px]">notifications</span>

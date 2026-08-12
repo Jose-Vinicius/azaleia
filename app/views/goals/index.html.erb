@@ -1,0 +1,112 @@
+<% content_for :head do %>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  <style>
+      body { font-family: 'Geist', sans-serif; }
+      .hide-scrollbar::-webkit-scrollbar { display: none; }
+      .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+  <script>
+    document.documentElement.classList.add('dark');
+    document.addEventListener("turbo:load", () => {
+      document.body.className = "bg-background text-on-background h-screen w-full overflow-hidden flex flex-col md:flex-row antialiased font-body selection:bg-primary-container selection:text-on-primary-container";
+    });
+    document.addEventListener("DOMContentLoaded", () => {
+      document.body.className = "bg-background text-on-background h-screen w-full overflow-hidden flex flex-col md:flex-row antialiased font-body selection:bg-primary-container selection:text-on-primary-container";
+    });
+  </script>
+<% end %>
+
+<%= render 'shared/sidebar' %>
+
+<main class="flex-1 flex flex-col h-full w-full overflow-hidden bg-background relative">
+  <!-- Desktop Header -->
+  <header class="hidden md:flex pt-12 px-8 pb-6 flex-shrink-0 w-full justify-between items-end border-b border-outline-variant/30">
+    <div>
+      <h2 class="text-3xl font-black tracking-tighter text-on-surface uppercase opacity-90">Metas SMART</h2>
+      <p class="text-sm text-on-surface-variant mt-1">Gerencie metas alinhadas ao seu perfil psicométrico</p>
+    </div>
+    <%= link_to new_goal_path, class: "px-5 py-2.5 bg-primary text-on-primary font-bold text-sm rounded-xl hover:bg-primary/90 transition-all flex items-center gap-2 shadow-lg shadow-primary/20" do %>
+      <span class="material-symbols-outlined text-[18px]">add</span>
+      <span>Nova Meta</span>
+    <% end %>
+  </header>
+
+  <!-- Mobile Header -->
+  <div class="md:hidden px-6 py-4 flex items-center justify-between border-b border-outline-variant/30">
+    <h2 class="text-2xl font-bold text-on-background tracking-tight">Metas SMART</h2>
+    <%= link_to new_goal_path, class: "p-2 bg-primary text-on-primary rounded-lg" do %>
+      <span class="material-symbols-outlined text-[20px]">add</span>
+    <% end %>
+  </div>
+
+  <!-- Content List -->
+  <div class="flex-1 overflow-y-auto p-6 md:p-8 space-y-6 hide-scrollbar">
+    <% if @goals.empty? %>
+      <div class="flex flex-col items-center justify-center py-20 text-on-surface-variant">
+        <span class="material-symbols-outlined text-[64px] mb-4 opacity-50">target</span>
+        <h3 class="text-xl font-bold text-on-surface">Nenhuma meta cadastrada</h3>
+        <p class="text-sm mt-1">Crie sua primeira meta SMART para vincular a tarefas e monitorar o progresso.</p>
+        <%= link_to "Criar Nova Meta", new_goal_path, class: "mt-6 px-6 py-2.5 bg-primary text-on-primary font-bold text-sm rounded-xl shadow-lg shadow-primary/20 hover:opacity-90 transition-all" %>
+      </div>
+    <% else %>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <% @goals.each do |goal| %>
+          <% status_classes = case goal.status
+             when "active" then "bg-emerald-400/10 text-emerald-400 border-emerald-400/20"
+             when "completed" then "bg-primary/10 text-primary border-primary/20"
+             when "paused" then "bg-amber-400/10 text-amber-400 border-amber-400/20"
+             else "bg-secondary-container text-on-surface-variant border-outline-variant"
+             end %>
+
+          <div class="bg-surface-container/60 border border-outline-variant/60 rounded-2xl p-6 flex flex-col justify-between hover:border-primary/50 transition-all group shadow-sm">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-3">
+                <span class="text-xs font-bold px-2.5 py-1 rounded-full border <%= status_classes %>">
+                  <%= goal.status.humanize %>
+                </span>
+                <% if goal.target_date.present? %>
+                  <span class="text-xs text-on-surface-variant flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[14px]">event</span>
+                    <%= l(goal.target_date, format: :short) %>
+                  </span>
+                <% end %>
+              </div>
+
+              <h3 class="text-lg font-bold text-on-surface group-hover:text-primary transition-colors">
+                <%= link_to goal.title, goal_path(goal) %>
+              </h3>
+
+              <% if goal.description.present? %>
+                <p class="text-sm text-on-surface-variant mt-2 line-clamp-2"><%= goal.description %></p>
+              <% end %>
+
+              <% if goal.psychometric_focus.present? %>
+                <div class="mt-4 inline-flex items-center gap-1.5 px-3 py-1 bg-surface-container-high border border-outline-variant/40 rounded-lg text-xs font-medium text-primary">
+                  <span class="material-symbols-outlined text-[14px]">psychology</span>
+                  <span>Foco: <%= goal.psychometric_focus %></span>
+                </div>
+              <% end %>
+            </div>
+
+            <div class="mt-6 pt-4 border-t border-outline-variant/40 flex items-center justify-between">
+              <span class="text-xs text-on-surface-variant font-medium">
+                <%= goal.tasks.count %> <%= "tarefa".pluralize(goal.tasks.count) %>
+              </span>
+
+              <div class="flex items-center gap-2">
+                <%= link_to goal_path(goal), class: "p-2 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors" do %>
+                  <span class="material-symbols-outlined text-[18px]">visibility</span>
+                <% end %>
+                <%= link_to edit_goal_path(goal), class: "p-2 rounded-lg text-on-surface-variant hover:text-primary hover:bg-primary/10 transition-colors" do %>
+                  <span class="material-symbols-outlined text-[18px]">edit</span>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</main>
