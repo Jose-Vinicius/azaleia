@@ -1,0 +1,13 @@
+<% if notice.present? %>
+  <div class="mx-6 md:mx-8 mt-4 p-4 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-emerald-400 text-sm font-semibold flex items-center gap-2">
+    <span class="material-symbols-outlined text-[18px]">check_circle</span>
+    <span><%= notice %></span>
+  </div>
+<% end %>
+
+<% if alert.present? %>
+  <div class="mx-6 md:mx-8 mt-4 p-4 bg-error/10 border border-error/30 rounded-xl text-error text-sm font-semibold flex items-center gap-2">
+    <span class="material-symbols-outlined text-[18px]">error</span>
+    <span><%= alert %></span>
+  </div>
+<% end %>
