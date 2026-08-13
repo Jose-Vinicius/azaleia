@@ -16,7 +16,10 @@ class AiController < ApplicationController
     flash.now[:alert] = "Erro na Análise de IA: #{e.message}"
     @period_days = params[:period_days] || 30
     @active_goals = Current.user.goals.active.order(:title)
-    render :index, status: :unprocessable_entity
+    respond_to do |format|
+      format.turbo_stream { render :analyze_tasks, status: :unprocessable_entity }
+      format.html { render :index, status: :unprocessable_entity }
+    end
   end
 
   def suggest_goals
@@ -30,7 +33,10 @@ class AiController < ApplicationController
   rescue StandardError => e
     flash.now[:alert] = "Erro ao sugerir metas: #{e.message}"
     @active_goals = Current.user.goals.active.order(:title)
-    render :index, status: :unprocessable_entity
+    respond_to do |format|
+      format.turbo_stream { render :suggest_goals, status: :unprocessable_entity }
+      format.html { render :index, status: :unprocessable_entity }
+    end
   end
 
   def generate_smart_fields

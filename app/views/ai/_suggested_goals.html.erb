@@ -1,0 +1,41 @@
+<% if @suggested_goals.present? %>
+  <div class="space-y-6">
+    <div class="flex items-center gap-2 border-b border-outline-variant/40 pb-4">
+      <span class="material-symbols-outlined text-purple-400 text-[24px]">stars</span>
+      <h3 class="text-lg font-bold text-on-surface">Metas SMART Sugeridas pela IA</h3>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <% @suggested_goals.each_with_index do |goal_data, idx| %>
+        <div class="bg-surface-container/60 border border-purple-500/30 rounded-2xl p-6 flex flex-col justify-between space-y-4">
+          <div class="space-y-3">
+            <span class="text-xs font-bold px-2.5 py-1 rounded-full bg-purple-500/10 text-purple-300 border border-purple-500/30">
+              Sugestão #<%= idx + 1 %>
+            </span>
+            <h4 class="text-base font-bold text-on-surface"><%= goal_data["title"] %></h4>
+            <p class="text-xs text-on-surface-variant"><%= goal_data["description"] %></p>
+
+            <div class="p-3 bg-surface-container-lowest border border-outline-variant/30 rounded-xl space-y-1 text-xs">
+              <span class="font-bold text-primary block">Específico:</span>
+              <p class="text-on-surface-variant"><%= goal_data["smart_specific"] %></p>
+            </div>
+          </div>
+
+          <%= form_with url: accept_goal_ai_path, method: :post do |f| %>
+            <%= f.hidden_field "goal[title]", value: goal_data["title"] %>
+            <%= f.hidden_field "goal[description]", value: goal_data["description"] %>
+            <%= f.hidden_field "goal[smart_specific]", value: goal_data["smart_specific"] %>
+            <%= f.hidden_field "goal[smart_measurable]", value: goal_data["smart_measurable"] %>
+            <%= f.hidden_field "goal[smart_achievable]", value: goal_data["smart_achievable"] %>
+            <%= f.hidden_field "goal[smart_relevant]", value: goal_data["smart_relevant"] %>
+            <%= f.hidden_field "goal[smart_timebound]", value: goal_data["smart_timebound"] %>
+            <%= f.hidden_field "goal[psychometric_focus]", value: goal_data["psychometric_focus"] %>
+            <%= f.hidden_field "goal[target_date]", value: goal_data["target_date"] %>
+
+            <%= f.submit "✨ Aceitar Meta", class: "w-full py-2.5 bg-primary text-on-primary font-bold text-xs rounded-xl shadow-md hover:opacity-90 transition-all cursor-pointer" %>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+<% end %>

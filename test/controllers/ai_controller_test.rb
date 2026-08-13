@@ -13,21 +13,41 @@ class AiControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "should analyze tasks" do
+  test "should analyze tasks via html" do
     stub_service(Ai::TaskAnalysisService, :call, "Relatório de Análise") do
-      post analyze_tasks_ai_path, params: { period_days: 30 }
+      post analyze_tasks_ai_path, params: { period_days: 30 }, as: :html
       assert_response :success
     end
   end
 
-  test "should suggest goals" do
+  test "should analyze tasks via turbo stream" do
+    stub_service(Ai::TaskAnalysisService, :call, "Relatório de Análise") do
+      post analyze_tasks_ai_path, params: { period_days: 30 }, as: :turbo_stream
+      assert_response :success
+      assert_match "turbo-stream action=\"update\" target=\"task_analysis_results\"", response.body
+    end
+  end
+
+  test "should suggest goals via html" do
     mock_suggestions = [
       { "title" => "Meta Sugerida", "description" => "Desc", "target_date" => "2026-09-01" }
     ]
 
     stub_service(Ai::GoalSuggestionService, :suggest_goals, mock_suggestions) do
-      post suggest_goals_ai_path
+      post suggest_goals_ai_path, as: :html
       assert_response :success
+    end
+  end
+
+  test "should suggest goals via turbo stream" do
+    mock_suggestions = [
+      { "title" => "Meta Sugerida", "description" => "Desc", "target_date" => "2026-09-01" }
+    ]
+
+    stub_service(Ai::GoalSuggestionService, :suggest_goals, mock_suggestions) do
+      post suggest_goals_ai_path, as: :turbo_stream
+      assert_response :success
+      assert_match "turbo-stream action=\"update\" target=\"suggested_goals_results\"", response.body
     end
   end
 
