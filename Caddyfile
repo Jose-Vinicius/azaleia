@@ -1,3 +1,6 @@
+petunia.siegti.com{
+    reverse_proxy petunia-web-1:80
+}
 verbena.siegti.com {
     reverse_proxy verbena-web-1:80
 }
