@@ -16,7 +16,7 @@ class Task < ApplicationRecord
   belongs_to :multiplier, optional: true
   has_many_attached :images
 
-  validates :recurrence, inclusion: { in: RECURRENCE_OPTIONS }, allow_blank: true
+  validates :recurrence, inclusion: { in: RECURRENCE_OPTIONS }, allow_blank: true, if: -> { respond_to?(:recurrence) }
 
   attr_accessor :sync_to_google
 
@@ -108,17 +108,19 @@ class Task < ApplicationRecord
   end
 
   def handle_recurrence_on_completion
-    return if recurrence.blank? || recurrence == "none"
+    return unless respond_to?(:recurrence)
+    rec_val = try(:recurrence)
+    return if rec_val.blank? || rec_val == "none"
 
     base_date = schedule_at.presence || Time.current
-    next_date = case recurrence
+    next_date = case rec_val
                 when "daily"   then base_date + 1.day
                 when "weekly"  then base_date + 1.week
                 when "monthly" then base_date + 1.month
                 else base_date + 1.day
                 end
 
-    new_task = user.tasks.create!(
+    new_task_attrs = {
       title: title,
       description: description,
       estimated_minutes: estimated_minutes,
@@ -126,11 +128,13 @@ class Task < ApplicationRecord
       project_id: project_id,
       goal_id: goal_id,
       key_result_id: key_result_id,
-      recurrence: recurrence,
       schedule_at: next_date,
       status: "pending",
       completed: nil
-    )
+    }
+    new_task_attrs[:recurrence] = rec_val if respond_to?(:recurrence)
+
+    new_task = user.tasks.create!(new_task_attrs)
 
     if images.attached?
       images.each do |img|

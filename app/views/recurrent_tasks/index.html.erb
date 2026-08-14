@@ -66,11 +66,12 @@
                   <h3 class="text-lg font-bold text-[#fafafa]"><%= task.title %></h3>
 
                   <!-- Recurrence Badge -->
-                  <% rec_label = case task.recurrence
+                  <% rec_val = task.try(:recurrence) %>
+                  <% rec_label = case rec_val
                                  when "daily" then "Diária"
                                  when "weekly" then "Semanal"
                                  when "monthly" then "Mensal"
-                                 else task.recurrence.humanize
+                                 else rec_val.to_s.humanize
                                  end %>
                   <span class="inline-flex items-center gap-1 text-xs font-semibold bg-indigo-950/80 text-indigo-300 px-2.5 py-0.5 rounded-md border border-indigo-800/50">
                     <span class="material-symbols-outlined text-xs">sync</span>
