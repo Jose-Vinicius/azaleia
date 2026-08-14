@@ -2,6 +2,13 @@
 
 ## [Unreleased]
 ### Adicionado
+### Alterado
+### Corrigido
+### Removido
+
+## [0.3.0] - 2026-08-14
+
+### Adicionado
 - Adicionado módulo e menu de gerenciamento de Tarefas Recorrentes (/recurrent_tasks) com renovação automática por data ao concluir a tarefa
 - Adicionada funcionalidade de anexo de imagens em tarefas via Active Storage com pré-visualização e remoção no modal
 - Adicionado visualizador interativo em modal (Lightbox) para imagens anexadas com navegação por carrossel entre fotos, zoom (+/-), download direto e abertura em nova aba
@@ -10,8 +17,6 @@
 - Ajustado disparo do workflow de release para ocorrer exclusivamente quando houver merge de Pull Request para a branch main
 - Expandida a exibição das badges de importância, tempo estimado, recorrência e imagens para todas as visualizações do Dashboard (Modo Cards, Modo Lista e Modo Calendário)
 - Adicionado suporte a movimentação/arraste (Pan & Drag) da imagem aproximada com o mouse/touch, zoom via scroll do mouse e clique duplo no visualizador Lightbox
-### Corrigido
-### Removido
 
 ## [0.2.0] - 2026-08-14
 
