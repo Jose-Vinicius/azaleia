@@ -2,6 +2,13 @@
 
 ## [Unreleased]
 ### Adicionado
+### Alterado
+### Corrigido
+### Removido
+
+## [0.3.0] - 2026-08-14
+
+### Adicionado
 - Adicionado módulo e menu de gerenciamento de Tarefas Recorrentes (/recurrent_tasks) com renovação automática por data ao concluir a tarefa
 - Adicionada funcionalidade de anexo de imagens em tarefas via Active Storage com pré-visualização e remoção no modal
 - Adicionado visualizador interativo em modal (Lightbox) para imagens anexadas com navegação por carrossel entre fotos, zoom (+/-), download direto e abertura em nova aba
