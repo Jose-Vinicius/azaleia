@@ -45,12 +45,24 @@
         
         <div class="flex-1 flex flex-col gap-1.5 overflow-y-auto hide-scrollbar">
           <% day_tasks.each do |task| %>
-            <%= link_to edit_task_path(task), data: { turbo_frame: "modal" }, class: "group relative flex items-center gap-1.5 px-2 py-1.5 rounded-md transition-colors #{task.completed ? 'bg-surface-container-lowest/50 opacity-60' : 'bg-surface-container-high hover:bg-surface-bright border border-transparent hover:border-outline-variant'}" do %>
+            <%= link_to edit_task_path(task), data: { turbo_frame: "modal" }, class: "group relative flex items-center gap-1.5 px-2 py-1.5 rounded-md transition-colors #{task.completed ? 'bg-surface-container-lowest/50 opacity-60' : 'bg-surface-container-high hover:bg-surface-bright border border-transparent hover:border-outline-variant'}", title: "#{task.title} - #{task.multiplier&.name || 'Prioridade'} #{task.estimated_minutes.to_i > 0 ? "(#{task.estimated_minutes} min)" : ''}" do %>
               <% color_class = task.completed ? 'bg-tertiary text-on-tertiary-fixed-variant' : (task.score >= 5 ? 'bg-error text-on-error' : (task.score >= 3 ? 'bg-[#f59e0b] text-[#78350f]' : 'bg-primary text-on-primary')) %>
-              <div class="w-2 h-2 rounded-full flex-shrink-0 <%= color_class %>" title="<%= task.completed ? 'Concluída' : 'Prioridade ' + task.score.to_i.to_s %>"></div>
+              <div class="w-2 h-2 rounded-full flex-shrink-0 <%= color_class %>"></div>
               <span class="text-xs truncate flex-1 font-medium <%= task.completed ? 'line-through text-on-surface-variant' : 'text-on-surface-variant group-hover:text-on-surface' %>">
                 <%= task.title %>
               </span>
+
+              <% if task.recurrence.present? && task.recurrence != "none" %>
+                <span class="material-symbols-outlined text-[12px] text-indigo-400 shrink-0" title="Recorrente (<%= task.recurrence %>)">repeat</span>
+              <% end %>
+
+              <% if task.images.attached? %>
+                <span class="material-symbols-outlined text-[12px] text-teal-400 shrink-0" title="<%= task.images.count %> imagem(ns)">image</span>
+              <% end %>
+
+              <% if task.estimated_minutes.present? && task.estimated_minutes > 0 %>
+                <span class="text-[10px] text-on-surface-variant font-semibold shrink-0"><%= task.estimated_minutes %>m</span>
+              <% end %>
             <% end %>
           <% end %>
         </div>

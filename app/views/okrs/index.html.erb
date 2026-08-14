@@ -1,0 +1,54 @@
+<div class="flex h-screen bg-[#09090b] text-[#fafafa] overflow-hidden">
+  <%= render "shared/sidebar" %>
+
+  <main class="flex-1 overflow-y-auto p-4 md:p-8 hide-scrollbar">
+    <div class="max-w-6xl mx-auto space-y-8">
+      
+      <!-- Top Bar / Header -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#27272a] pb-6">
+        <div>
+          <h1 class="text-3xl font-black tracking-tight text-[#fafafa] flex items-center gap-3">
+            <span class="material-symbols-outlined text-primary text-3xl">track_changes</span>
+            OKRs da Empresa
+          </h1>
+          <p class="text-sm text-[#a1a1aa] mt-1">
+            Objetivos estratégicos e Resultados-Chave (KRs) acionados por tarefas.
+          </p>
+        </div>
+        <div class="flex items-center gap-3">
+          <%= link_to new_okr_path, class: "flex items-center gap-2 bg-primary text-on-primary font-semibold px-4 py-2.5 rounded-lg hover:bg-primary-fixed transition-all active:scale-[0.98] shadow-lg shadow-primary/10 text-sm" do %>
+            <span class="material-symbols-outlined text-lg">add</span>
+            <span>Novo OKR</span>
+          <% end %>
+        </div>
+      </div>
+
+      <!-- OKRs List -->
+      <% if @okrs.any? %>
+        <div class="space-y-8">
+          <% @okrs.each do |okr| %>
+            <%= render "okr_card", okr: okr %>
+          <% end %>
+        </div>
+      <% else %>
+        <!-- Empty State -->
+        <div class="bg-[#121215] border border-[#27272a] rounded-xl p-12 text-center space-y-4">
+          <div class="w-16 h-16 bg-[#18181b] border border-[#27272a] rounded-full flex items-center justify-center mx-auto text-primary">
+            <span class="material-symbols-outlined text-3xl">track_changes</span>
+          </div>
+          <h3 class="text-lg font-bold text-[#fafafa]">Nenhum OKR cadastrado</h3>
+          <p class="text-sm text-[#a1a1aa] max-w-md mx-auto">
+            Crie seu primeiro Objetivo e Resultado-Chave (KR) da empresa para começar a derivar tarefas acionáveis e acompanhar o progresso.
+          </p>
+          <div class="pt-2">
+            <%= link_to new_okr_path, class: "inline-flex items-center gap-2 bg-primary text-on-primary font-semibold px-5 py-2.5 rounded-lg hover:bg-primary-fixed transition-colors text-sm" do %>
+              <span class="material-symbols-outlined text-lg">add</span>
+              <span>Criar Primeiro OKR</span>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+
+    </div>
+  </main>
+</div>

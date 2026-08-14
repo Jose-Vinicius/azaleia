@@ -1,0 +1,159 @@
+<div class="flex h-screen bg-[#09090b] text-[#fafafa] overflow-hidden">
+  <%= render "shared/sidebar" %>
+
+  <main class="flex-1 overflow-y-auto p-4 md:p-8 hide-scrollbar">
+    <div class="max-w-6xl mx-auto space-y-8">
+      
+      <!-- Header -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#27272a] pb-6">
+        <div>
+          <h1 class="text-3xl font-black tracking-tight text-[#fafafa] flex items-center gap-3">
+            <span class="material-symbols-outlined text-primary text-3xl">repeat</span>
+            Tarefas Recorrentes
+          </h1>
+          <p class="text-sm text-[#a1a1aa] mt-1">
+            Gerencie suas rotinas automáticas (Diárias, Semanais e Mensais) que se renovam ao serem concluídas.
+          </p>
+        </div>
+        <div class="flex items-center gap-3">
+          <%= link_to new_task_path, data: { turbo_frame: "modal" }, class: "flex items-center gap-2 bg-primary text-on-primary font-semibold px-4 py-2.5 rounded-lg hover:bg-primary-fixed transition-all active:scale-[0.98] shadow-lg shadow-primary/10 text-sm" do %>
+            <span class="material-symbols-outlined text-lg">add</span>
+            <span>Nova Tarefa Recorrente</span>
+          <% end %>
+        </div>
+      </div>
+
+      <% if @recurrent_tasks.any? %>
+        <!-- Summary Stats -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div class="bg-[#121215] border border-[#27272a] rounded-xl p-4 flex items-center gap-4">
+            <div class="p-3 bg-blue-950/60 text-blue-400 rounded-lg border border-blue-800/40">
+              <span class="material-symbols-outlined text-2xl">today</span>
+            </div>
+            <div>
+              <p class="text-xs text-[#a1a1aa]">Diárias</p>
+              <p class="text-xl font-bold text-[#fafafa]"><%= @recurrent_tasks.where(recurrence: "daily").count %></p>
+            </div>
+          </div>
+
+          <div class="bg-[#121215] border border-[#27272a] rounded-xl p-4 flex items-center gap-4">
+            <div class="p-3 bg-purple-950/60 text-purple-400 rounded-lg border border-purple-800/40">
+              <span class="material-symbols-outlined text-2xl">date_range</span>
+            </div>
+            <div>
+              <p class="text-xs text-[#a1a1aa]">Semanais</p>
+              <p class="text-xl font-bold text-[#fafafa]"><%= @recurrent_tasks.where(recurrence: "weekly").count %></p>
+            </div>
+          </div>
+
+          <div class="bg-[#121215] border border-[#27272a] rounded-xl p-4 flex items-center gap-4">
+            <div class="p-3 bg-emerald-950/60 text-emerald-400 rounded-lg border border-emerald-800/40">
+              <span class="material-symbols-outlined text-2xl">calendar_month</span>
+            </div>
+            <div>
+              <p class="text-xs text-[#a1a1aa]">Mensais</p>
+              <p class="text-xl font-bold text-[#fafafa]"><%= @recurrent_tasks.where(recurrence: "monthly").count %></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Grouped List -->
+        <div class="space-y-6">
+          <% @recurrent_tasks.each do |task| %>
+            <div class="bg-[#121215] border border-[#27272a] hover:border-[#3f3f46] rounded-xl p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 transition-all">
+              <div class="space-y-2 flex-1">
+                <div class="flex items-center gap-3 flex-wrap">
+                  <h3 class="text-lg font-bold text-[#fafafa]"><%= task.title %></h3>
+
+                  <!-- Recurrence Badge -->
+                  <% rec_label = case task.recurrence
+                                 when "daily" then "Diária"
+                                 when "weekly" then "Semanal"
+                                 when "monthly" then "Mensal"
+                                 else task.recurrence.humanize
+                                 end %>
+                  <span class="inline-flex items-center gap-1 text-xs font-semibold bg-indigo-950/80 text-indigo-300 px-2.5 py-0.5 rounded-md border border-indigo-800/50">
+                    <span class="material-symbols-outlined text-xs">sync</span>
+                    <%= rec_label %>
+                  </span>
+
+                  <!-- Importance Multiplier Badge -->
+                  <% mult = task.multiplier %>
+                  <% if mult.present? %>
+                    <% mult_bg = case mult.name.downcase
+                                 when /urgente/ then "bg-orange-950/80 text-orange-300 border-orange-800/50"
+                                 when /prioridade/ then "bg-amber-950/80 text-amber-300 border-amber-800/50"
+                                 when /estratégico|estrategico/ then "bg-purple-950/80 text-purple-300 border-purple-800/50"
+                                 else "bg-zinc-800 text-zinc-300 border-zinc-700"
+                                 end %>
+                    <span class="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-0.5 rounded-md border <%= mult_bg %>">
+                      <span class="material-symbols-outlined text-xs">star</span>
+                      <%= mult.name %> (<%= mult.value %>x)
+                    </span>
+                  <% end %>
+
+                  <!-- Estimated Time Badge -->
+                  <% if task.estimated_minutes.present? && task.estimated_minutes > 0 %>
+                    <span class="inline-flex items-center gap-1 text-xs font-semibold bg-[#27272a] text-[#a1a1aa] px-2.5 py-0.5 rounded-md border border-[#3f3f46]">
+                      <span class="material-symbols-outlined text-xs">timer</span>
+                      <%= task.estimated_minutes %> min
+                    </span>
+                  <% end %>
+
+                  <!-- Images Count Badge -->
+                  <% if task.images.attached? %>
+                    <span class="inline-flex items-center gap-1 text-xs font-semibold bg-teal-950/80 text-teal-300 px-2.5 py-0.5 rounded-md border border-teal-800/50">
+                      <span class="material-symbols-outlined text-xs">image</span>
+                      <%= task.images.count %> <%= task.images.count == 1 ? 'imagem' : 'imagens' %>
+                    </span>
+                  <% end %>
+                </div>
+
+                <% if task.description.present? %>
+                  <p class="text-sm text-[#a1a1aa] line-clamp-2"><%= task.description %></p>
+                <% end %>
+
+                <div class="flex items-center gap-4 text-xs text-[#71717a] pt-1">
+                  <% if task.schedule_at.present? %>
+                    <span>Próxima ocorrência: <strong class="text-[#e4e4e7]"><%= task.schedule_at.to_date.strftime("%d/%m/%Y") %></strong></span>
+                  <% end %>
+                  <% if task.project.present? %>
+                    <span class="flex items-center gap-1">
+                      <span class="w-2 h-2 rounded-full" style="background-color: <%= task.project.color || '#a78bfa' %>"></span>
+                      <%= task.project.name %>
+                    </span>
+                  <% end %>
+                </div>
+              </div>
+
+              <!-- Actions -->
+              <div class="flex items-center gap-2 shrink-0">
+                <%= link_to edit_task_path(task), data: { turbo_frame: "modal" }, class: "px-3.5 py-2 rounded-lg bg-[#27272a] hover:bg-[#3f3f46] text-[#fafafa] text-xs font-medium transition-colors" do %>
+                  Editar
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <!-- Empty State -->
+        <div class="bg-[#121215] border border-[#27272a] rounded-xl p-12 text-center space-y-4">
+          <div class="w-16 h-16 bg-[#18181b] border border-[#27272a] rounded-full flex items-center justify-center mx-auto text-primary">
+            <span class="material-symbols-outlined text-3xl">repeat</span>
+          </div>
+          <h3 class="text-lg font-bold text-[#fafafa]">Nenhuma tarefa recorrente configurada</h3>
+          <p class="text-sm text-[#a1a1aa] max-w-md mx-auto">
+            Defina tarefas com frequência (Diária, Semanal ou Mensal) ao criar tarefas no sistema. Ao concluí-las, o Azaleia agendará a próxima automaticamente.
+          </p>
+          <div class="pt-2">
+            <%= link_to new_task_path, data: { turbo_frame: "modal" }, class: "inline-flex items-center gap-2 bg-primary text-on-primary font-semibold px-5 py-2.5 rounded-lg hover:bg-primary-fixed transition-colors text-sm" do %>
+              <span class="material-symbols-outlined text-lg">add</span>
+              <span>Criar Tarefa Recorrente</span>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+
+    </div>
+  </main>
+</div>

@@ -7,6 +7,7 @@ class User < ApplicationRecord
   has_many :user_integrations, dependent: :destroy
   has_many :notes, dependent: :destroy
   has_many :goals, dependent: :destroy
+  has_many :okrs, dependent: :destroy
   has_one :eqi_profile, dependent: :destroy
   has_one :mbti_profile, dependent: :destroy
 

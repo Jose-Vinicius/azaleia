@@ -1,0 +1,39 @@
+<%= form_with(model: okr, class: "space-y-6") do |form| %>
+  <% if okr.errors.any? %>
+    <div class="p-4 bg-rose-950/60 text-rose-200 rounded-xl border border-rose-800/50">
+      <h2 class="text-sm font-bold mb-2"><%= pluralize(okr.errors.count, "erro") %> impediram a gravação deste OKR:</h2>
+      <ul class="list-disc pl-5 text-sm space-y-1">
+        <% okr.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :title, "Título do OKR / Departamento", class: "block text-sm font-semibold text-[#fafafa] mb-2" %>
+    <%= form.text_field :title, class: "w-full bg-[#18181b] border border-[#27272a] focus:border-primary rounded-xl px-4 py-3 text-[#fafafa] placeholder-[#71717a] outline-none transition-colors", placeholder: "Ex: OKR Suporte, OKR Produto, OKR Vendas" %>
+  </div>
+
+  <div>
+    <%= form.label :description, "Objetivo Qualitativo (Meta do Trimestre)", class: "block text-sm font-semibold text-[#fafafa] mb-2" %>
+    <%= form.text_area :description, rows: 3, class: "w-full bg-[#18181b] border border-[#27272a] focus:border-primary rounded-xl px-4 py-3 text-[#fafafa] placeholder-[#71717a] outline-none transition-colors resize-none", placeholder: "Ex: Consolidar a ponte Suporte -> Produto como processo permanente e gerador de roadmap" %>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div>
+      <%= form.label :quarter, "Trimestre / Período", class: "block text-sm font-semibold text-[#fafafa] mb-2" %>
+      <%= form.text_field :quarter, class: "w-full bg-[#18181b] border border-[#27272a] focus:border-primary rounded-xl px-4 py-3 text-[#fafafa] placeholder-[#71717a] outline-none transition-colors", placeholder: "Ex: Q3 2026" %>
+    </div>
+
+    <div>
+      <%= form.label :status, "Status", class: "block text-sm font-semibold text-[#fafafa] mb-2" %>
+      <%= form.select :status, Okr.statuses.keys.map { |k| [k.humanize, k] }, {}, class: "w-full bg-[#18181b] border border-[#27272a] focus:border-primary rounded-xl px-4 py-3 text-[#fafafa] outline-none transition-colors cursor-pointer" %>
+    </div>
+  </div>
+
+  <div class="flex items-center justify-end gap-3 pt-4 border-t border-[#27272a]">
+    <%= link_to "Cancelar", okrs_path, class: "px-5 py-2.5 rounded-xl bg-[#18181b] hover:bg-[#27272a] text-[#a1a1aa] text-sm font-medium transition-colors" %>
+    <%= form.submit "Salvar OKR", class: "px-5 py-2.5 rounded-xl bg-primary text-on-primary font-semibold hover:bg-primary-fixed text-sm transition-all active:scale-[0.98] shadow-lg shadow-primary/10 cursor-pointer" %>
+  </div>
+<% end %>

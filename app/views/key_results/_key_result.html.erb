@@ -1,0 +1,67 @@
+<% kr_progress = key_result.progress_percentage %>
+<% tasks_count = key_result.tasks.count %>
+<% completed_tasks_count = key_result.tasks.where(completed: true).count %>
+
+<div id="<%= dom_id(key_result) %>" class="bg-[#18181b] border border-[#27272a] hover:border-[#3f3f46] rounded-lg p-4 space-y-3 transition-colors group">
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+    <!-- Title & Edit -->
+    <div class="flex items-start gap-2.5 flex-1">
+      <span class="material-symbols-outlined text-[#a1a1aa] text-lg mt-0.5 shrink-0">check_circle</span>
+      <div class="flex-1">
+        <p class="text-sm font-medium text-[#e4e4e7] leading-relaxed"><%= key_result.title %></p>
+      </div>
+    </div>
+
+    <!-- Actions & Progress percentage -->
+    <div class="flex items-center gap-3 self-end sm:self-center shrink-0">
+      <!-- Task counter badge -->
+      <span class="text-xs font-medium text-[#a1a1aa] bg-[#27272a] px-2.5 py-1 rounded-md border border-[#3f3f46]/50">
+        <%= completed_tasks_count %>/<%= tasks_count %> tarefas
+      </span>
+
+      <!-- Percentage badge -->
+      <span class="text-xs font-bold text-[#fafafa] min-w-[36px] text-right">
+        <%= kr_progress %>%
+      </span>
+
+      <!-- Action buttons -->
+      <div class="flex items-center gap-1">
+        <!-- AI Suggest Tasks for KR -->
+        <%= button_to decompose_key_result_ai_path(key_result_id: key_result.id), method: :post, class: "p-1.5 text-indigo-400 hover:text-indigo-300 hover:bg-indigo-950/60 rounded-md transition-colors", title: "Sugerir Tarefas com IA para este Resultado-Chave" do %>
+          <span class="material-symbols-outlined text-lg">auto_awesome</span>
+        <% end %>
+
+        <!-- Delete KR -->
+        <%= button_to okr_key_result_path(okr, key_result), method: :delete, data: { turbo_confirm: "Excluir este Resultado-Chave?" }, class: "p-1.5 text-rose-400 hover:text-rose-300 hover:bg-rose-950/50 rounded-md transition-colors" do %>
+          <span class="material-symbols-outlined text-lg">delete</span>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Progress bar -->
+  <div class="flex items-center gap-3 pt-1">
+    <div class="w-full bg-[#27272a] h-1.5 rounded-full overflow-hidden">
+      <div class="bg-emerald-500 h-full transition-all duration-300 rounded-full" style="width: <%= kr_progress %>%;"></div>
+    </div>
+  </div>
+
+  <!-- Tasks list under this KR (if any) -->
+  <% if key_result.tasks.any? %>
+    <div class="pt-2 border-t border-[#27272a]/50 space-y-1.5">
+      <% key_result.tasks.each do |task| %>
+        <div class="flex items-center justify-between text-xs text-[#a1a1aa] py-1 px-2 rounded hover:bg-[#27272a]/50 transition-colors">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-sm <%= task.completed? ? 'text-emerald-400' : 'text-[#71717a]' %>">
+              <%= task.completed? ? 'task_alt' : 'radio_button_unchecked' %>
+            </span>
+            <span class="<%= task.completed? ? 'line-through text-[#71717a]' : 'text-[#e4e4e7]' %>"><%= task.title %></span>
+          </div>
+          <% if task.estimated_minutes.present? && task.estimated_minutes > 0 %>
+            <span class="text-[11px] text-[#71717a]"><%= task.estimated_minutes %> min</span>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+</div>

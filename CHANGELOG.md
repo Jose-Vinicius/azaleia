@@ -1,0 +1,25 @@
+# Changelog
+
+## [Unreleased]
+### Adicionado
+- Adicionado módulo e menu de gerenciamento de Tarefas Recorrentes (/recurrent_tasks) com renovação automática por data ao concluir a tarefa
+- Adicionada funcionalidade de anexo de imagens em tarefas via Active Storage com pré-visualização e remoção no modal
+- Adicionado visualizador interativo em modal (Lightbox) para imagens anexadas com navegação por carrossel entre fotos, zoom (+/-), download direto e abertura em nova aba
+- Adicionados badges visuais de nível de importância (Multiplicadores), tempo estimado, frequência de recorrência e contagem de imagens nos cards de tarefas
+### Alterado
+- Ajustado disparo do workflow de release para ocorrer exclusivamente quando houver merge de Pull Request para a branch main
+- Expandida a exibição das badges de importância, tempo estimado, recorrência e imagens para todas as visualizações do Dashboard (Modo Cards, Modo Lista e Modo Calendário)
+- Adicionado suporte a movimentação/arraste (Pan & Drag) da imagem aproximada com o mouse/touch, zoom via scroll do mouse e clique duplo no visualizador Lightbox
+### Corrigido
+### Removido
+
+## [0.2.0] - 2026-08-14
+
+### Adicionado
+- Adicionado módulo dedicado de OKRs da empresa com cálculo automático de progresso derivado das tarefas associadas
+- Adicionada sugestão e decomposição de tarefas para OKRs e Resultados-Chave via Inteligência Artificial (Gemini)
+- Adicionado sistema de Changelog automático com captura de intenção em tempo real e script de release
+
+### Alterado
+
+### Corrigido

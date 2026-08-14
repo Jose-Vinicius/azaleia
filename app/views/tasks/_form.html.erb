@@ -50,6 +50,26 @@
       </div>
     <% end %>
 
+    <% key_results = KeyResult.joins(:okr).where(okrs: { user_id: Current.user.id }) %>
+    <% if key_results.any? %>
+      <div>
+        <%= form.label :key_result_id, "Resultado-Chave (OKR Empresa)", class: "block text-sm font-medium text-on-surface-variant mb-1" %>
+        <%= form.collection_select :key_result_id, key_results.order(:title), :id, :title, { include_blank: "Sem resultado-chave" }, class: "w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-4 py-2 text-on-surface focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all" %>
+      </div>
+    <% end %>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div>
+        <%= form.label :recurrence, "Recorrência", class: "block text-sm font-medium text-on-surface-variant mb-1" %>
+        <%= form.select :recurrence, [["Nenhuma", "none"], ["Diária", "daily"], ["Semanal", "weekly"], ["Mensal", "monthly"]], {}, class: "w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-4 py-2 text-on-surface focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all cursor-pointer" %>
+      </div>
+
+      <div>
+        <%= form.label :images, "Anexar Imagens", class: "block text-sm font-medium text-on-surface-variant mb-1" %>
+        <%= form.file_field :images, multiple: true, accept: "image/*", class: "w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-3 py-1.5 text-xs text-on-surface focus:ring-2 focus:ring-primary focus:border-primary outline-none file:mr-2 file:py-1 file:px-2.5 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-primary/20 file:text-primary hover:file:bg-primary/30" %>
+      </div>
+    </div>
+
     <%= form.hidden_field :status %>
 
     <% if Current.user.user_integrations.exists?(provider: 'google_oauth2') %>
