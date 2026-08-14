@@ -11,6 +11,7 @@
 - Expandida a exibição das badges de importância, tempo estimado, recorrência e imagens para todas as visualizações do Dashboard (Modo Cards, Modo Lista e Modo Calendário)
 - Adicionado suporte a movimentação/arraste (Pan & Drag) da imagem aproximada com o mouse/touch, zoom via scroll do mouse e clique duplo no visualizador Lightbox
 ### Corrigido
+- Corrigido erro de coluna ausente `recurrence` na tabela `tasks` do banco de dados executando a migração correspondente e adicionando verificações defensivas nas views
 ### Removido
 
 ## [0.2.0] - 2026-08-14

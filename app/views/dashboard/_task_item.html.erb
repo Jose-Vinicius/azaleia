@@ -54,12 +54,13 @@
       <% end %>
 
       <%# Recurrence Badge %>
-      <% if task.recurrence.present? && task.recurrence != "none" %>
-        <% rec_label = case task.recurrence
+      <% rec_val = task.try(:recurrence) %>
+      <% if rec_val.present? && rec_val != "none" %>
+        <% rec_label = case rec_val
                        when "daily" then "Diária"
                        when "weekly" then "Semanal"
                        when "monthly" then "Mensal"
-                       else task.recurrence.humanize
+                       else rec_val.humanize
                        end %>
         <span class="flex items-center gap-1 text-[10px] font-semibold text-indigo-300 bg-indigo-950/70 px-1.5 py-0.5 rounded border border-indigo-800/50">
           <span class="material-symbols-outlined text-[11px]">repeat</span>
