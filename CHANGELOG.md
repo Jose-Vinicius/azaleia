@@ -2,11 +2,15 @@
 
 ## [Unreleased]
 ### Adicionado
-- Adicionado badge visual em tarefas para identificação direta de origem vinculada a um OKR
-- Adicionada abertura do modal de detalhes ao clicar nas tarefas listadas dentro dos OKRs
 ### Alterado
 ### Corrigido
 ### Removido
+
+## [0.4.0] - 2026-08-14
+
+### Adicionado
+- Adicionado badge visual em tarefas para identificação direta de origem vinculada a um OKR
+- Adicionada abertura do modal de detalhes ao clicar nas tarefas listadas dentro dos OKRs
 
 ## [0.3.0] - 2026-08-14
 
