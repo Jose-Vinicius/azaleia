@@ -52,8 +52,9 @@
                 <%= task.title %>
               </span>
 
-              <% if task.recurrence.present? && task.recurrence != "none" %>
-                <span class="material-symbols-outlined text-[12px] text-indigo-400 shrink-0" title="Recorrente (<%= task.recurrence %>)">repeat</span>
+              <% rec_val = task.try(:recurrence) %>
+              <% if rec_val.present? && rec_val != "none" %>
+                <span class="material-symbols-outlined text-[12px] text-indigo-400 shrink-0" title="Recorrente (<%= rec_val %>)">repeat</span>
               <% end %>
 
               <% if task.images.attached? %>
