@@ -38,7 +38,7 @@ class Task < ApplicationRecord
   end
 
   def self.get_scheduled_tasks(user, include_completed: false, filter_period: nil)
-    tasks = user.tasks.includes(:multiplier, :project).where.not(schedule_at: nil)
+    tasks = user.tasks.includes(:multiplier, :project, key_result: :okr).where.not(schedule_at: nil)
     tasks = tasks.where(completed: [ nil ]) unless include_completed
 
     if filter_period.present?
@@ -57,7 +57,7 @@ class Task < ApplicationRecord
   end
 
   def self.get_schedule_tasks(user)
-    user.tasks.includes(:multiplier, :project).where(schedule_at: nil).where(completed: [ nil ]).sort_by { |t| -t.score }
+    user.tasks.includes(:multiplier, :project, key_result: :okr).where(schedule_at: nil).where(completed: [ nil ]).sort_by { |t| -t.score }
   end
 
   def self.get_completed_tasks(user)
@@ -69,7 +69,7 @@ class Task < ApplicationRecord
   end
 
   def self.get_history_tasks(user)
-    user.tasks.includes(:multiplier, :project).where.not(completed: nil).order(completed_at: :desc)
+    user.tasks.includes(:multiplier, :project, key_result: :okr).where.not(completed: nil).order(completed_at: :desc)
   end
 
   private

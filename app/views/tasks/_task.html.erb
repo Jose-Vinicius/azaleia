@@ -76,6 +76,14 @@
         </span>
       <% end %>
 
+      <%# OKR Badge %>
+      <% if task.key_result.present? %>
+        <span class="flex items-center gap-1 text-[11px] font-semibold text-sky-300 bg-sky-950/70 px-2 py-0.5 rounded-md border border-sky-800/50" title="<%= task.key_result.okr&.title || task.key_result.title %>">
+          <span class="material-symbols-outlined text-[12px]">track_changes</span>
+          OKR
+        </span>
+      <% end %>
+
       <% if task.project.present? %>
         <span class="flex items-center gap-1 text-[11px] font-medium text-on-surface-variant bg-surface-container px-2 py-0.5 rounded-full border border-outline-variant/50">
           <span class="w-2 h-2 rounded-full flex-shrink-0" style="background-color: <%= task.project.color || '#a78bfa' %>"></span>

@@ -75,6 +75,14 @@
           <%= task.images.count %>
         </span>
       <% end %>
+
+      <%# OKR Badge %>
+      <% if task.key_result.present? %>
+        <span class="flex items-center gap-1 text-[10px] font-semibold text-sky-300 bg-sky-950/70 px-1.5 py-0.5 rounded border border-sky-800/50" title="<%= task.key_result.okr&.title || task.key_result.title %>">
+          <span class="material-symbols-outlined text-[11px]">track_changes</span>
+          OKR
+        </span>
+      <% end %>
     </div>
   <% end %>
 </div>
