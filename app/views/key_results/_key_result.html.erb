@@ -50,16 +50,33 @@
   <% if key_result.tasks.any? %>
     <div class="pt-2 border-t border-[#27272a]/50 space-y-1.5">
       <% key_result.tasks.each do |task| %>
-        <div class="flex items-center justify-between text-xs text-[#a1a1aa] py-1 px-2 rounded hover:bg-[#27272a]/50 transition-colors">
-          <div class="flex items-center gap-2">
-            <span class="material-symbols-outlined text-sm <%= task.completed? ? 'text-emerald-400' : 'text-[#71717a]' %>">
-              <%= task.completed? ? 'task_alt' : 'radio_button_unchecked' %>
-            </span>
-            <span class="<%= task.completed? ? 'line-through text-[#71717a]' : 'text-[#e4e4e7]' %>"><%= task.title %></span>
+        <div class="flex items-center justify-between text-xs text-[#a1a1aa] py-1 px-2.5 rounded-lg hover:bg-[#27272a]/60 border border-transparent hover:border-[#3f3f46]/40 transition-all group/task">
+          <div class="flex items-center gap-2.5 flex-1 min-w-0">
+            <%= button_to task_path(task, task: { completed: !task.completed? }), method: :patch, class: "flex items-center text-[#71717a] hover:text-emerald-400 transition-colors cursor-pointer shrink-0", form: { data: { turbo_frame: "_top" } }, title: (task.completed? ? "Marcar como pendente" : "Marcar como concluída") do %>
+              <span class="material-symbols-outlined text-sm <%= task.completed? ? 'text-emerald-400' : 'text-[#71717a]' %>" style="font-variation-settings: 'FILL' <%= task.completed? ? '1' : '0' %>;">
+                <%= task.completed? ? 'task_alt' : 'radio_button_unchecked' %>
+              </span>
+            <% end %>
+
+            <%= link_to task_path(task), data: { turbo_frame: "modal" }, class: "flex-1 min-w-0 flex items-center justify-between gap-2 py-0.5 cursor-pointer" do %>
+              <span class="truncate <%= task.completed? ? 'line-through text-[#71717a]' : 'text-[#e4e4e7] group-hover/task:text-primary' %> transition-colors font-medium">
+                <%= task.title %>
+              </span>
+              <div class="flex items-center gap-2 shrink-0">
+                <span class="flex items-center gap-1 text-[10px] font-semibold text-sky-300 bg-sky-950/70 px-1.5 py-0.5 rounded border border-sky-800/50" title="<%= key_result.okr.title %>: <%= key_result.title %>">
+                  <span class="material-symbols-outlined text-[11px]">track_changes</span>
+                  OKR
+                </span>
+                <% if task.estimated_minutes.present? && task.estimated_minutes > 0 %>
+                  <span class="text-[11px] text-[#71717a] flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[12px]">timer</span>
+                    <%= task.estimated_minutes %> min
+                  </span>
+                <% end %>
+                <span class="material-symbols-outlined text-xs text-[#71717a] opacity-0 group-hover/task:opacity-100 transition-opacity">open_in_new</span>
+              </div>
+            <% end %>
           </div>
-          <% if task.estimated_minutes.present? && task.estimated_minutes > 0 %>
-            <span class="text-[11px] text-[#71717a]"><%= task.estimated_minutes %> min</span>
-          <% end %>
         </div>
       <% end %>
     </div>
