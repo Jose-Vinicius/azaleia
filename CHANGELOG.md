@@ -4,6 +4,8 @@
 ### Adicionado
 ### Alterado
 ### Corrigido
+- Corrigido conflito de nomes de containers antigos durante o deploy na VPS adicionando a flag --remove-orphans no workflow do GitHub Actions
+- Corrigido falso positivo no status de deploy na VPS adicionando a instrução set -e para abortar o script imediatamente ao falhar qualquer comando do Docker
 ### Removido
 
 ## [0.4.0] - 2026-08-14
