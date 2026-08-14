@@ -88,6 +88,27 @@ class AiControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test "should decompose okr into tasks" do
+    okr = Okr.create!(user: @user, title: "OKR Exemplo", quarter: "Q3")
+    mock_tasks = [ Task.new(title: "Tarefa OKR Gerada") ]
+
+    stub_service(Ai::OkrDecomposerService, :call, mock_tasks) do
+      post decompose_okr_ai_path, params: { okr_id: okr.id }
+      assert_redirected_to okrs_path
+    end
+  end
+
+  test "should decompose key result into tasks" do
+    okr = Okr.create!(user: @user, title: "OKR Exemplo", quarter: "Q3")
+    kr = okr.key_results.create!(title: "KR Exemplo")
+    mock_tasks = [ Task.new(title: "Tarefa KR Gerada") ]
+
+    stub_service(Ai::OkrDecomposerService, :call, mock_tasks) do
+      post decompose_key_result_ai_path, params: { key_result_id: kr.id }
+      assert_redirected_to okrs_path
+    end
+  end
+
   private
 
   def stub_service(target_class, method_name, result)

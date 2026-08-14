@@ -34,14 +34,17 @@ module Ai
           mult_name = t_data["multiplier_name"].to_s.downcase
           multiplier = multipliers_map[mult_name] || multipliers_map.values.first
 
-          task = user.tasks.create!(
+          task_attrs = {
             title: t_data["title"],
             description: t_data["description"],
             estimated_minutes: (t_data["estimated_minutes"] || 30).to_i,
             goal: goal,
             multiplier: multiplier,
             status: "pending"
-          )
+          }
+          task_attrs[:recurrence] = "none" if Task.column_names.include?("recurrence")
+
+          task = user.tasks.create!(task_attrs)
           created_records << task
         end
         created_records
