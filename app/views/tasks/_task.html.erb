@@ -18,16 +18,63 @@
     <div class="text-base font-medium select-none <%= title_class %> transition-colors z-10 relative">
       <%= task.title %>
     </div>
-    <div class="flex items-center gap-3 mt-1 sm:mt-0 z-10 relative pointer-events-none">
+    <div class="flex items-center gap-2 flex-wrap mt-1 sm:mt-0 z-10 relative pointer-events-none">
       <% if task.respond_to?(:schedule_at) && task.schedule_at.present? %>
-        <span class="text-sm font-medium <%= date_class %>">
+        <span class="text-xs font-medium <%= date_class %>">
           <%= task.schedule_at.to_date.strftime("%d/%m/%Y") %>
         </span>
       <% end %>
-      <span class="flex items-center gap-1 text-xs font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full border border-primary/20">
-        <span class="material-symbols-outlined text-[13px]">star</span>
-        <%= number_with_precision(task.score, precision: 1, strip_insignificant_zeros: true) %>
-      </span>
+
+      <%# Importance / Multiplier Badge %>
+      <% mult = task.multiplier %>
+      <% if mult.present? %>
+        <% mult_bg = case mult.name.downcase
+                     when /urgente/ then "bg-orange-950/80 text-orange-300 border-orange-800/50"
+                     when /prioridade/ then "bg-amber-950/80 text-amber-300 border-amber-800/50"
+                     when /estratégico|estrategico/ then "bg-purple-950/80 text-purple-300 border-purple-800/50"
+                     else "bg-zinc-800 text-zinc-300 border-zinc-700"
+                     end %>
+        <span class="flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-md border <%= mult_bg %>">
+          <span class="material-symbols-outlined text-[12px]">star</span>
+          <%= mult.name %>
+        </span>
+      <% else %>
+        <span class="flex items-center gap-1 text-xs font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full border border-primary/20">
+          <span class="material-symbols-outlined text-[13px]">star</span>
+          <%= number_with_precision(task.score, precision: 1, strip_insignificant_zeros: true) %>
+        </span>
+      <% end %>
+
+      <%# Estimated Time Badge %>
+      <% if task.estimated_minutes.present? && task.estimated_minutes > 0 %>
+        <span class="flex items-center gap-1 text-[11px] font-semibold text-on-surface-variant bg-surface-container px-2 py-0.5 rounded-md border border-outline-variant/60">
+          <span class="material-symbols-outlined text-[12px]">timer</span>
+          <%= task.estimated_minutes %> min
+        </span>
+      <% end %>
+
+      <%# Recurrence Badge %>
+      <% if task.recurrence.present? && task.recurrence != "none" %>
+        <% rec_label = case task.recurrence
+                       when "daily" then "Diária"
+                       when "weekly" then "Semanal"
+                       when "monthly" then "Mensal"
+                       else task.recurrence.humanize
+                       end %>
+        <span class="flex items-center gap-1 text-[11px] font-semibold text-indigo-300 bg-indigo-950/70 px-2 py-0.5 rounded-md border border-indigo-800/50">
+          <span class="material-symbols-outlined text-[12px]">repeat</span>
+          <%= rec_label %>
+        </span>
+      <% end %>
+
+      <%# Images Count Badge %>
+      <% if task.images.attached? %>
+        <span class="flex items-center gap-1 text-[11px] font-semibold text-teal-300 bg-teal-950/70 px-2 py-0.5 rounded-md border border-teal-800/50">
+          <span class="material-symbols-outlined text-[12px]">image</span>
+          <%= task.images.count %>
+        </span>
+      <% end %>
+
       <% if task.project.present? %>
         <span class="flex items-center gap-1 text-[11px] font-medium text-on-surface-variant bg-surface-container px-2 py-0.5 rounded-full border border-outline-variant/50">
           <span class="w-2 h-2 rounded-full flex-shrink-0" style="background-color: <%= task.project.color || '#a78bfa' %>"></span>

@@ -51,23 +51,53 @@
               </p>
             </div>
             <% end %>
-            <div class="pt-4 flex flex-wrap items-center gap-4 text-on-surface-variant">
+            <div class="pt-4 flex flex-wrap items-center gap-3 text-on-surface-variant">
               <% if @task.respond_to?(:schedule_at) && @task.schedule_at.present? %>
-              <div class="flex items-center gap-2">
+              <div class="flex items-center gap-1.5">
                 <span class="material-symbols-outlined text-[18px]">calendar_today</span>
                 <span class="text-sm font-medium"><%= @task.schedule_at.to_date.strftime("%d/%m/%Y") %></span>
               </div>
               <% end %>
+
               <% if @task.respond_to?(:estimated_minutes) && @task.estimated_minutes && @task.estimated_minutes > 0 %>
-              <div class="flex items-center gap-2">
+              <div class="flex items-center gap-1.5">
                 <span class="material-symbols-outlined text-[18px]">timer</span>
                 <span class="text-sm font-medium"><%= t('tasks.show.estimated_minutes', count: @task.estimated_minutes) %></span>
               </div>
               <% end %>
-              <div class="flex items-center gap-2 text-primary font-bold bg-primary/10 px-3 py-1 rounded-full border border-primary/20">
-                <span class="material-symbols-outlined text-[18px]">star</span>
-                <span class="text-sm">Score: <%= number_with_precision(@task.score, precision: 1, strip_insignificant_zeros: true) %></span>
-              </div>
+
+              <% mult = @task.multiplier %>
+              <% if mult.present? %>
+                <% mult_bg = case mult.name.downcase
+                             when /urgente/ then "bg-orange-950/80 text-orange-300 border-orange-800/50"
+                             when /prioridade/ then "bg-amber-950/80 text-amber-300 border-amber-800/50"
+                             when /estratégico|estrategico/ then "bg-purple-950/80 text-purple-300 border-purple-800/50"
+                             else "bg-zinc-800 text-zinc-300 border-zinc-700"
+                             end %>
+                <div class="flex items-center gap-1 text-xs font-semibold px-3 py-1 rounded-full border <%= mult_bg %>">
+                  <span class="material-symbols-outlined text-[15px]">star</span>
+                  <span><%= mult.name %> (<%= mult.value %>x)</span>
+                </div>
+              <% else %>
+                <div class="flex items-center gap-2 text-primary font-bold bg-primary/10 px-3 py-1 rounded-full border border-primary/20">
+                  <span class="material-symbols-outlined text-[18px]">star</span>
+                  <span class="text-sm">Score: <%= number_with_precision(@task.score, precision: 1, strip_insignificant_zeros: true) %></span>
+                </div>
+              <% end %>
+
+              <% if @task.recurrence.present? && @task.recurrence != "none" %>
+                <% rec_label = case @task.recurrence
+                               when "daily" then "Diária"
+                               when "weekly" then "Semanal"
+                               when "monthly" then "Mensal"
+                               else @task.recurrence.humanize
+                               end %>
+                <div class="flex items-center gap-1 text-xs font-semibold text-indigo-300 bg-indigo-950/80 px-3 py-1 rounded-full border border-indigo-800/50">
+                  <span class="material-symbols-outlined text-[15px]">repeat</span>
+                  <span><%= rec_label %></span>
+                </div>
+              <% end %>
+
               <% if @task.project.present? %>
               <div class="flex items-center gap-2 text-sm font-medium bg-surface-container px-3 py-1 rounded-full border border-outline-variant">
                 <span class="w-2.5 h-2.5 rounded-full flex-shrink-0" style="background-color: <%= @task.project.color || '#a78bfa' %>"></span>
@@ -75,6 +105,93 @@
               </div>
               <% end %>
             </div>
+
+            <!-- Image Attachments Gallery with Lightbox -->
+            <% if @task.images.attached? %>
+              <% images_data = @task.images.map { |img| { url: url_for(img), filename: img.filename.to_s, id: img.id } }.to_json %>
+
+              <div class="pt-4 border-t border-outline-variant/30 space-y-3" data-controller="image-lightbox" data-image-lightbox-images-value="<%= images_data %>">
+                <h4 class="text-xs font-bold uppercase tracking-wider text-on-surface-variant flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-[16px]">image</span>
+                  Imagens Anexadas (<%= @task.images.count %>)
+                </h4>
+
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                  <% @task.images.each_with_index do |img, index| %>
+                    <div class="relative group border border-outline-variant rounded-lg overflow-hidden bg-surface-container-lowest">
+                      <%= image_tag img, class: "w-full h-24 object-cover cursor-pointer hover:opacity-90 transition-opacity", data: { action: "click->image-lightbox#open", index: index }, title: "Clique para expandir" %>
+                      <%= button_to purge_image_task_path(@task, image_id: img.id), method: :delete, data: { turbo_confirm: "Remover esta imagem?" }, class: "absolute top-1 right-1 p-1 bg-black/70 hover:bg-rose-900/90 text-rose-300 rounded-full transition-colors opacity-0 group-hover:opacity-100 z-10", title: "Remover imagem" do %>
+                        <span class="material-symbols-outlined text-xs">close</span>
+                      <% end %>
+                    </div>
+                  <% end %>
+                </div>
+
+                <!-- Lightbox Modal Overlay -->
+                <div data-image-lightbox-target="modal" class="hidden fixed inset-0 z-[200] bg-black/95 backdrop-blur-md flex flex-col justify-between p-4 md:p-6" data-action="keydown@window->image-lightbox#keydown">
+                  <!-- Header Toolbar -->
+                  <div class="flex items-center justify-between text-white shrink-0 z-20">
+                    <div class="flex items-center gap-3">
+                      <span data-image-lightbox-target="counter" class="text-xs font-bold bg-white/10 px-3 py-1 rounded-full border border-white/20"></span>
+                      <span data-image-lightbox-target="filename" class="text-xs font-mono text-zinc-400 truncate max-w-[150px] sm:max-w-xs"></span>
+                    </div>
+
+                    <div class="flex items-center gap-1.5 sm:gap-2">
+                      <!-- Zoom Controls -->
+                      <button type="button" data-action="click->image-lightbox#zoomOut" class="p-2 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-colors flex items-center justify-center cursor-pointer" title="Diminuir Zoom (-)">
+                        <span class="material-symbols-outlined text-[18px]">zoom_out</span>
+                      </button>
+                      <button type="button" data-action="click->image-lightbox#resetZoom" class="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-xs font-mono text-white transition-colors cursor-pointer" title="Resetar Zoom">
+                        <span data-image-lightbox-target="zoomText">100%</span>
+                      </button>
+                      <button type="button" data-action="click->image-lightbox#zoomIn" class="p-2 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-colors flex items-center justify-center cursor-pointer" title="Aumentar Zoom (+)">
+                        <span class="material-symbols-outlined text-[18px]">zoom_in</span>
+                      </button>
+
+                      <div class="w-px h-5 bg-white/20 mx-1"></div>
+
+                      <!-- Open in New Tab -->
+                      <a data-image-lightbox-target="openTabBtn" href="#" target="_blank" class="p-2 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-colors flex items-center justify-center" title="Abrir em nova aba">
+                        <span class="material-symbols-outlined text-[18px]">open_in_new</span>
+                      </a>
+
+                      <!-- Download -->
+                      <a data-image-lightbox-target="downloadBtn" href="#" download class="p-2 rounded-lg bg-primary text-on-primary hover:bg-primary-fixed transition-colors flex items-center justify-center font-bold" title="Baixar imagem">
+                        <span class="material-symbols-outlined text-[18px]">download</span>
+                      </a>
+
+                      <!-- Close -->
+                      <button type="button" data-action="click->image-lightbox#close" class="p-2 rounded-lg bg-white/10 hover:bg-rose-600/80 text-white transition-colors flex items-center justify-center ml-2 cursor-pointer" title="Fechar (Esc)">
+                        <span class="material-symbols-outlined text-[20px]">close</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Image Viewer Stage -->
+                  <div class="relative flex-1 flex items-center justify-center my-4 overflow-hidden select-none">
+                    <button type="button" data-action="click->image-lightbox#prev" class="absolute left-2 md:left-6 z-30 p-3 rounded-full bg-black/70 hover:bg-primary text-white transition-all transform hover:scale-110 shadow-2xl border border-white/20 cursor-pointer" title="Anterior (Seta Esquerda)">
+                      <span class="material-symbols-outlined text-2xl">arrow_back_ios_new</span>
+                    </button>
+
+                    <div class="w-full h-full flex items-center justify-center p-2 overflow-hidden">
+                      <img data-image-lightbox-target="image" src="" alt=""
+                           class="max-w-full max-h-full object-contain cursor-grab shadow-2xl rounded-lg select-none"
+                           data-action="mousedown->image-lightbox#startDrag mousemove->image-lightbox#drag mouseup->image-lightbox#endDrag mouseleave->image-lightbox#endDrag touchstart->image-lightbox#startDrag touchmove->image-lightbox#drag touchend->image-lightbox#endDrag dblclick->image-lightbox#toggleDoubleTapZoom"
+                           style="transform: translate(0px, 0px) scale(1);" />
+                    </div>
+
+                    <button type="button" data-action="click->image-lightbox#next" class="absolute right-2 md:right-6 z-30 p-3 rounded-full bg-black/70 hover:bg-primary text-white transition-all transform hover:scale-110 shadow-2xl border border-white/20 cursor-pointer" title="Próxima (Seta Direita)">
+                      <span class="material-symbols-outlined text-2xl">arrow_forward_ios</span>
+                    </button>
+                  </div>
+
+                  <!-- Footer Hint -->
+                  <div class="text-center text-[11px] text-zinc-400 z-10 shrink-0 font-medium">
+                    Arraste com o mouse para mover o zoom | Scroll do mouse & clique duplo para zoom | ⬅️ ➡️ para navegar | Esc fechar
+                  </div>
+                </div>
+              </div>
+            <% end %>
             
             <%= render partial: "tasks/time_tracker", locals: { task: @task } %>
           </div>

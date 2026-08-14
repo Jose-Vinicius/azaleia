@@ -79,4 +79,22 @@ class AiController < ApplicationController
   rescue StandardError => e
     redirect_to ai_dashboard_path, alert: "Erro ao decompor meta: #{e.message}"
   end
+
+  def decompose_okr
+    okr = Current.user.okrs.find(params[:okr_id])
+    created_tasks = Ai::OkrDecomposerService.call(Current.user, okr, create_tasks: true)
+
+    redirect_to okrs_path, notice: "#{created_tasks.count} tarefas geradas por IA para o OKR '#{okr.title}'!"
+  rescue StandardError => e
+    redirect_to okrs_path, alert: "Erro ao sugerir tarefas por IA: #{e.message}"
+  end
+
+  def decompose_key_result
+    key_result = KeyResult.joins(:okr).where(okrs: { user_id: Current.user.id }).find(params[:key_result_id])
+    created_tasks = Ai::OkrDecomposerService.call(Current.user, key_result, create_tasks: true)
+
+    redirect_to okrs_path, notice: "#{created_tasks.count} tarefas geradas por IA para o Resultado-Chave!"
+  rescue StandardError => e
+    redirect_to okrs_path, alert: "Erro ao sugerir tarefas por IA para o Resultado-Chave: #{e.message}"
+  end
 end

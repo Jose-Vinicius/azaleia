@@ -1,0 +1,74 @@
+<% progress = okr.progress_percentage %>
+
+<div id="<%= dom_id(okr) %>" class="bg-[#121215] border border-[#27272a] rounded-xl p-5 md:p-6 space-y-6 shadow-xl">
+  <!-- OKR Header Card (Matching User Screenshot) -->
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#27272a]/60 pb-4">
+    <div class="flex items-center gap-3 flex-wrap flex-1">
+      <h2 class="text-xl font-bold text-[#fafafa] tracking-tight"><%= okr.title %></h2>
+      
+      <span class="px-2.5 py-0.5 rounded-md text-xs font-semibold bg-[#27272a] text-[#a1a1aa] border border-[#3f3f46]">
+        <%= okr.quarter %>
+      </span>
+      
+      <span class="px-2.5 py-0.5 rounded-md text-xs font-semibold <%= okr.active? ? 'bg-emerald-950/80 text-emerald-400 border border-emerald-800/50' : 'bg-zinc-800 text-zinc-400' %>">
+        <%= okr.status.humanize %>
+      </span>
+      
+      <!-- Main Progress Bar -->
+      <div class="flex items-center gap-3 flex-1 min-w-[200px] max-w-md ml-auto md:ml-4">
+        <div class="flex-1 bg-[#27272a] h-2.5 rounded-full overflow-hidden">
+          <div class="bg-emerald-500 h-full transition-all duration-500 rounded-full" style="width: <%= progress %>%;"></div>
+        </div>
+        <span class="text-sm font-bold text-[#fafafa] w-10 text-right"><%= progress %>%</span>
+      </div>
+    </div>
+
+    <!-- OKR Actions -->
+    <div class="flex items-center gap-2 self-end md:self-auto">
+      <%= button_to decompose_okr_ai_path(okr_id: okr.id), method: :post, class: "flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-950/60 hover:bg-indigo-900/80 border border-indigo-700/50 text-indigo-300 text-xs font-medium transition-colors", title: "Gerar Tarefas por IA para este OKR" do %>
+        <span class="material-symbols-outlined text-sm text-indigo-400">auto_awesome</span>
+        <span>IA Gerar Tarefas</span>
+      <% end %>
+
+      <%= link_to edit_okr_path(okr), class: "px-3 py-1.5 rounded-lg bg-[#27272a] hover:bg-[#3f3f46] text-[#fafafa] text-xs font-medium transition-colors" do %>
+        Editar
+      <% end %>
+
+      <%= button_to okr_path(okr), method: :delete, data: { turbo_confirm: "Tem certeza que deseja excluir o OKR '#{okr.title}'?" }, class: "p-1.5 text-rose-400 hover:text-rose-300 hover:bg-rose-950/50 rounded-lg transition-colors" do %>
+        <span class="material-symbols-outlined text-lg">delete</span>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Objective Description Box -->
+  <% if okr.description.present? %>
+    <div class="bg-[#18181b] border border-[#27272a] rounded-lg p-3.5 flex items-center justify-between text-sm text-[#e4e4e7]">
+      <div class="flex items-center gap-3">
+        <span class="material-symbols-outlined text-[#a1a1aa] text-base">flag</span>
+        <span><%= okr.description %></span>
+      </div>
+      <div class="flex items-center gap-3 text-xs text-[#a1a1aa]">
+        <span class="font-medium text-[#fafafa]"><%= progress %>%</span>
+      </div>
+    </div>
+  <% end %>
+
+  <!-- Key Results Section -->
+  <div class="space-y-4">
+    <div id="key_results_okr_<%= okr.id %>" class="space-y-3">
+      <% okr.key_results.each do |kr| %>
+        <%= render "key_results/key_result", key_result: kr, okr: okr %>
+      <% end %>
+    </div>
+
+    <!-- Form Inline para Adicionar Novo KR (+ KR) -->
+    <%= form_with model: [okr, KeyResult.new], local: false, class: "flex items-center gap-2 pt-2" do |f| %>
+      <div class="flex-1 relative">
+        <%= f.text_field :title, placeholder: "Novo resultado-chave...", class: "w-full bg-[#18181b] border border-[#27272a] focus:border-primary rounded-lg px-4 py-2.5 text-sm text-[#fafafa] placeholder-[#71717a] outline-none transition-colors" %>
+      </div>
+      <button type="submit" class="flex items-center gap-1 bg-[#18181b] hover:bg-[#27272a] text-emerald-400 hover:text-emerald-300 font-semibold px-4 py-2.5 rounded-lg border border-[#27272a] transition-all active:scale-[0.98] text-sm">
+        <span class="text-base font-bold">+</span> KR
+      </button>
+    <% end %>
+  </div>
+</div>

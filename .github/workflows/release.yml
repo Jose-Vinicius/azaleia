@@ -1,0 +1,47 @@
+name: Release
+
+on:
+  pull_request:
+    branches: [main]
+    types: [closed]
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    if: |
+      (!contains(github.event.head_commit.message, '[skip ci]')) &&
+      (github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.merged == true))
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+
+      - uses: ruby/setup-ruby@v1
+        with: { ruby-version: '3.3' }
+
+      - name: Gerar nova versão a partir do Unreleased
+        id: release
+        run: |
+          NEW_VERSION=$(ruby bin/release.rb) || exit 0
+          echo "version=$NEW_VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Commitar, taguear e dar push
+        if: steps.release.outputs.version != ''
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add VERSION CHANGELOG.md
+          git commit -m "chore(release): v${{ steps.release.outputs.version }} [skip ci]"
+          git tag "v${{ steps.release.outputs.version }}"
+          git push origin main --tags
+
+      - name: Criar Release no GitHub
+        if: steps.release.outputs.version != ''
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: "v${{ steps.release.outputs.version }}"
+          body_path: RELEASE_NOTES.md

@@ -4,19 +4,26 @@ class Task < ApplicationRecord
   validates :title, presence: true
   validates :status, inclusion: { in: STATUSES }
 
+  RECURRENCE_OPTIONS = %w[none daily weekly monthly].freeze
+
   belongs_to :user
   belongs_to :project, optional: true
   belongs_to :goal, optional: true
+  belongs_to :key_result, optional: true
   has_many :time_entries, dependent: :destroy
   has_many :notifications, dependent: :destroy
   has_one :task_integration, dependent: :destroy
   belongs_to :multiplier, optional: true
+  has_many_attached :images
+
+  validates :recurrence, inclusion: { in: RECURRENCE_OPTIONS }, allow_blank: true
 
   attr_accessor :sync_to_google
 
   before_save :set_completed_at, if: :completed_changed?
   before_save :sync_status_with_completed, if: :status_changed?
   before_save :clear_notifications, if: :schedule_at_changed?
+  after_save :handle_recurrence_on_completion, if: -> { saved_change_to_completed?(to: true) }
   after_commit :enqueue_google_sync, on: [ :create, :update ]
   before_destroy :enqueue_google_delete
 
@@ -98,6 +105,38 @@ class Task < ApplicationRecord
     should_sync = false if completed.present?
 
     SyncTaskWithGoogleJob.perform_later(self.id, should_sync)
+  end
+
+  def handle_recurrence_on_completion
+    return if recurrence.blank? || recurrence == "none"
+
+    base_date = schedule_at.presence || Time.current
+    next_date = case recurrence
+                when "daily"   then base_date + 1.day
+                when "weekly"  then base_date + 1.week
+                when "monthly" then base_date + 1.month
+                else base_date + 1.day
+                end
+
+    new_task = user.tasks.create!(
+      title: title,
+      description: description,
+      estimated_minutes: estimated_minutes,
+      multiplier_id: multiplier_id,
+      project_id: project_id,
+      goal_id: goal_id,
+      key_result_id: key_result_id,
+      recurrence: recurrence,
+      schedule_at: next_date,
+      status: "pending",
+      completed: nil
+    )
+
+    if images.attached?
+      images.each do |img|
+        new_task.images.attach(img.blob)
+      end
+    end
   end
 
   def enqueue_google_delete

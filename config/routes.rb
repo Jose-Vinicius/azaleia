@@ -15,8 +15,12 @@ Rails.application.routes.draw do
     collection do
       get :upcoming
     end
+    member do
+      delete "purge_image/:image_id", action: :purge_image, as: :purge_image
+    end
     resources :time_entries, only: [ :create, :destroy ]
   end
+  resources :recurrent_tasks, only: [ :index ]
   resources :notifications, only: [ :index, :create, :update ] do
     collection do
       patch :mark_all_as_read
@@ -28,6 +32,9 @@ Rails.application.routes.draw do
   resources :notes
   resources :projects
   resources :goals
+  resources :okrs do
+    resources :key_results, only: [ :create, :update, :destroy ]
+  end
   get "psychometrics", to: "psychometrics#show", as: :psychometrics
   post "psychometrics/import_eqi", to: "psychometrics#import_eqi", as: :import_eqi_psychometrics
   post "psychometrics/import_mbti", to: "psychometrics#import_mbti", as: :import_mbti_psychometrics
@@ -40,6 +47,8 @@ Rails.application.routes.draw do
   post "ai/generate_smart_fields", to: "ai#generate_smart_fields", as: :generate_smart_fields_ai
   post "ai/accept_goal", to: "ai#accept_goal", as: :accept_goal_ai
   post "ai/decompose_goal", to: "ai#decompose_goal", as: :decompose_goal_ai
+  post "ai/decompose_okr", to: "ai#decompose_okr", as: :decompose_okr_ai
+  post "ai/decompose_key_result", to: "ai#decompose_key_result", as: :decompose_key_result_ai
 
   get "settings", to: "settings#index"
   get "up" => "rails/health#show", as: :rails_health_check

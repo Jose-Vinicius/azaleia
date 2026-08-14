@@ -26,6 +26,8 @@ class TasksController < ApplicationController
     @task = Current.user.tasks.new(
       schedule_at: params[:schedule_at],
       project_id: params[:project_id],
+      goal_id: params[:goal_id],
+      key_result_id: params[:key_result_id],
       status: params[:status] || "pending"
     )
   end
@@ -75,6 +77,14 @@ class TasksController < ApplicationController
     end
   end
 
+  def purge_image
+    @task = Current.user.tasks.find(params[:id])
+    image = @task.images.find_by(id: params[:image_id])
+    image&.purge
+
+    redirect_to task_path(@task), notice: "Imagem removida com sucesso."
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_task
@@ -83,6 +93,6 @@ class TasksController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def task_params
-      params.expect(task: [ :title, :description, :schedule_at, :completed, :estimated_minutes, :multiplier_id, :sync_to_google, :project_id, :status, :goal_id ])
+      params.expect(task: [ :title, :description, :schedule_at, :completed, :estimated_minutes, :multiplier_id, :sync_to_google, :project_id, :status, :goal_id, :key_result_id, :recurrence, images: [] ])
     end
 end
