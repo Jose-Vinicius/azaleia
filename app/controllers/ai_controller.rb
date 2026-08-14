@@ -9,7 +9,7 @@ class AiController < ApplicationController
     @analysis_markdown = Ai::TaskAnalysisService.call(Current.user, period_days: period_days)
     
     respond_to do |format|
-      format.turbo_stream
+      format.turbo_stream { render :analyze_tasks }
       format.html { render :index }
     end
   rescue StandardError => e
@@ -27,7 +27,7 @@ class AiController < ApplicationController
     @active_goals = Current.user.goals.active.order(:title)
 
     respond_to do |format|
-      format.turbo_stream
+      format.turbo_stream { render :suggest_goals }
       format.html { render :index }
     end
   rescue StandardError => e
