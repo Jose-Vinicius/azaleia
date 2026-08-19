@@ -4,7 +4,7 @@
 ### Adicionado
 ### Alterado
 ### Corrigido
-- Corrigido erro de concorrência de migração de banco de dados (`ActiveRecord::ConcurrentMigrationError`) durante o deploy na VPS pausando os serviços antigos antes do `db:prepare`
+- Corrigido erro de conflito de nomes de containers antigos e concorrência em migrações durante o deploy na VPS ao parar e remover os containers antigos (`docker compose rm -f -s`) antes do `db:prepare`
 ### Removido
 
 ## [0.5.0] - 2026-08-19
