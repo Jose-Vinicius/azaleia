@@ -56,28 +56,78 @@
     
     <div class="flex-1 flex flex-col px-3 py-2 space-y-1 overflow-y-auto hide-scrollbar">
       <% 
-        nav_links = [
-          { path: inbox_index_path, icon: 'inbox', text: 'Inbox' },
-          { path: dashboard_index_path, icon: 'dashboard', text: 'Dashboard' },
-          { path: metrics_path, icon: 'bar_chart', text: 'Métricas' },
-          { path: history_index_path, icon: 'history', text: 'Histórico' },
-          { path: notes_path, icon: 'edit_document', text: 'Anotações' },
-          { path: projects_path, icon: 'view_kanban', text: 'Projetos' },
-          { path: goals_path, icon: 'target', text: 'Metas SMART' },
+        link_inbox = { path: inbox_index_path, icon: 'inbox', text: 'Inbox' }
+        link_dashboard = { path: dashboard_index_path, icon: 'dashboard', text: 'Dashboard' }
+        link_notes = { path: notes_path, icon: 'edit_document', text: 'Anotações' }
+        link_projects = { path: projects_path, icon: 'view_kanban', text: 'Projetos' }
+        link_recurrent = { path: recurrent_tasks_path, icon: 'repeat', text: 'Tarefas Recorrentes' }
+        link_ai = { path: ai_dashboard_path, icon: 'auto_awesome', text: 'Assistente IA' }
+
+        objetivos_links = [
           { path: okrs_path, icon: 'track_changes', text: 'OKRs Empresa' },
-          { path: recurrent_tasks_path, icon: 'repeat', text: 'Tarefas Recorrentes' },
-          { path: psychometrics_path, icon: 'psychology', text: 'Psicometria' },
-          { path: ai_dashboard_path, icon: 'auto_awesome', text: 'Assistente IA' }
+          { path: goals_path, icon: 'target', text: 'Metas SMART' },
+          { path: psychometrics_path, icon: 'psychology', text: 'Psicometria' }
         ]
+        is_objetivos_active = objetivos_links.any? { |l| current_page?(l[:path]) }
+
+        relatorios_links = [
+          { path: metrics_path, icon: 'bar_chart', text: 'Métricas' },
+          { path: history_index_path, icon: 'history', text: 'Histórico' }
+        ]
+        is_relatorios_active = relatorios_links.any? { |l| current_page?(l[:path]) }
       %>
-      
-      <% nav_links.each do |link| %>
+
+      <% render_link = lambda do |link| %>
         <% is_active = current_page?(link[:path]) %>
-        <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-150 active:scale-[0.98] overflow-hidden <%= is_active ? 'text-[#a78bfa] bg-[#18181b] border-r-2 border-[#a78bfa] font-semibold' : 'text-[#a1a1aa] hover:text-[#fafafa] hover:bg-[#18181b]' %>" href="<%= link[:path] %>" title="<%= link[:text] %>">
-          <span class="material-symbols-outlined flex-shrink-0" data-icon="<%= link[:icon] %>" <%= is_active ? "data-weight='fill' style='font-variation-settings: \"FILL\" 1;'".html_safe : "" %>><%= link[:icon] %></span>
-          <span data-sidebar-target="text" class="whitespace-nowrap"><%= link[:text] %></span>
+        <a class="flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-150 active:scale-[0.98] overflow-hidden <%= is_active ? 'text-[#a78bfa] bg-[#18181b] border-r-2 border-[#a78bfa] font-semibold' : 'text-[#a1a1aa] hover:text-[#fafafa] hover:bg-[#18181b]' %>" href="<%= link[:path] %>" title="<%= link[:text] %>">
+          <span class="material-symbols-outlined flex-shrink-0 text-[20px]" data-icon="<%= link[:icon] %>" <%= is_active ? "data-weight='fill' style='font-variation-settings: \"FILL\" 1;'".html_safe : "" %>><%= link[:icon] %></span>
+          <span data-sidebar-target="text" class="whitespace-nowrap text-sm"><%= link[:text] %></span>
         </a>
       <% end %>
+
+      <!-- Direct Links -->
+      <% render_link.call(link_inbox) %>
+      <% render_link.call(link_dashboard) %>
+
+      <!-- Dropdown: Objetivos & Perfil -->
+      <details class="group" <%= 'open' if is_objetivos_active %>>
+        <summary class="flex items-center justify-between px-3 py-2 rounded-lg text-[#a1a1aa] hover:text-[#fafafa] hover:bg-[#18181b] cursor-pointer transition-all duration-150 select-none <%= 'text-[#a78bfa] font-semibold' if is_objetivos_active %>" title="Objetivos & Perfil">
+          <div class="flex items-center gap-3 overflow-hidden min-w-0">
+            <span class="material-symbols-outlined flex-shrink-0 text-[20px]" <%= is_objetivos_active ? "data-weight='fill' style='font-variation-settings: \"FILL\" 1;'".html_safe : "" %>>ads_click</span>
+            <span data-sidebar-target="text" class="whitespace-nowrap text-sm">Objetivos & Perfil</span>
+          </div>
+          <span data-sidebar-target="text" class="material-symbols-outlined text-[18px] transition-transform duration-200 group-open:rotate-180 flex-shrink-0">expand_more</span>
+        </summary>
+        <div class="pl-3 py-1 space-y-1 border-l border-[#27272a]/60 ml-5 my-1">
+          <% objetivos_links.each do |link| %>
+            <% render_link.call(link) %>
+          <% end %>
+        </div>
+      </details>
+
+      <!-- Direct Links -->
+      <% render_link.call(link_projects) %>
+      <% render_link.call(link_recurrent) %>
+      <% render_link.call(link_notes) %>
+
+      <!-- Dropdown: Relatórios -->
+      <details class="group" <%= 'open' if is_relatorios_active %>>
+        <summary class="flex items-center justify-between px-3 py-2 rounded-lg text-[#a1a1aa] hover:text-[#fafafa] hover:bg-[#18181b] cursor-pointer transition-all duration-150 select-none <%= 'text-[#a78bfa] font-semibold' if is_relatorios_active %>" title="Relatórios">
+          <div class="flex items-center gap-3 overflow-hidden min-w-0">
+            <span class="material-symbols-outlined flex-shrink-0 text-[20px]" <%= is_relatorios_active ? "data-weight='fill' style='font-variation-settings: \"FILL\" 1;'".html_safe : "" %>>analytics</span>
+            <span data-sidebar-target="text" class="whitespace-nowrap text-sm">Relatórios</span>
+          </div>
+          <span data-sidebar-target="text" class="material-symbols-outlined text-[18px] transition-transform duration-200 group-open:rotate-180 flex-shrink-0">expand_more</span>
+        </summary>
+        <div class="pl-3 py-1 space-y-1 border-l border-[#27272a]/60 ml-5 my-1">
+          <% relatorios_links.each do |link| %>
+            <% render_link.call(link) %>
+          <% end %>
+        </div>
+      </details>
+
+      <!-- Direct Link: Assistente IA -->
+      <% render_link.call(link_ai) %>
     </div>
 
     <div class="px-3 py-3 space-y-1 mt-auto border-t border-[#27272a]/50">

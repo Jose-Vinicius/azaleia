@@ -63,7 +63,7 @@ module Ai
         (Ações concretas e imediatas para otimizar os resultados)
       PROMPT
 
-      GeminiClient.generate_content(prompt, system_instruction: system_instruction)
+      GeminiClient.generate_content(prompt, system_instruction: system_instruction, user: user, action_name: "Análise de Produtividade")
     end
   end
 end

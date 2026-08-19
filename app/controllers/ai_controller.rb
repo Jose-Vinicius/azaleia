@@ -97,4 +97,60 @@ class AiController < ApplicationController
   rescue StandardError => e
     redirect_to okrs_path, alert: "Erro ao sugerir tarefas por IA para o Resultado-Chave: #{e.message}"
   end
+
+  def schedule_open_tasks
+    @schedule_result = Ai::OpenTasksSchedulerService.suggest(Current.user)
+    task_ids = (@schedule_result["suggestions"] || []).map { |s| s["task_id"] }
+    @open_tasks = Current.user.tasks.where(id: task_ids).includes(:multiplier, :project, :goal).index_by(&:id)
+    @active_goals = Current.user.goals.active.order(:title)
+
+    respond_to do |format|
+      format.turbo_stream { render :schedule_open_tasks }
+      format.html { render :index }
+    end
+  rescue StandardError => e
+    flash.now[:alert] = "Erro ao sugerir agendamento com IA: #{e.message}"
+    @active_goals = Current.user.goals.active.order(:title)
+    respond_to do |format|
+      format.turbo_stream { render :schedule_open_tasks, status: :unprocessable_entity }
+      format.html { render :index, status: :unprocessable_entity }
+    end
+  end
+
+  def apply_open_tasks_schedule
+    schedule_params = params[:schedule]
+    updated_count = Ai::OpenTasksSchedulerService.apply_schedules(Current.user, schedule_params)
+    @active_goals = Current.user.goals.active.order(:title)
+
+    if updated_count > 0
+      flash.now[:notice] = "#{updated_count} tarefas agendadas com sucesso baseadas na análise da IA!"
+    else
+      flash.now[:alert] = "Nenhuma tarefa foi selecionada para agendamento."
+    end
+
+    respond_to do |format|
+      format.turbo_stream { render :apply_open_tasks_schedule }
+      format.html { redirect_to ai_dashboard_path, notice: flash[:notice] || flash[:alert] }
+    end
+  rescue StandardError => e
+    flash.now[:alert] = "Erro ao aplicar agendamentos: #{e.message}"
+    @active_goals = Current.user.goals.active.order(:title)
+    respond_to do |format|
+      format.turbo_stream { render :apply_open_tasks_schedule, status: :unprocessable_entity }
+      format.html { redirect_to ai_dashboard_path, alert: e.message }
+    end
+  end
+
+  def logs
+    @logs = Current.user.ai_request_logs.recent.limit(50)
+  end
+
+  def show_log
+    @log = Current.user.ai_request_logs.find(params[:id])
+  end
+
+  def clear_logs
+    Current.user.ai_request_logs.destroy_all
+    redirect_to ai_dashboard_path, notice: "Histórico de logs de IA limpo com sucesso!"
+  end
 end

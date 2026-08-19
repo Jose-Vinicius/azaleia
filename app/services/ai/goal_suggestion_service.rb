@@ -30,7 +30,7 @@ module Ai
         Gere 3 sugestões de Metas SMART que fortaleçam as competências comportamentais e impulsionem a produtividade do usuário.
       PROMPT
 
-      res = GeminiClient.generate_content(prompt, system_instruction: system_instruction, json_response: true)
+      res = GeminiClient.generate_content(prompt, system_instruction: system_instruction, json_response: true, user: user, action_name: "Sugestor de Metas SMART")
       goals_data = res.is_a?(Hash) && res["goals"].is_a?(Array) ? res["goals"] : []
       
       goals_data.map do |g|
@@ -66,7 +66,7 @@ module Ai
         Desdobre esta meta na estrutura SMART completa.
       PROMPT
 
-      res = GeminiClient.generate_content(prompt, system_instruction: system_instruction, json_response: true)
+      res = GeminiClient.generate_content(prompt, system_instruction: system_instruction, json_response: true, user: user, action_name: "Preenchimento SMART de Meta")
       if res.is_a?(Hash)
         days = (res["target_days"] || 30).to_i
         res["target_date"] = (Date.today + days.days).to_s

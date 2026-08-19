@@ -109,6 +109,60 @@ class AiControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test "should suggest scheduling for open tasks via turbo stream" do
+    mock_result = {
+      "summary" => "Plano de teste de agendamento",
+      "suggestions" => [
+        { "task_id" => 1, "suggested_schedule_at" => "2026-08-20T09:00", "reasoning" => "Foco matinal" }
+      ]
+    }
+
+    stub_service(Ai::OpenTasksSchedulerService, :suggest, mock_result) do
+      post schedule_open_tasks_ai_path, as: :turbo_stream
+      assert_response :success
+      assert_match "turbo-stream action=\"update\" target=\"schedule_preview_results\"", response.body
+    end
+  end
+
+  test "should apply open tasks schedule" do
+    task = Task.create!(user: @user, title: "Tarefa Sem Data", status: "pending")
+
+    post apply_open_tasks_schedule_ai_path, params: {
+      schedule: {
+        task.id.to_s => { "selected" => "1", "schedule_at" => "2026-08-20T09:00" }
+      }
+    }, as: :turbo_stream
+
+    assert_response :success
+    assert_equal Time.zone.parse("2026-08-20T09:00"), task.reload.schedule_at
+  end
+
+  test "should get logs modal" do
+    AiRequestLog.create!(user: @user, action_name: "Teste Log", status: "success")
+
+    get logs_ai_path
+    assert_response :success
+    assert_match "Teste Log", response.body
+  end
+
+  test "should show individual log details" do
+    log = AiRequestLog.create!(user: @user, action_name: "Teste Log Detalhado", prompt: "Prompt enviado", status: "success")
+
+    get show_log_ai_path(log)
+    assert_response :success
+    assert_match "Prompt enviado", response.body
+  end
+
+  test "should clear user logs" do
+    AiRequestLog.create!(user: @user, action_name: "Teste Log Para Apagar", status: "success")
+
+    assert_difference("AiRequestLog.count", -1) do
+      delete clear_logs_ai_path
+    end
+
+    assert_redirected_to ai_dashboard_path
+  end
+
   private
 
   def stub_service(target_class, method_name, result)

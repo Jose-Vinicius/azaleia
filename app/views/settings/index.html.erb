@@ -25,6 +25,44 @@
           </div>
         </section>
 
+        <!-- Work Schedule & Routine Settings Section -->
+        <section class="space-y-6">
+          <div class="space-y-1">
+            <h2 class="text-lg font-bold tracking-tight text-on-surface">Horários de Trabalho & Rotina</h2>
+            <p class="text-sm text-on-surface-variant">Defina seus horários de trabalho e atividades para auxiliar o agendamento inteligente por IA.</p>
+          </div>
+
+          <%= form_with(model: Current.user, url: update_settings_path, method: :patch, id: "user-settings-form", class: "space-y-4") do |f| %>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-on-surface" for="user_work_days">Dias de Trabalho</label>
+                <%= f.text_field :work_days, class: "w-full bg-surface-container-lowest border border-outline-variant rounded-lg text-sm text-on-surface px-4 py-2.5 focus:ring-2 focus:ring-primary focus:border-transparent outline-none", placeholder: "Ex: Segunda a Sexta" %>
+              </div>
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-on-surface" for="user_lunch_break">Pausa / Horário de Almoço</label>
+                <%= f.text_field :lunch_break, class: "w-full bg-surface-container-lowest border border-outline-variant rounded-lg text-sm text-on-surface px-4 py-2.5 focus:ring-2 focus:ring-primary focus:border-transparent outline-none", placeholder: "Ex: 12:00 às 13:00" %>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-on-surface" for="user_work_start_time">Horário de Início</label>
+                <%= f.text_field :work_start_time, class: "w-full bg-surface-container-lowest border border-outline-variant rounded-lg text-sm text-on-surface px-4 py-2.5 focus:ring-2 focus:ring-primary focus:border-transparent outline-none", placeholder: "Ex: 08:00" %>
+              </div>
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-on-surface" for="user_work_end_time">Horário de Término</label>
+                <%= f.text_field :work_end_time, class: "w-full bg-surface-container-lowest border border-outline-variant rounded-lg text-sm text-on-surface px-4 py-2.5 focus:ring-2 focus:ring-primary focus:border-transparent outline-none", placeholder: "Ex: 18:00" %>
+              </div>
+            </div>
+
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-on-surface" for="user_routine_notes">Detalhamento de Atividades & Rotina</label>
+              <%= f.text_area :routine_notes, rows: 3, class: "w-full bg-surface-container-lowest border border-outline-variant rounded-lg text-sm text-on-surface px-4 py-2.5 focus:ring-2 focus:ring-primary focus:border-transparent outline-none", placeholder: "Descreva hábitos e preferências (ex: Manhãs reservadas para trabalho focado e tarefas estratégicas; tardes para reuniões e tarefas operacionais; finais de semana apenas para metas pessoais)." %>
+              <p class="text-xs text-on-surface-variant">Estas informações serão utilizadas pelo Assistente de IA para sugerir os melhores horários e dias para suas tarefas em aberto.</p>
+            </div>
+          <% end %>
+        </section>
+
         <!-- Notifications Settings Section -->
         <section class="space-y-6">
           <div class="space-y-1">

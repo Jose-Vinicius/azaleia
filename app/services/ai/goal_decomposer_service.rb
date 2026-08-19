@@ -23,7 +23,7 @@ module Ai
         Gere um plano de tarefas acionáveis para atingir esta meta.
       PROMPT
 
-      res = GeminiClient.generate_content(prompt, system_instruction: system_instruction, json_response: true)
+      res = GeminiClient.generate_content(prompt, system_instruction: system_instruction, json_response: true, user: user, action_name: "Decomposição de Meta")
       tasks_data = res.is_a?(Hash) && res["tasks"].is_a?(Array) ? res["tasks"] : []
 
       if create_tasks

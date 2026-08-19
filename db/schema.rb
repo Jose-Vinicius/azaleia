@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_14_140000) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_19_134500) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -40,6 +40,25 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_14_140000) do
     t.bigint "blob_id", null: false
     t.string "variation_digest", null: false
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
+
+  create_table "ai_request_logs", force: :cascade do |t|
+    t.string "action_name", null: false
+    t.string "ai_model", default: "gemini-2.5-flash"
+    t.integer "completion_tokens"
+    t.datetime "created_at", null: false
+    t.integer "duration_ms"
+    t.text "error_message"
+    t.text "prompt"
+    t.integer "prompt_tokens"
+    t.text "response_body"
+    t.string "status", default: "success", null: false
+    t.text "system_instruction"
+    t.integer "total_tokens"
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["user_id", "created_at"], name: "index_ai_request_logs_on_user_id_and_created_at"
+    t.index ["user_id"], name: "index_ai_request_logs_on_user_id"
   end
 
   create_table "eqi_profiles", force: :cascade do |t|
@@ -234,13 +253,19 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_14_140000) do
   create_table "users", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "email_address", null: false
+    t.string "lunch_break", default: "12:00 às 13:00"
     t.string "password_digest", null: false
+    t.text "routine_notes"
     t.datetime "updated_at", null: false
+    t.string "work_days", default: "Segunda a Sexta"
+    t.string "work_end_time", default: "18:00"
+    t.string "work_start_time", default: "08:00"
     t.index ["email_address"], name: "index_users_on_email_address", unique: true
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "ai_request_logs", "users"
   add_foreign_key "eqi_profiles", "users"
   add_foreign_key "goals", "users"
   add_foreign_key "key_results", "okrs"
