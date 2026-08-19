@@ -2,7 +2,13 @@
 
 ## [Unreleased]
 ### Adicionado
+- Adicionado sistema de auditoria e histórico de logs de IA com inspeção detalhada de requisições e respostas
+- Adicionada funcionalidade de agendamento inteligente de tarefas em aberto por IA com prévia editável e área de configuração de horários de trabalho e rotina
+- Adicionado badge visual em tarefas para identificação direta de origem vinculada a um OKR
+- Adicionada abertura do modal de detalhes ao clicar nas tarefas listadas dentro dos OKRs
+- Adicionada opção de marcar lançamento como reembolsável na criação e abertura automática do modal pré-preenchido de receita de reembolso
 ### Alterado
+- Reorganizado o menu lateral agrupando OKRs Empresa, Metas SMART e Psicometria no menu 'Objetivos & Perfil', e Métricas e Histórico no menu 'Relatórios'
 ### Corrigido
 ### Removido
 

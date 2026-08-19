@@ -35,7 +35,7 @@ module Ai
         Gere um plano de tarefas acionáveis e concretas para avançar este Resultado-Chave/OKR.
       PROMPT
 
-      res = GeminiClient.generate_content(prompt, system_instruction: system_instruction, json_response: true)
+      res = GeminiClient.generate_content(prompt, system_instruction: system_instruction, json_response: true, user: user, action_name: "Decomposição de OKR")
       tasks_data = res.is_a?(Hash) && res["tasks"].is_a?(Array) ? res["tasks"] : []
 
       if create_tasks

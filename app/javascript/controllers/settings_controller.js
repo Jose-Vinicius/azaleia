@@ -100,7 +100,9 @@ export default class extends Controller {
     }
   }
 
-  save() {
+  save(event) {
+    if (event) event.preventDefault();
+
     if (this.hasDashboardColsTarget) {
       const value = Math.min(Math.max(this.dashboardColsTarget.value, 3), 7);
       localStorage.setItem("dashboardCols", value);
@@ -118,6 +120,12 @@ export default class extends Controller {
     }
 
     window.dispatchEvent(new Event("settings:updated"));
+
+    const form = this.element.querySelector("form#user-settings-form");
+    if (form) {
+      form.requestSubmit();
+    }
+
     this.close();
   }
 

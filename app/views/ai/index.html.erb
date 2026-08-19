@@ -30,6 +30,10 @@
       </div>
       <p class="text-sm text-on-surface-variant">Análise de tarefas por período (até 1 ano), gerador de metas SMART e decomposição inteligente</p>
     </div>
+
+    <%= link_to logs_ai_path, data: { turbo_frame: "modal" }, class: "px-4 py-2.5 bg-surface-container border border-outline-variant hover:border-primary/40 text-on-surface hover:text-primary font-bold text-xs rounded-xl shadow-sm transition-all flex items-center gap-2 cursor-pointer" do %>
+      <span class="material-symbols-outlined text-[18px]">receipt_long</span> Histórico de Logs
+    <% end %>
   </header>
 
   <!-- Flash Messages -->
@@ -41,7 +45,7 @@
   <div class="flex-1 overflow-y-auto p-6 md:p-8 space-y-8 hide-scrollbar">
     
     <!-- Action Grid -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       
       <!-- Card 1: Análise por Período -->
       <div class="bg-surface-container/60 border border-outline-variant/60 rounded-2xl p-6 flex flex-col justify-between space-y-6">
@@ -123,6 +127,31 @@
         <% end %>
       </div>
 
+      <!-- Card 4: Agendamento Inteligente de Tarefas em Aberto -->
+      <div class="bg-surface-container/60 border border-outline-variant/60 rounded-2xl p-6 flex flex-col justify-between space-y-6">
+        <div>
+          <div class="flex items-center gap-3 mb-3">
+            <div class="p-2.5 rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/20">
+              <span class="material-symbols-outlined text-[24px]">calendar_clock</span>
+            </div>
+            <div>
+              <h3 class="text-base font-bold text-on-surface">Agendador de Tarefas</h3>
+              <span class="text-xs text-on-surface-variant">Tarefas sem data / Atrasadas</span>
+            </div>
+          </div>
+          <p class="text-xs text-on-surface-variant">Analisa tarefas em aberto e distribui na sua jornada de trabalho com prévia editável.</p>
+        </div>
+
+        <%= button_to schedule_open_tasks_ai_path, method: :post, data: { disable_with: "⏳ Analisando rotina e agenda..." }, class: "w-full py-2.5 bg-amber-500 text-black font-bold text-xs rounded-xl shadow-md hover:opacity-90 transition-all cursor-pointer flex items-center justify-center gap-2" do %>
+          <span class="material-symbols-outlined text-[18px]">auto_awesome</span> Sugerir Dias & Horários
+        <% end %>
+      </div>
+
+    </div>
+
+    <!-- Output Section: Schedule Open Tasks Preview -->
+    <div id="schedule_preview_results">
+      <%= render 'schedule_preview' %>
     </div>
 
     <!-- Output Section: Task Analysis Report -->

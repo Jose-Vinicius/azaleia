@@ -1,0 +1,106 @@
+<%= turbo_frame_tag "modal" do %>
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+    <div class="relative w-full max-w-4xl bg-surface-container border border-outline-variant rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+      
+      <!-- TopAppBar -->
+      <header class="flex justify-between items-center px-6 h-16 w-full bg-zinc-950 border-b border-zinc-800 shrink-0">
+        <div class="flex items-center gap-3">
+          <%= link_to logs_ai_path, data: { turbo_frame: "modal" }, class: "text-on-surface-variant hover:text-on-surface p-1 rounded-lg transition-colors cursor-pointer" do %>
+            <span class="material-symbols-outlined">arrow_back</span>
+          <% end %>
+          <div>
+            <h1 class="text-base font-bold text-on-surface flex items-center gap-2">
+              <%= @log.action_name %>
+              <% if @log.success? %>
+                <span class="px-2 py-0.5 text-[10px] font-bold rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Sucesso</span>
+              <% else %>
+                <span class="px-2 py-0.5 text-[10px] font-bold rounded-md bg-red-500/10 text-red-400 border border-red-500/20">Erro</span>
+              <% end %>
+            </h1>
+            <p class="text-xs text-on-surface-variant"><%= @log.created_at.strftime('%d/%m/%Y às %H:%M:%S') %></p>
+          </div>
+        </div>
+        <button onclick="document.getElementById('modal').innerHTML = ''" class="text-on-surface-variant hover:text-on-surface hover:bg-zinc-900 transition-colors p-2 rounded-lg cursor-pointer">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </header>
+
+      <!-- Content -->
+      <div class="flex-1 overflow-y-auto p-6 space-y-6 bg-background text-on-surface font-mono text-xs">
+        
+        <!-- Metrics Header -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 font-sans">
+          <div class="p-3 bg-surface-container/60 border border-outline-variant/40 rounded-xl">
+            <span class="block text-[10px] uppercase font-bold text-on-surface-variant">Modelo</span>
+            <span class="text-xs font-bold text-on-surface"><%= @log.ai_model %></span>
+          </div>
+          <div class="p-3 bg-surface-container/60 border border-outline-variant/40 rounded-xl">
+            <span class="block text-[10px] uppercase font-bold text-on-surface-variant">Duração</span>
+            <span class="text-xs font-bold text-on-surface"><%= @log.duration_ms || 0 %> ms</span>
+          </div>
+          <div class="p-3 bg-surface-container/60 border border-outline-variant/40 rounded-xl">
+            <span class="block text-[10px] uppercase font-bold text-on-surface-variant">Tokens Totais</span>
+            <span class="text-xs font-bold text-primary"><%= @log.total_tokens || "N/A" %></span>
+          </div>
+          <div class="p-3 bg-surface-container/60 border border-outline-variant/40 rounded-xl">
+            <span class="block text-[10px] uppercase font-bold text-on-surface-variant">Tokens Prompt / Resposta</span>
+            <span class="text-xs font-bold text-on-surface"><%= @log.prompt_tokens || 0 %> / <%= @log.completion_tokens || 0 %></span>
+          </div>
+        </div>
+
+        <% if @log.error_message.present? %>
+          <div class="p-4 bg-red-500/10 border border-red-500/30 rounded-xl text-red-300 font-sans space-y-1">
+            <span class="text-xs font-bold uppercase tracking-wider flex items-center gap-1">
+              <span class="material-symbols-outlined text-[16px]">error</span> Mensagem de Erro:
+            </span>
+            <p class="text-xs font-mono whitespace-pre-wrap"><%= @log.error_message %></p>
+          </div>
+        <% end %>
+
+        <!-- System Instruction -->
+        <% if @log.system_instruction.present? %>
+          <div class="space-y-2 font-sans">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-primary flex items-center gap-1">
+              <span class="material-symbols-outlined text-[16px]">tune</span> Instrução do Sistema (System Instruction)
+            </h3>
+            <div class="p-4 bg-surface-container-lowest border border-outline-variant/60 rounded-xl overflow-x-auto text-on-surface-variant font-mono whitespace-pre-wrap leading-relaxed">
+              <%= @log.system_instruction %>
+            </div>
+          </div>
+        <% end %>
+
+        <!-- Request Prompt -->
+        <div class="space-y-2 font-sans">
+          <h3 class="text-xs font-bold uppercase tracking-wider text-primary flex items-center gap-1">
+            <span class="material-symbols-outlined text-[16px]">send</span> Prompt Enviado (Request Payload)
+          </h3>
+          <div class="p-4 bg-surface-container-lowest border border-outline-variant/60 rounded-xl overflow-x-auto text-on-surface-variant font-mono whitespace-pre-wrap leading-relaxed">
+            <%= @log.prompt %>
+          </div>
+        </div>
+
+        <!-- Response Body -->
+        <div class="space-y-2 font-sans">
+          <h3 class="text-xs font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-1">
+            <span class="material-symbols-outlined text-[16px]">output</span> Resposta Gerada (Response Body)
+          </h3>
+          <div class="p-4 bg-surface-container-lowest border border-outline-variant/60 rounded-xl overflow-x-auto text-on-surface font-mono whitespace-pre-wrap leading-relaxed">
+            <%= @log.response_body.presence || "Sem resposta gravada." %>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Footer -->
+      <footer class="flex justify-between items-center px-6 py-4 bg-surface-container border-t border-outline-variant shrink-0 font-sans">
+        <%= link_to logs_ai_path, data: { turbo_frame: "modal" }, class: "px-4 py-2 text-xs font-bold text-on-surface-variant hover:text-on-surface flex items-center gap-1 cursor-pointer" do %>
+          <span class="material-symbols-outlined text-[16px]">arrow_back</span> Voltar para a lista
+        <% end %>
+
+        <button onclick="document.getElementById('modal').innerHTML = ''" class="px-5 py-2 text-xs font-bold bg-primary text-on-primary rounded-xl shadow-md hover:opacity-90 transition-all cursor-pointer">
+          Fechar
+        </button>
+      </footer>
+    </div>
+  </div>
+<% end %>

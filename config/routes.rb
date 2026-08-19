@@ -49,8 +49,14 @@ Rails.application.routes.draw do
   post "ai/decompose_goal", to: "ai#decompose_goal", as: :decompose_goal_ai
   post "ai/decompose_okr", to: "ai#decompose_okr", as: :decompose_okr_ai
   post "ai/decompose_key_result", to: "ai#decompose_key_result", as: :decompose_key_result_ai
+  post "ai/schedule_open_tasks", to: "ai#schedule_open_tasks", as: :schedule_open_tasks_ai
+  post "ai/apply_open_tasks_schedule", to: "ai#apply_open_tasks_schedule", as: :apply_open_tasks_schedule_ai
+  get "ai/logs", to: "ai#logs", as: :logs_ai
+  get "ai/logs/:id", to: "ai#show_log", as: :show_log_ai
+  delete "ai/logs/clear", to: "ai#clear_logs", as: :clear_logs_ai
 
   get "settings", to: "settings#index"
+  patch "settings", to: "settings#update", as: :update_settings
   get "up" => "rails/health#show", as: :rails_health_check
   root "dashboard#index"
 end
