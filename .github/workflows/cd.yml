@@ -70,7 +70,7 @@ jobs:
               -u ${{ github.actor }} --password-stdin
             export DOCKER_IMAGE=ghcr.io/${{ steps.repo.outputs.name }}:latest
             docker compose pull
-            docker compose stop web worker || true
+            docker compose rm -f -s web worker || true
             docker compose run --rm web bin/rails db:prepare
             docker compose up -d --remove-orphans
             
