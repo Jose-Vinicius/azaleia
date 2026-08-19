@@ -16,6 +16,9 @@
 - Adicionada opção de marcar lançamento como reembolsável na criação e abertura automática do modal pré-preenchido de receita de reembolso
 ### Alterado
 - Reorganizado o menu lateral agrupando OKRs Empresa, Metas SMART e Psicometria no menu 'Objetivos & Perfil', e Métricas e Histórico no menu 'Relatórios'
+### Corrigido
+- Corrigido falha de execução de migração de banco de dados ao tentar renomear coluna inexistente no histórico de requisições de IA
+### Removido
 
 ## [0.4.1] - 2026-08-14
 
