@@ -4,8 +4,12 @@
 ### Adicionado
 ### Alterado
 ### Corrigido
-- Corrigido erro de concorrência de migração de banco de dados (`ActiveRecord::ConcurrentMigrationError`) durante o deploy na VPS pausando os serviços antigos antes do `db:prepare`
 ### Removido
+
+## [0.5.1] - 2026-08-19
+
+### Corrigido
+- Corrigido erro de concorrência de migração de banco de dados (`ActiveRecord::ConcurrentMigrationError`) durante o deploy na VPS pausando os serviços antigos antes do `db:prepare`
 
 ## [0.5.0] - 2026-08-19
 
